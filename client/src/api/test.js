@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
 const URL = `https://pokeapi.co/api/v2/pokemon?limit=151`;
 
-export const getAllTestList = async() => {
-     const{data} = await axios.get(URL);
-     return data
-}
+export const getAllTestList = async () => {
+  const { data } = await axios.get(URL);
+  return data;
+};
