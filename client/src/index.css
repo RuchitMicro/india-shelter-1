@@ -26,7 +26,7 @@ body {
   }
   h3,
   label {
-    @apply text-base leading-6;
+    @apply text-base leading-6 font-medium;
   }
   h4 {
     @apply text-sm;
@@ -37,5 +37,9 @@ body {
   }
   span {
     @apply text-sm;
+  }
+
+  input {
+    @apply placeholder:text-light-grey text-base text-black;
   }
 }
