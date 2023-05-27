@@ -13,11 +13,12 @@ export default {
         'dark-grey': '#727376',
         'light-grey': '#96989A',
         'neutral-white': '#FEFEFE',
+        'light-red': '#F1999C',
         stroke: '#D9D9D9',
       },
     },
     boxShadow: {
-      'shadow-primary': '0px 0px 3px 0px',
+      primary: '0px 0px 3px 0px',
     },
   },
   plugins: [],
