@@ -40,6 +40,18 @@ body {
   }
 
   input {
-    @apply placeholder:text-light-grey text-base text-black;
+    @apply placeholder:text-light-grey text-base text-black focus:outline-none;
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply w-full cursor-pointer outline-none border-none h-1 bg-primary-red bg-opacity-30 my-4;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply h-8 w-8 bg-primary-red rounded-full border-none transition-all ease-out duration-200;
   }
 }
