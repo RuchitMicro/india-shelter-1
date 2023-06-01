@@ -1,9 +1,5 @@
 import PropTypes from 'prop-types';
 
-const input = {
-  name: 'Button',
-  errorMessage: 'Error Message',
-};
 const Button = ({ primary, children, ...props }) => {
   return (
     <button
@@ -19,9 +15,9 @@ const Button = ({ primary, children, ...props }) => {
   );
 };
 
+export default Button;
+
 Button.propTypes = {
   primary: PropTypes.bool,
   children: PropTypes.elementType,
 };
-
-export default Button;

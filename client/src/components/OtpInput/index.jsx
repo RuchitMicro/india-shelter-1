@@ -31,7 +31,6 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
     if (e.key === 'Backspace') setActiveOtpIndex(currentOtpIndex - 1);
     if (e.key === 'Enter') setActiveOtpIndex(currentOtpIndex + 1);
   };
-  console.log(otp);
 
   return (
     <div className='otp-container'>
@@ -108,7 +107,7 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
             </>
           )}
         </div>
-        <h3
+        <button
           className='text-primary-red cursor-pointer font-semibold'
           onClick={() => {
             setActiveOtpIndex(0);
@@ -117,7 +116,7 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
           }}
         >
           {verified === null && <span> {timer ? 'Resend OTP' : 'Send OTP'} </span>}
-        </h3>
+        </button>
       </div>
     </div>
   );
@@ -128,9 +127,9 @@ export default OtpInput;
 OtpInput.propTypes = {
   label: PropTypes.string.isRequired,
   required: PropTypes.bool,
-  error: PropTypes.bool, 
-  verified: PropTypes.any, 
-  timer: PropTypes.bool, 
-  time: PropTypes.string, 
+  error: PropTypes.bool,
+  verified: PropTypes.any,
+  timer: PropTypes.bool,
+  time: PropTypes.string,
   onClick: PropTypes.func,
 };
