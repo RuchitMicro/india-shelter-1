@@ -19,6 +19,7 @@ export default {
     },
     boxShadow: {
       primary: '0px 0px 3px 0px',
+      secondary: '0px 2px 10px rgba(0, 0, 0, 0.06)',
     },
   },
   plugins: [],
