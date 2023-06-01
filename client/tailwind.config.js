@@ -12,6 +12,7 @@ export default {
         secondary: { green: '#147257', blue: '#065381' },
         'dark-grey': '#727376',
         'light-grey': '#96989A',
+        'light-green': '#D9F2CB',
         'neutral-white': '#FEFEFE',
         'light-red': '#F1999C',
         stroke: '#D9D9D9',
@@ -20,6 +21,7 @@ export default {
     boxShadow: {
       primary: '0px 0px 3px 0px',
       secondary: '0px 2px 10px rgba(0, 0, 0, 0.06)',
+      modal: '0px 8px 11px -4px #0000000D',
     },
   },
   plugins: [],
