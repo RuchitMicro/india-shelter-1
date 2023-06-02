@@ -75,6 +75,7 @@ const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxH
           ))}
         </div>
       )}
+      <span className='text-sm text-primary-red mt-1'>{false || String.fromCharCode(160)}</span>
     </div>
   );
 };
