@@ -16,7 +16,7 @@ const TermsAndConditions = ({ show, setShow }) => {
             </button>
           </div>
         </Sheet.Header>
-        <Sheet.Content className='px-4 text-dark-grey leading-6 mt-4'>
+        <Sheet.Content className='px-4 text-dark-grey leading-6 my-4'>
           By accessing this website we assume you accept these terms and conditions. Do not continue
           to use India Shelter if you do not agree to take all of the terms and conditions stated on
           this page. The following terminology applies to these Terms and Conditions, Privacy
