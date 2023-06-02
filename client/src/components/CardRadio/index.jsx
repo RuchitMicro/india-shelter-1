@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 
 const CardRadio = ({ label, current, children, value, name, onChange }) => {
   return (
-    <label htmlFor={value} className='flex flex-col w-[99px] gap-2 '>
+    <label htmlFor={value} className='flex flex-col gap-2 w-full'>
       <div
-        className={`w-fit border boder-2  rounded-lg py-4 px-7 
+        className={`w-full border-2 rounded-lg py-4 px-7 flex items-center justify-center
       ${
         current === value
           ? 'bg-light-green border-secondary-green stroke-secondary-green'
@@ -41,7 +41,7 @@ const CardRadio = ({ label, current, children, value, name, onChange }) => {
 
 CardRadio.propTypes = {
   label: PropTypes.string,
-  current: PropTypes.bool,
+  current: PropTypes.string,
   children: PropTypes.element,
   value: PropTypes.string.isRequired,
   name: PropTypes.string,
