@@ -58,10 +58,7 @@ const PropertyDetail = () => {
   return (
     // TODO:  Remove the margin on top
     <div
-      style={{
-        maxWidth: 533,
-      }}
-      className='flex flex-col gap-2 mt-4'
+      className='flex flex-col gap-2'
     >
       <div className='flex flex-col gap-2'>
         <label htmlFor='property-identication' className='flex gap-0.5 font-medium text-black'>
