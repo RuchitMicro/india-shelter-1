@@ -22,6 +22,7 @@ export default {
       primary: '0px 0px 3px 0px',
       secondary: '0px 2px 10px rgba(0, 0, 0, 0.06)',
       modal: '0px 8px 11px -4px #0000000D',
+      calendar: '0px 4px 14px 0px #0000001A',
     },
   },
   plugins: [],
