@@ -18,6 +18,10 @@ const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxH
   );
 
   useEffect(() => {
+    setSelectedOption(null);
+  }, [options]);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setShowDropDown(false);

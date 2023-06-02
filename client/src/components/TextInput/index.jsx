@@ -38,7 +38,7 @@ const TextInput = forwardRef(function TextInput({ label, name, hint, error, Icon
           {...props}
         />
       </div>
-      {error && <span className='text-sm text-primary-red'>{error}</span>}
+      <span className='text-sm text-primary-red'>{error || String.fromCharCode(160)}</span>
     </div>
   );
 });

@@ -9,7 +9,7 @@ const CardRadio = ({ label, current, children, value, name, onChange }) => {
         current === value
           ? 'bg-light-green border-secondary-green stroke-secondary-green'
           : 'bg-transparent stroke-light-grey border-stroke'
-      } `}
+      } transition-all duration-300 ease-out`}
       >
         <input
           type='radio'
@@ -29,7 +29,7 @@ const CardRadio = ({ label, current, children, value, name, onChange }) => {
           current === value
             ? 'text-secondary-green font-semibold'
             : 'text-primary-black font-normal'
-        }
+        } transition-colors ease-out duration-300
         `}
         >
           {label}
