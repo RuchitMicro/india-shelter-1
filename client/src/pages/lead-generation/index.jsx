@@ -1,16 +1,23 @@
 import LeadGenerationForm from './LeadGenerationForm';
 import leftImg from '../../assets/left-contain-image.png';
+import logoSm from '../../assets/LogoMobile.svg';
+import islandimg from '../../assets/islandSm.svg';
 
 const LeadGeneration = () => {
   return (
-    <div class='flex w-full flex-col md:flex-row'>
+    <div className='flex w-full flex-col md:flex-row'>
       {/* left section */}
-      <div class='w-[597px] flex flex-col min-h-screen items-center justify-around bg-[#EEF0DD]'>
-        <img src={leftImg} alt='' className='' />
+      <div className='w-full md:w-2/5'>
+        <div className='flex flex-col justify-center items-center bg-[#EEF0DD] lg:hidden'>
+          <img src={logoSm} alt='India Shelter Logos' className='w-full' />
+          <span className='text-base text-[#04584C] text-center pt-4 font-medium'>Get the right value for your property</span>
+          <img src={islandimg} alt='' className='w-fit' />
+        </div>
+        <img src={leftImg} alt='' className='hidden lg:block w-fit min-h-screen' />
       </div>
       {/* right side section */}
-      <div class='w-[843px] mx-[135px] min-h-screen'>
-        <div className='stepper flex pt-14 pb-6 gap-6'>
+      <div className='w-full md:w-3/5 md:mx-[135px] min-h-screen'>
+        <div className='hidden lg:flex stepper pt-14 pb-6 gap-6'>
           <div className='flex flex-col gap-2 w-full active'>
             <div className='h-[6px] rounded bg-primary-red'></div>
             <span className='w-full text-primary-red text-xs font-semibold'>STEP 1</span>
@@ -30,7 +37,7 @@ const LeadGeneration = () => {
 
         <div className='main-container h-[calc(100vh-118px-72px)] overflow-auto bg-[#dfdfdf]'>
           <div className='min-h-screen'>
-            <LeadGenerationForm/>
+            {/* <LeadGenerationForm /> */}
           </div>
         </div>
 

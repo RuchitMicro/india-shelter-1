@@ -52,7 +52,7 @@ const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxH
           style={{
             maxHeight: optionsMaxHeight ?? 250,
           }}
-          className='rounded-lg shadow-secondary p-2 mt-2 absolute top-100 w-full overflow-y-auto'
+          className='rounded-lg bg-white shadow-secondary p-2 mt-2 absolute top-100 w-full overflow-y-auto z-20'
         >
           {options.map((option, index) => (
             <button
