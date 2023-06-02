@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 const Button = ({ primary, children, ...props }) => {
   return (
     <button
-      className={`py-3 text-lg rounded-[4px] w-[156px] ${
+      className={`py-2 md:py-3 text-base md:text-lg rounded-[4px] w-[156px] ${
         primary
           ? 'bg-primary-red text-white disabled:bg-light-red'
           : 'bg-neutral-white border border-primary-red text-primary-red disabled:text-light-red'
