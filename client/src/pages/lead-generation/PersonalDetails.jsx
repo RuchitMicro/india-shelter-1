@@ -8,7 +8,7 @@ const PersonalDetail = () => {
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
   const [time, setTime] = useState('0:' + 0 + 's');
-  const [loanAmount, setLoanAmount] = useState(0);
+  const [loanAmount, setLoanAmount] = useState(100000);
 
   const otpReducer = (verified, action) => {
     switch (action.type) {
@@ -73,6 +73,8 @@ const PersonalDetail = () => {
         maxValueLabel='50 L'
         onChange={onChange}
         initialValue={loanAmount}
+        min={100000}
+        max={5000000}
       />
       <TextInput label='First Name' placeholder='Ex: Suresh, Priya' required name='firstName' />
       <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' required name='middleName' />
