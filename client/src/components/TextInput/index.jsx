@@ -8,7 +8,10 @@ import PropTypes from 'prop-types';
  * @param error - String
  * @param Icon React JSX Element
  */
-const TextInput = forwardRef(function TextInput({ label, name, hint, error, Icon, ...props }, ref) {
+const TextInput = forwardRef(function TextInput(
+  { label, name, hint, error, touched, Icon, ...props },
+  ref,
+) {
   const inputRef = useRef();
 
   return (
@@ -27,7 +30,11 @@ const TextInput = forwardRef(function TextInput({ label, name, hint, error, Icon
         flex gap-1
         transition-all ease-out duration-150
         focus-within:border-secondary-blue focus-within:shadow-secondary-blue focus-within:shadow-primary
-        ${error ? 'border-primary-red shadow-primary shadow-primary-red' : 'border-light-grey'}`}
+        ${
+          error && touched
+            ? 'border-primary-red shadow-primary shadow-primary-red'
+            : 'border-light-grey'
+        }`}
       >
         {Icon && <Icon />}
         <input
@@ -38,7 +45,7 @@ const TextInput = forwardRef(function TextInput({ label, name, hint, error, Icon
           {...props}
         />
       </div>
-      {error && <span className='text-sm text-primary-red'>{error}</span>}
+      <span className='text-sm text-primary-red'>{error && touched ? error : null}</span>
     </div>
   );
 });
@@ -51,5 +58,6 @@ TextInput.propTypes = {
   hint: PropTypes.string,
   required: PropTypes.bool,
   error: PropTypes.string,
+  touched: PropTypes.bool,
   Icon: PropTypes.elementType,
 };
