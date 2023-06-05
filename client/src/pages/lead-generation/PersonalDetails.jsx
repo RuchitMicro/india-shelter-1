@@ -76,6 +76,8 @@ const PersonalDetail = () => {
         maxValueLabel='50 L'
         onChange={onChange}
         initialValue={loanAmount}
+        min={100000}
+        max={5000000}
       />
       <TextInput
         label='First Name'
