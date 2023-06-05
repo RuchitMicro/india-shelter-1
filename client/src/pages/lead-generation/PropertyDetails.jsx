@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useContext } from 'react';
 import { IconPropertyIdentified, IconPropertyUnIdentified, IconRupee } from '../../assets/icons';
 import {
   CardRadio,
@@ -8,6 +8,7 @@ import {
   TermsAndConditions,
   OtpInput,
 } from '../../components';
+import { AuthContext } from '../../context/AuthContext';
 
 const propertyIdentificationOptions = [
   {
@@ -46,6 +47,7 @@ const PropertyDetail = () => {
   const [loanPurpose, setLoanPurpose] = useState();
   const [showTerms, setShowTerms] = useState(false);
   const [showOTPInput, setShowOTPInput] = useState(false);
+  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 
   const handleOnPropertyIdentificationChange = useCallback((e) => {
     setPropertyIdentified(e.currentTarget.value);
@@ -57,9 +59,7 @@ const PropertyDetail = () => {
 
   return (
     // TODO:  Remove the margin on top
-    <div
-      className='flex flex-col gap-2'
-    >
+    <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-2'>
         <label htmlFor='property-identication' className='flex gap-0.5 font-medium text-black'>
           The Property identification is <span className='text-primary-red text-xs'>*</span>
@@ -85,17 +85,27 @@ const PropertyDetail = () => {
       {propertyIdentificationOptions[0].value === propertyIdentified ? (
         <div className='flex flex-col gap-2'>
           <TextInput
-            name='property-value'
+            name='estimatePropertyValue'
             label='My property value is estimated to be'
             required
             Icon={IconRupee}
             placeholder='1,00,000'
+            value={values.estimatePropertyValue}
+            error={errors.estimatePropertyValue}
+            touched={touched.estimatePropertyValue}
+            onBlur={handleBlur}
+            onChange={handleChange}
           />
           <TextInput
-            name='property-pincode'
+            name='propertyPincode'
             label='Property Pincode'
             required
             placeholder='123456'
+            value={values.propertyPincode}
+            error={errors.propertyPincode}
+            touched={touched.propertyPincode}
+            onBlur={handleBlur}
+            onChange={handleChange}
           />
         </div>
       ) : null}
@@ -123,7 +133,12 @@ const PropertyDetail = () => {
         label='Promo Code'
         hint='To avail advantages or perks associated with a loan'
         placeholder='Ex: AH34bg'
-        name='promo-code'
+        name='promoCode'
+        value={values.promoCode}
+        error={errors.promoCode}
+        touched={touched.promoCode}
+        onBlur={handleBlur}
+        onChange={handleChange}
       />
 
       <TextInput

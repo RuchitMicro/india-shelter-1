@@ -1,21 +1,11 @@
-import { useFormik } from 'formik';
-import { signUpSchema } from '../../schemas/index';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import Stepper from '../../components/Stepper/index';
 import DesktopStepper from '../../components/DesktopStepper/index';
 import PersonalDetails from '../../pages/lead-generation/PersonalDetails';
 import ProfessionalDetails from '../../pages/lead-generation/ProfessionalDetails';
 import PropertyDetails from '../../pages/lead-generation/PropertyDetails';
 import Button from '../../components/Button';
-
-const defaultValues = {
-  name: '',
-  email: '',
-  mobileNo: '',
-  date: '',
-  password: '',
-  confirmPassword: '',
-};
+import { AuthContext } from '../../context/AuthContext';
 
 const steps = [
   {
@@ -38,44 +28,16 @@ const steps = [
 const LeadGenerationForm = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  const [initialValues] = useState(() => {
-    const userData = localStorage.getItem('user-data');
-    if (userData) {
-      return JSON.parse(userData);
-    }
-    return defaultValues;
-  });
-
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues: initialValues,
-    validationSchema: signUpSchema,
-    onSubmit: (values, action) => {
-      console.log(values);
-      action.resetForm(initialValues);
-      localStorage.removeItem('user-data');
-    },
-  });
-
-  // useEffect(() => {
-  //   const onUnLoad = () => {
-  //     alert('user');
-  //     localStorage.setItem('user-data', JSON.stringify(values));
-  //   };
-
-  //   window.addEventListener('beforeunload', onUnLoad);
-  //   return () => {
-  //     window.removeEventListener('beforeunload', onUnLoad);
-  //   };
-  // }, [values]);
+  const { handleSubmit } = useContext(AuthContext);
 
   return (
-    <div className='relative h-full'>
+    <div className='relative h-full overflow-y-hidden'>
       <>
         <Stepper steps={steps} activeStep={activeStep} />
         <DesktopStepper steps={steps} activeStep={activeStep} />
       </>
-      
-      <form className='mt-6 h-[480px] overflow-auto' onSubmit={handleSubmit}>
+
+      <form className='mt-6 h-[480px] overflow-auto md:pr-[175px]' onSubmit={handleSubmit}>
         {activeStep === 0 && <PersonalDetails />}
         {activeStep === 1 && <ProfessionalDetails />}
         {activeStep === 2 && <PropertyDetails />}
@@ -83,7 +45,7 @@ const LeadGenerationForm = () => {
         <div
           className={`${
             activeStep !== 0 && activeStep !== steps.length ? 'justify-between' : 'justify-end'
-          } flex absolute bottom-0 w-full`}
+          } flex absolute bottom-0 w-full md:pr-[176px] md:pb-6`}
         >
           {activeStep !== 0 && activeStep !== steps.length && (
             <Button type='button' onClick={() => setActiveStep(activeStep - 1)}>

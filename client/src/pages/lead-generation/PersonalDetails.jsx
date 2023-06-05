@@ -1,14 +1,16 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useState, useEffect, useReducer, useContext } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
 import { IconRupee } from '../../assets/icons';
+import { AuthContext } from '../../context/AuthContext';
 
 const PersonalDetail = () => {
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
   const [time, setTime] = useState('0:' + 0 + 's');
-  const [loanAmount, setLoanAmount] = useState(100000);
+  const [loanAmount, setLoanAmount] = useState(0);
+  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 
   const otpReducer = (verified, action) => {
     switch (action.type) {
@@ -36,7 +38,8 @@ const PersonalDetail = () => {
 
         if (upto >= 30) {
           clearInterval(counts);
-          dispatch({ type: 'VERIFIED_SUCCESS' });
+          dispatch({ type: 'VERIFIED_FAILED' });
+          if (!verified) setError(true);
           setTimer(false);
         }
       }, 1000);
@@ -76,15 +79,40 @@ const PersonalDetail = () => {
         min={100000}
         max={5000000}
       />
-      <TextInput label='First Name' placeholder='Ex: Suresh, Priya' required name='firstName' />
-      <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' required name='middleName' />
-      <TextInput label='Last Name' placeholder='Ex: Swami, Singh' required name='lastName' />
-      <TextInput label='Current Pincode' placeholder='Ex: 123456' required name='pinCode' />
+      <TextInput
+        label='First Name'
+        placeholder='Ex: Suresh, Priya'
+        required
+        name='firstName'
+        value={values.firstName}
+        error={errors.firstName}
+        touched={touched.firstName}
+        onBlur={handleBlur}
+        onChange={handleChange}
+      />
+      <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' name='middleName' />
+      <TextInput label='Last Name' placeholder='Ex: Swami, Singh' name='lastName' />
+      <TextInput
+        label='Current Pincode'
+        placeholder='Ex: 123456'
+        required
+        name='pinCode'
+        value={values.pinCode}
+        error={errors.pinCode}
+        touched={touched.pinCode}
+        onBlur={handleBlur}
+        onChange={handleChange}
+      />
       <TextInput
         label='Mobile number'
         placeholder='Please enter 10 digit mobile no'
         required
         name='mobileNo'
+        value={values.mobileNo}
+        error={errors.mobileNo}
+        touched={touched.mobileNo}
+        onBlur={handleBlur}
+        onChange={handleChange}
       />
       <OtpInput
         label='Enter OTP'
