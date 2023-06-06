@@ -147,3 +147,35 @@ body {
   left: auto;
   right: 16px;
 }
+
+/* css for hidding arrows from otp input component */
+.hidearrow::-webkit-outer-spin-button,
+.hidearrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* end */
+
+/* range slider css */
+.range-slider {
+  width: 100%;
+}
+.range-slider.min-value {
+  border-color: red;
+}
+.range-slider.max-value {
+  border-color: green;
+}
+
+/* end */
+
+/* code for hiding scroll bar in mobile  */
+@media (max-width: 767px) {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

@@ -4,12 +4,14 @@ import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
 import { IconRupee } from '../../assets/icons';
 import { AuthContext } from '../../context/AuthContext';
+import { CheckBox, TermsAndConditions } from '../../components';
 
 const PersonalDetail = () => {
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const [time, setTime] = useState('0:' + 0 + 's');
-  const [loanAmount, setLoanAmount] = useState(0);
+  const [loanAmount, setLoanAmount] = useState(100000);
   const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 
   const otpReducer = (verified, action) => {
@@ -78,6 +80,7 @@ const PersonalDetail = () => {
         initialValue={loanAmount}
         min={100000}
         max={5000000}
+        step={50000}
       />
       <TextInput
         label='First Name'
@@ -123,6 +126,24 @@ const PersonalDetail = () => {
         time={time}
         onClick={onClick}
       />
+
+      <div className='flex gap-2'>
+        <CheckBox name='terms-agreed' />
+        <span className='text-xs text-dark-grey'>
+          Please read and accept our &nbsp;
+          <span
+            tabIndex={-1}
+            onClick={() => setShowTerms(true)}
+            onKeyDown={() => setShowTerms(true)}
+            role='button'
+            className='text-xs font-medium underline text-primary-black'
+          >
+            Terms and Conditions
+          </span>
+        </span>
+      </div>
+
+      <TermsAndConditions setShow={setShowTerms} show={showTerms} />
     </div>
   );
 };

@@ -5,25 +5,26 @@ import { IconClose } from '../../assets/icons';
 import LeadGenerationForm from '../../pages/lead-generation/LeadGenerationForm';
 
 const MobileDrawer = ({ show, setShow }) => {
-  const snapPoints = [800,600, 400, 200, 100];
+  const snapPoints = [750, 420];
   const initialSnap = snapPoints.length - 1;
 
   return (
-    <Sheet
-      isOpen={true}
+    <Sheet  
+      isOpen={show}
       onClose={() => setShow(false)}
       snapPoints={snapPoints}
-      initialSnap={1}
+      initialSnap={initialSnap}
+      className='md:hidden'
     >
       <Sheet.Container>
         <Sheet.Header className='flex flex-col gap-2 py-2 px-4'>
           <BottomSheetHandle />
-          <div className='flex gap-4 justify-between'>
+          {/* <div className='flex gap-4 justify-between'>
             <span className='font-semibold text-xl text-primary-black'>Personal Details</span>
             <button type='button' title='Dismiss' onClick={() => setShow(false)}>
               <IconClose />
             </button>
-          </div>
+          </div> */}
         </Sheet.Header>
         <Sheet.Content className='px-4 text-dark-grey leading-6 my-4'>
           <LeadGenerationForm />

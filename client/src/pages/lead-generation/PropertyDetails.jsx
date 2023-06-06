@@ -43,9 +43,9 @@ const propertyTypeOptions = {
 };
 
 const PropertyDetail = () => {
-  const [propertyIdentified, setPropertyIdentified] = useState();
+  const [propertyIdentified, setPropertyIdentified] = useState('done');
   const [loanPurpose, setLoanPurpose] = useState();
-  const [showTerms, setShowTerms] = useState(false);
+  // const [showTerms, setShowTerms] = useState(false);
   const [showOTPInput, setShowOTPInput] = useState(false);
   const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 
@@ -155,7 +155,7 @@ const PropertyDetail = () => {
       {/* TODO: Show OTP input if the email is verified */}
       {showOTPInput ? <OtpInput label='Enter OTP' /> : null}
 
-      <div className='flex gap-2'>
+      {/* <div className='flex gap-2'>
         <CheckBox name='terms-agreed' />
         <span className='text-xs text-dark-grey'>
           Please read and accept our &nbsp;
@@ -171,7 +171,7 @@ const PropertyDetail = () => {
         </span>
       </div>
 
-      <TermsAndConditions setShow={setShowTerms} show={showTerms} />
+      <TermsAndConditions setShow={setShowTerms} show={showTerms} /> */}
     </div>
   );
 };

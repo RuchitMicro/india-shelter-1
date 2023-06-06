@@ -68,7 +68,7 @@ const professionData = {
 };
 
 const ProfessinalDetail = () => {
-  const [current, setCurrent] = useState(null);
+  const [current, setCurrent] = useState('salaried');
   const [selectedProfession, setselectedProfession] = useState(null);
   const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 

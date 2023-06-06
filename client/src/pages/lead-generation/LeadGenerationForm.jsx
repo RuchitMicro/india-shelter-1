@@ -37,7 +37,7 @@ const LeadGenerationForm = () => {
         <DesktopStepper steps={steps} activeStep={activeStep} />
       </>
 
-      <form className='mt-6 h-[480px] overflow-auto md:pr-[175px]' onSubmit={handleSubmit}>
+      <form className='mt-6 h-[480px] overflow-auto md:pr-[175px] no-scrollbar' onSubmit={handleSubmit}>
         {activeStep === 0 && <PersonalDetails />}
         {activeStep === 1 && <ProfessionalDetails />}
         {activeStep === 2 && <PropertyDetails />}

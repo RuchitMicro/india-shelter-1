@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const DesktopStepper = ({ steps, activeStep }) => {
   return (
-    <div className='hidden md:flex justify-between pt-14 md:pr-[174px]'>
+    <div className='hidden md:flex justify-between pt-14 pr-[174px] gap-6'>
       {steps.map((step, index) => (
         <div key={index}>
           <div

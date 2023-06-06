@@ -25,7 +25,7 @@ const LeadGeneration = () => {
         <div className='main-container hidden md:block md:w-full md:h-screen overflow-auto'>
           <LeadGenerationForm />
         </div>
-        <div className='hidden'>
+        <div className=''>
           <MobileDrawer setShow={setShowDrawer} show={showDrawer} />
         </div>
       </div>

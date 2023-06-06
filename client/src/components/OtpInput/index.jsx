@@ -49,7 +49,7 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
               (error && 'border-primary-red shadow-primary') ||
               (verified && 'border-dark-grey') ||
               (activeOtpIndex === null ? 'border-stroke' : 'border-secondary-blue shadow-primary')
-            } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg`}
+            } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow`}
             onChange={handleOnChange}
             onKeyDown={(e) => handleKeyDown(e, index)}
             value={otp[index]}
