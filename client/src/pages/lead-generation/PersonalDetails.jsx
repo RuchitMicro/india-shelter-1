@@ -93,8 +93,14 @@ const PersonalDetail = () => {
         onBlur={handleBlur}
         onChange={handleChange}
       />
-      <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' name='middleName' />
-      <TextInput label='Last Name' placeholder='Ex: Swami, Singh' name='lastName' />
+      <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
+        <div className='w-full'>
+          <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' name='middleName' />
+        </div>
+        <div className='w-full'>
+          <TextInput label='Last Name' placeholder='Ex: Swami, Singh' name='lastName' />
+        </div>
+      </div>
       <TextInput
         label='Current Pincode'
         placeholder='Ex: 123456'
