@@ -1,71 +1,36 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import Stepper from '../../components/Stepper/index';
 import DesktopStepper from '../../components/DesktopStepper/index';
-import PersonalDetails from '../../pages/lead-generation/PersonalDetails';
-import ProfessionalDetails from '../../pages/lead-generation/ProfessionalDetails';
-import PropertyDetails from '../../pages/lead-generation/PropertyDetails';
-import Button from '../../components/Button';
 import { AuthContext } from '../../context/AuthContext';
+import PropTypes from 'prop-types';
 
-const steps = [
-  {
-    label: 'Personal Details',
-    value: '1/3',
-    desktopValue: 'STEP 1',
-  },
-  {
-    label: 'Professional Details',
-    value: '2/3',
-    desktopValue: 'STEP 2',
-  },
-  {
-    label: 'Property Details',
-    value: '3/3',
-    desktopValue: 'STEP 3',
-  },
-];
-
-const LeadGenerationForm = () => {
-  const [activeStep, setActiveStep] = useState(0);
-
+const LeadGenerationForm = ({ onClick, activeStepIndex, steps }) => {
   const { handleSubmit } = useContext(AuthContext);
 
   return (
     <div className='relative h-full overflow-y-hidden'>
-      <>
-        <Stepper steps={steps} activeStep={activeStep} />
-        <DesktopStepper steps={steps} activeStep={activeStep} />
-      </>
+      <Stepper steps={steps} activeStep={activeStepIndex} />
+      <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 
-      <form className='mt-6 h-[480px] overflow-auto md:pr-[175px] no-scrollbar' onSubmit={handleSubmit}>
-        {activeStep === 0 && <PersonalDetails />}
-        {activeStep === 1 && <ProfessionalDetails />}
-        {activeStep === 2 && <PropertyDetails />}
-
-        <div
-          className={`${
-            activeStep !== 0 && activeStep !== steps.length ? 'justify-between' : 'justify-end'
-          } flex absolute bottom-0 w-full md:pr-[176px] md:pb-6`}
-        >
-          {activeStep !== 0 && activeStep !== steps.length && (
-            <Button type='button' onClick={() => setActiveStep(activeStep - 1)}>
-              Previous
-            </Button>
-          )}
-          {activeStep !== steps.length - 1 && (
-            <Button type='button' primary onClick={() => setActiveStep(activeStep + 1)}>
-              Next
-            </Button>
-          )}
-          {activeStep === steps.length - 1 && (
-            <Button type='submit' primary>
-              Submit
-            </Button>
-          )}
-        </div>
+      <form
+        role='presentation'
+        onClick={() => onClick && onClick()}
+        onKeyDown={() => onClick && onClick()}
+        className='mt-6 pb-[180px] md:pb-[260px] h-full overflow-auto md:pr-[175px] no-scrollbar'
+        onSubmit={handleSubmit}
+      >
+        {steps.map(({ Component, label }, index) => {
+          return activeStepIndex === index ? <Component key={label} /> : null;
+        })}
       </form>
     </div>
   );
 };
 
 export default LeadGenerationForm;
+
+LeadGenerationForm.propTypes = {
+  onClick: PropTypes.func,
+  activeStepIndex: PropTypes.number,
+  steps: PropTypes.array,
+};

@@ -5,6 +5,7 @@ import IconTick from './tick';
 import IconPropertyIdentified from './property-identified';
 import IconPropertyUnIdentified from './property-unidentified';
 import IconRupee from './rupee';
+import IconCalendar from './calendar';
 
 export {
   IconClose,
@@ -14,4 +15,5 @@ export {
   IconPropertyIdentified,
   IconPropertyUnIdentified,
   IconRupee,
+  IconCalendar,
 };

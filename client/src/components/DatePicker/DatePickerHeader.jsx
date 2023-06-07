@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Selector from './Selector';
 import { months, years } from './utils';
 import { getYear } from 'date-fns';
+
+function getMonthFromDate(date) {
+  if (date) return months.indexOf(date.toLocaleString('default', { month: 'long' }));
+  return -1;
+}
+
+function getYearFromDate(date) {
+  return years.indexOf(getYear(date || new Date()));
+}
 
 const DatePickerHeader = ({
   date,
@@ -13,13 +22,14 @@ const DatePickerHeader = ({
   prevMonthButtonDisabled,
   nextMonthButtonDisabled,
 }) => {
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(() => {
-    if (date) return months.indexOf(date.toLocaleString('default', { month: 'long' }));
-    else -1;
-  });
-  const [selectedYearIndex, setSelectedYearIndex] = useState(() => {
-    return years.indexOf(getYear(date || new Date()));
-  });
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(() => getMonthFromDate(date));
+  const [selectedYearIndex, setSelectedYearIndex] = useState(() => getYearFromDate(date));
+
+  useEffect(() => {
+    if (!date) return;
+    setSelectedMonthIndex(() => getMonthFromDate(date));
+    setSelectedYearIndex(() => getYearFromDate(date));
+  }, [date]);
 
   return (
     <div className='flex gap-4 p-4'>

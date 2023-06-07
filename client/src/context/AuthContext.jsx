@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
+import PropTypes from 'prop-types';
 
 const defaultValues = {
   loanAmount: '',
@@ -26,7 +27,7 @@ const defaultValues = {
 export const AuthContext = createContext(defaultValues);
 
 const AuthContextProvider = ({ children }) => {
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
+  const formik = useFormik({
     initialValues: defaultValues,
     validationSchema: signUpSchema,
     onSubmit: (values, action) => {
@@ -35,13 +36,11 @@ const AuthContextProvider = ({ children }) => {
     },
   });
 
-  return (
-    <AuthContext.Provider
-      value={{ errors, values, touched, handleBlur, handleChange, handleSubmit }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={formik}>{children}</AuthContext.Provider>;
 };
 
 export default AuthContextProvider;
+
+AuthContextProvider.propTypes = {
+  children: PropTypes.element,
+};

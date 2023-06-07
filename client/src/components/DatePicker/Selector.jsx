@@ -47,7 +47,7 @@ const Selector = ({ label, options, onOptionClick, selectedIndex }) => {
               hover:bg-secondary-green hover:bg-opacity-10 hover:text-secondary-green
               ${
                 selectedIndex === index
-                  ? 'text-neutral-white bg-secondary-green hover:bg-opacity-100 hover:text-neutral-white'
+                  ? 'text-neutral-white bg-secondary-green hover:bg-opacity-100 hover:text-white'
                   : 'text-dark-grey bg-transparent'
               }
               `}
