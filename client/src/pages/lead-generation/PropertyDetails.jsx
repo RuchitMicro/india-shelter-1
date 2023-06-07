@@ -1,13 +1,6 @@
 import { useCallback, useState, useContext } from 'react';
 import { IconPropertyIdentified, IconPropertyUnIdentified, IconRupee } from '../../assets/icons';
-import {
-  CardRadio,
-  CheckBox,
-  DropDown,
-  TextInput,
-  TermsAndConditions,
-  OtpInput,
-} from '../../components';
+import { CardRadio, DropDown, TextInput, OtpInput } from '../../components';
 import { AuthContext } from '../../context/AuthContext';
 
 const propertyIdentificationOptions = [
@@ -43,9 +36,8 @@ const propertyTypeOptions = {
 };
 
 const PropertyDetail = () => {
-  const [propertyIdentified, setPropertyIdentified] = useState('done');
+  const [propertyIdentified, setPropertyIdentified] = useState(null);
   const [loanPurpose, setLoanPurpose] = useState();
-  // const [showTerms, setShowTerms] = useState(false);
   const [showOTPInput, setShowOTPInput] = useState(false);
   const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 
@@ -58,7 +50,6 @@ const PropertyDetail = () => {
   }, []);
 
   return (
-    // TODO:  Remove the margin on top
     <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-2'>
         <label htmlFor='property-identication' className='flex gap-0.5 font-medium text-black'>
@@ -152,26 +143,7 @@ const PropertyDetail = () => {
         }}
       />
 
-      {/* TODO: Show OTP input if the email is verified */}
       {showOTPInput ? <OtpInput label='Enter OTP' /> : null}
-
-      {/* <div className='flex gap-2'>
-        <CheckBox name='terms-agreed' />
-        <span className='text-xs text-dark-grey'>
-          Please read and accept our &nbsp;
-          <span
-            tabIndex={-1}
-            onClick={() => setShowTerms(true)}
-            onKeyDown={() => setShowTerms(true)}
-            role='button'
-            className='text-xs font-medium underline text-primary-black'
-          >
-            Terms and Conditions
-          </span>
-        </span>
-      </div>
-
-      <TermsAndConditions setShow={setShowTerms} show={showTerms} /> */}
     </div>
   );
 };
