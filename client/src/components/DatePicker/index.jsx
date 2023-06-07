@@ -1,5 +1,4 @@
 import ReactDatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import PropTypes from 'prop-types';
 import DatePickerHeader from './DatePickerHeader';
 import { useRef } from 'react';
@@ -22,7 +21,16 @@ const DatePicker = ({ startDate, setStartDate }) => {
       dayClassName={(date) => {
         const defaultDateStyles =
           'font-normal h-8 w-8 rounded-full hover:rounded-full text-base inline-flex items-center justify-center ';
-        if (!startDate) return defaultDateStyles;
+        if (!startDate) {
+          const today = new Date();
+          if (date.getMonth() !== today.getMonth()) return defaultDateStyles + ' text-light-grey';
+          if (date.toDateString() === today.toDateString())
+            return (
+              defaultDateStyles +
+              ' bg-secondary-green text-neutral-white font-normal hover:bg-secondary-green'
+            );
+          else return defaultDateStyles + ' text-primary-black';
+        }
         if (date.getMonth() !== startDate.getMonth()) return defaultDateStyles + ' text-light-grey';
         if (date.toDateString() === startDate.toDateString())
           return (
