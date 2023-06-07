@@ -5,12 +5,14 @@ const CardRadio = ({ label, current, children, value, name, onChange }) => {
     <label htmlFor={value} className='flex flex-col gap-2 w-full'>
       <div
         className={`w-full border-2 rounded-lg py-4 px-7 flex items-center justify-center cursor-pointer
-      ${
-        current === value
-          ? 'bg-light-green border-secondary-green stroke-secondary-green'
-          : 'bg-transparent stroke-light-grey border-stroke'
-      } transition-all duration-300 ease-out`}
-      tabindex="0"
+        ${
+          current === value
+            ? 'bg-light-green border-secondary-green stroke-secondary-green'
+            : 'bg-transparent stroke-light-grey border-stroke'
+        } transition-all duration-300 ease-out`}
+        tabIndex={0}
+        role='checkbox'
+        aria-checked={current === value}
       >
         <input
           type='radio'

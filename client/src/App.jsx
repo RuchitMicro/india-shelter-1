@@ -1,5 +1,7 @@
+import LeadGeneration from './pages/lead-generation';
+
 function App() {
-  return <div>Hello WOrld!</div>;
+  return <LeadGeneration />;
 }
 
 export default App;
