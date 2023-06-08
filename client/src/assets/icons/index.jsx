@@ -6,6 +6,8 @@ import IconPropertyIdentified from './property-identified';
 import IconPropertyUnIdentified from './property-unidentified';
 import IconRupee from './rupee';
 import IconCalendar from './calendar';
+import IconBalanceTransfer from './balance-transfer';
+import IconLoanAgainstProperty from './loan-against-property';
 
 export {
   IconClose,
@@ -16,4 +18,6 @@ export {
   IconPropertyUnIdentified,
   IconRupee,
   IconCalendar,
+  IconBalanceTransfer,
+  IconLoanAgainstProperty,
 };
