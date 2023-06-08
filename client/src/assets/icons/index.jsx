@@ -8,6 +8,8 @@ import IconRupee from './rupee';
 import IconCalendar from './calendar';
 import IconBalanceTransfer from './balance-transfer';
 import IconLoanAgainstProperty from './loan-against-property';
+import IconResidential from './residential';
+import IconCommercial from './commercial';
 
 export {
   IconClose,
@@ -20,4 +22,6 @@ export {
   IconCalendar,
   IconBalanceTransfer,
   IconLoanAgainstProperty,
+  IconResidential,
+  IconCommercial,
 };
