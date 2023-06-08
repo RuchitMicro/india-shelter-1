@@ -1,7 +1,8 @@
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
 import PropTypes from 'prop-types';
+import { loanTypeOptions } from '../pages/lead-generation/utils';
 
 const defaultValues = {
   loanAmount: '',
@@ -36,7 +37,13 @@ const AuthContextProvider = ({ children }) => {
     },
   });
 
-  return <AuthContext.Provider value={formik}>{children}</AuthContext.Provider>;
+  const [selectedLoanType, setSelectedLoanType] = useState(loanTypeOptions[0].value);
+
+  return (
+    <AuthContext.Provider value={{ ...formik, selectedLoanType, setSelectedLoanType }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthContextProvider;

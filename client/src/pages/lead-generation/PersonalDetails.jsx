@@ -4,28 +4,31 @@ import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
 import { IconRupee } from '../../assets/icons';
 import { AuthContext } from '../../context/AuthContext';
-import { CheckBox, TermsAndConditions } from '../../components';
+import { CheckBox, TermsAndConditions, CardRadio } from '../../components';
+import { loanTypeOptions } from './utils';
+
+const otpReducer = (verified, action) => {
+  switch (action.type) {
+    case 'NOT_VERIFIED':
+      return null;
+    case 'VERIFIED_SUCCESS':
+      return true;
+    case 'VERIFIED_FAILED':
+      return false;
+    default:
+      verified;
+  }
+};
 
 const PersonalDetail = () => {
+  const { selectedLoanType, setSelectedLoanType } = useContext(AuthContext);
+
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [time, setTime] = useState('0:' + 0 + 's');
   const [loanAmount, setLoanAmount] = useState(100000);
   const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
-
-  const otpReducer = (verified, action) => {
-    switch (action.type) {
-      case 'NOT_VERIFIED':
-        return null;
-      case 'VERIFIED_SUCCESS':
-        return true;
-      case 'VERIFIED_FAILED':
-        return false;
-      default:
-        verified;
-    }
-  };
 
   const [verified, dispatch] = useReducer(otpReducer, null);
 
@@ -62,8 +65,35 @@ const PersonalDetail = () => {
     setLoanAmount(e.target.value);
   };
 
+  const handleOnLoanPurposeChange = (e) => {
+    setSelectedLoanType(e.currentTarget.value);
+  };
+
   return (
     <div className='flex flex-col gap-2'>
+      <div className='flex flex-col gap-2'>
+        <label htmlFor='loan-purpose' className='flex gap-0.5 font-medium text-black'>
+          The loan I want is <span className='text-primary-red text-xs'>*</span>
+        </label>
+        <div className='flex gap-4 w-full'>
+          {loanTypeOptions.map((option) => {
+            return (
+              <CardRadio
+                key={option.value}
+                label={option.label}
+                name='loan-type'
+                value={option.value}
+                current={selectedLoanType}
+                onChange={handleOnLoanPurposeChange}
+                containerClasses='flex-1'
+              >
+                {option.icon}
+              </CardRadio>
+            );
+          })}
+        </div>
+      </div>
+
       <TextInput
         label='I want a loan of'
         Icon={IconRupee}

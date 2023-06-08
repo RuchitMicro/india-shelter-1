@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 const Stepper = ({ steps, activeStep }) => {
@@ -16,13 +15,13 @@ const Stepper = ({ steps, activeStep }) => {
         {steps.map(
           (step, index) =>
             activeStep === index && (
-              <h4 className='text-xs text-right leading-[18px]' key={index}>
-                {step.value}
+              <h4 className='text-xs text-right text-primary-black leading-[18px]' key={index}>
+                <span className='font-semibold'>{activeStep + 1}</span>/{steps.length}
               </h4>
             ),
         )}
         <div className='flex gap-1'>
-          {steps.map((_,index) => (
+          {steps.map((_, index) => (
             <span
               key={index}
               className={` ${index <= activeStep ? 'bg-primary-red' : 'bg-stroke'}
@@ -39,5 +38,5 @@ export default Stepper;
 
 Stepper.propTypes = {
   steps: PropTypes.arrayOf(PropTypes.object),
-  activeStep: PropTypes.number
+  activeStep: PropTypes.number,
 };

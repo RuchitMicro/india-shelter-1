@@ -2,8 +2,7 @@ import LeadGenerationForm from './LeadGenerationForm';
 import leftImg from '../../assets/left-contain-image.png';
 import logoSm from '../../assets/LogoMobile.svg';
 import islandimg from '../../assets/islandSm.svg';
-import MobileLeadGenerationSheet from './MobileLeadGenerationSheet';
-import { useCallback, useRef, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import PersonalDetails from '../../pages/lead-generation/PersonalDetails';
 import ProfessionalDetails from '../../pages/lead-generation/ProfessionalDetails';
@@ -14,31 +13,20 @@ import AuthContextProvider from '../../context/AuthContext';
 const steps = [
   {
     label: 'Personal Details',
-    value: '1/3',
-    desktopValue: 'STEP 1',
     Component: PersonalDetails,
   },
   {
     label: 'Professional Details',
-    value: '2/3',
-    desktopValue: 'STEP 2',
     Component: ProfessionalDetails,
   },
   {
     label: 'Property Details',
-    value: '3/3',
-    desktopValue: 'STEP 3',
     Component: PropertyDetails,
   },
 ];
 
 const LeadGeneration = () => {
-  const modalRef = useRef(null);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
-
-  const onFormClick = useCallback(() => {
-    modalRef.current?.snapTo(0);
-  }, []);
 
   return (
     <AuthContextProvider>
@@ -56,16 +44,8 @@ const LeadGeneration = () => {
         </div>
 
         <div id='lead-form-container' className='w-full md:w-[732px]'>
-          <div className='hidden md:block w-full h-screen overflow-auto'>
+          <div className='h-screen overflow-auto'>
             <LeadGenerationForm steps={steps} activeStepIndex={activeStepIndex} />
-          </div>
-          <div className='block md:hidden'>
-            <MobileLeadGenerationSheet
-              ref={modalRef}
-              onClick={onFormClick}
-              steps={steps}
-              activeStepIndex={activeStepIndex}
-            />
           </div>
 
           {createPortal(
@@ -77,7 +57,7 @@ const LeadGeneration = () => {
               }}
               className={`${
                 activeStepIndex > 0 ? 'justify-between' : 'justify-end'
-              } fixed flex bottom-0 w-full md:pr-[175px] right-0 md:w-[732px] items-end pb-6 px-4 md:px-0`}
+              } fixed flex bottom-0 w-full md:pr-[175px] md:pl-1 right-0 md:w-[732px] items-end pb-6 px-4 md:px-0`}
             >
               {activeStepIndex > 0 && (
                 <Button type='button' onClick={() => setActiveStepIndex((prev) => prev - 1)}>
