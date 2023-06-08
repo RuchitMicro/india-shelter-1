@@ -16,7 +16,7 @@ const TextInput = forwardRef(function TextInput(
 
   return (
     <div className='flex flex-col gap-1'>
-      <label htmlFor={name} className='flex gap-0.5 items-center'>
+      <label htmlFor={name} className='flex gap-0.5 items-center text-primary-black'>
         {label}
         {props.required && <span className='text-primary-red text-sm'>*</span>}
       </label>
@@ -45,7 +45,9 @@ const TextInput = forwardRef(function TextInput(
           {...props}
         />
       </div>
-      <span className='text-sm text-primary-red'>{error && touched ? error : null}</span>
+      <span className='text-sm text-primary-red'>
+        {error && touched ? error : String.fromCharCode(160)}
+      </span>
     </div>
   );
 });
