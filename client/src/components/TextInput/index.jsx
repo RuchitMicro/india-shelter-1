@@ -15,7 +15,7 @@ const TextInput = forwardRef(function TextInput(
   const inputRef = useRef();
 
   return (
-    <div className='flex flex-col gap-1 mx-1'>
+    <div className='flex flex-col gap-1'>
       <label htmlFor={name} className='flex gap-0.5 items-center'>
         {label}
         {props.required && <span className='text-primary-red text-sm'>*</span>}
