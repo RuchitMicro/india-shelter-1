@@ -33,7 +33,7 @@ const LeadGenerationForm = ({ activeStepIndex, steps }) => {
         <Stepper steps={steps} activeStep={activeStepIndex} />
         <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 
-        <form
+        <div
           role='presentation'
           onClick={() => onClick && onClick()}
           onKeyDown={() => onClick && onClick()}
@@ -43,7 +43,7 @@ const LeadGenerationForm = ({ activeStepIndex, steps }) => {
           {steps.map(({ Component, label }, index) => {
             return activeStepIndex === index ? <Component key={label} /> : null;
           })}
-        </form>
+        </div>
       </div>
     ),
     [activeStepIndex, handleSubmit, onClick, steps],

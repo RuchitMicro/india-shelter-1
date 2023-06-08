@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import PersonalDetails from '../../pages/lead-generation/PersonalDetails';
 import ProfessionalDetails from '../../pages/lead-generation/ProfessionalDetails';
-import PropertyDetails from '../../pages/lead-generation/PropertyDetails';
+import PropertyDetails from '../../pages/lead-generation/property-details';
 import { Button } from '../../components';
 import AuthContextProvider from '../../context/AuthContext';
 
@@ -43,7 +43,7 @@ const LeadGeneration = () => {
           <img src={leftImg} alt='' className='hidden lg:block w-[597px] h-screen' />
         </div>
 
-        <div id='lead-form-container' className='w-full md:w-[732px]'>
+        <form id='lead-form-container' className='w-full md:w-[732px]'>
           <div className='h-screen overflow-auto'>
             <LeadGenerationForm steps={steps} activeStepIndex={activeStepIndex} />
           </div>
@@ -81,7 +81,7 @@ const LeadGeneration = () => {
             </div>,
             document.body,
           )}
-        </div>
+        </form>
       </div>
     </AuthContextProvider>
   );
