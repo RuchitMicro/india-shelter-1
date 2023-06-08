@@ -47,7 +47,7 @@ const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxH
         }}
         className={`${
           selectedOption ? 'border-dark-grey text-primary-black' : 'border-stroke text-light-grey'
-        } w-full flex justify-between py-3 px-4 rounded-lg border-x border-y mt-1`}
+        } w-full flex justify-between gap-1 py-3 px-4 rounded-lg border-x border-y mt-1`}
       >
         {selectedOption ? selectedOption.label : placeholder || 'Click me'} <IconArrowDown />
       </button>
@@ -63,14 +63,14 @@ const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxH
               key={option.value}
               onClick={() => handleSelect(option)}
               className={`${
-                option.value === selectedOption?.value ? 'text-primary-red' : 'text-black'
+                option.value === selectedOption?.value ? 'text-primary-red' : 'text-primary-black'
               } 
               ${
-                index === 0 ? 'border-t-0' : 'border-t'
-              } border-light-grey py-3 px-4 flex justify-between w-full overflow-y-auto`}
+                index ? 'border-t' : 'border-none'
+              } border-light-grey py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto`}
             >
               {option.label}
-              {selectedOption?.value === option.value && <IconTick />}
+              {selectedOption?.value === option.value ? <IconTick /> : <div></div>}
             </button>
           ))}
         </div>
