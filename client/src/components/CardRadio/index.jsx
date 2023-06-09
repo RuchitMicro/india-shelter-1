@@ -4,7 +4,7 @@ const CardRadio = ({ label, current, children, value, name, onChange, containerC
   return (
     <label htmlFor={value} className={`flex flex-col gap-2 w-full ${containerClasses}`}>
       <div
-        className={`w-full border-2 rounded-lg py-4 flex items-center justify-center cursor-pointer
+        className={`w-full border rounded-lg py-4 flex items-center justify-center cursor-pointer
         ${
           current === value
             ? 'bg-light-green border-secondary-green stroke-secondary-green'
