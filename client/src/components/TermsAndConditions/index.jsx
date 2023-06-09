@@ -5,7 +5,15 @@ import { IconClose } from '../../assets/icons';
 
 const TermsAndConditions = ({ show, setShow }) => {
   return (
-    <Sheet isOpen={show} onClose={() => setShow(false)} snapPoints={[0.5]} initialSnap={0}>
+    <Sheet
+      style={{
+        zIndex: 9999999 * 10,
+      }}
+      isOpen={show}
+      onClose={() => setShow(false)}
+      snapPoints={[0.5]}
+      initialSnap={0}
+    >
       <Sheet.Container>
         <Sheet.Header className='flex flex-col gap-2 py-2 px-4'>
           <BottomSheetHandle />
