@@ -2,9 +2,8 @@ import { useState, useEffect, useReducer, useContext } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
-import { IconRupee } from '../../assets/icons';
 import { AuthContext } from '../../context/AuthContext';
-import { CheckBox, TermsAndConditions, CardRadio } from '../../components';
+import { CheckBox, TermsAndConditions, CardRadio, CurrencyInput } from '../../components';
 import { loanTypeOptions } from './utils';
 
 const otpReducer = (verified, action) => {
@@ -27,7 +26,7 @@ const PersonalDetail = () => {
   const [timer, setTimer] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [time, setTime] = useState('0:' + 0 + 's');
-  const [loanAmount, setLoanAmount] = useState(100000);
+  const [loanAmount, setLoanAmount] = useState('100000');
   const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
 
   const [verified, dispatch] = useReducer(otpReducer, null);
@@ -61,9 +60,7 @@ const PersonalDetail = () => {
     setTimer(true);
   };
 
-  const onChange = (e) => {
-    setLoanAmount(e.target.value);
-  };
+  const onChange = (e) => setLoanAmount(e.currentTarget.value);
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
@@ -94,15 +91,15 @@ const PersonalDetail = () => {
         </div>
       </div>
 
-      <TextInput
+      <CurrencyInput
         label='I want a loan of'
-        Icon={IconRupee}
         placeholder='1,00,000'
         required
         name='loan'
         value={loanAmount}
-        onChange={onChange}
+        onChange={(e) => setLoanAmount(e.currentTarget.value)}
       />
+
       <RangeSlider
         minValueLabel='1 L'
         maxValueLabel='50 L'
@@ -136,6 +133,7 @@ const PersonalDetail = () => {
         placeholder='Ex: 123456'
         required
         name='pinCode'
+        type='number'
         value={values.pinCode}
         error={errors.pinCode}
         touched={touched.pinCode}
@@ -147,6 +145,7 @@ const PersonalDetail = () => {
         placeholder='Please enter 10 digit mobile no'
         required
         name='mobileNo'
+        type='tel'
         value={values.mobileNo}
         error={errors.mobileNo}
         touched={touched.mobileNo}
