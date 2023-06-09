@@ -44,7 +44,17 @@ const AuthContextProvider = ({ children }) => {
   const [nextStep, setNextStep] = useState(true);
 
   return (
-    <AuthContext.Provider value={{ ...formik, activeStepIndex, setActiveStepIndex, selectedLoanType, setSelectedLoanType, nextStep, setNextStep }}>
+    <AuthContext.Provider
+      value={{
+        ...formik,
+        activeStepIndex,
+        setActiveStepIndex,
+        selectedLoanType,
+        setSelectedLoanType,
+        nextStep,
+        setNextStep,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,13 +1,14 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import TextInput from '../../components/TextInput';
 import CardRadio from '../../components/CardRadio';
 import DropDown from '../../components/DropDown';
 import IconSalaried from '../../assets/icons/salaried';
 import IconSelfEmployed from '../../assets/icons/self-employed';
-import IconRupee from '../../assets/icons/rupee';
 import { AuthContext } from '../../context/AuthContext';
+import DatePicker from '../../components/DatePicker';
+import { CurrencyInput } from '../../components';
 
-const LoanTypeData = [
+const loanTypeDate = [
   {
     label: 'Salaried',
     value: 'salaried',
@@ -53,7 +54,7 @@ const professionData = {
     <DropDown
       label='Mode of Salary'
       required
-      options={LoanTypeData[0].options}
+      options={loanTypeDate[0].options}
       placeholder='Ex: Bank Transfer'
     />
   ),
@@ -61,21 +62,29 @@ const professionData = {
     <DropDown
       label='Occupation'
       required
-      options={LoanTypeData[1].options}
+      options={loanTypeDate[1].options}
       placeholder='Ex: Purchase'
     />
   ),
 };
 
 const ProfessinalDetail = () => {
-  const [current, setCurrent] = useState('salaried');
+  const [current, setCurrent] = useState(null);
   const [selectedProfession, setselectedProfession] = useState(null);
-  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
+  const { values, errors, touched, handleBlur, handleChange, setFieldValue } =
+    useContext(AuthContext);
+  const [date, setDate] = useState();
 
   const onChange = (e) => {
     setCurrent(e.currentTarget.value);
     setselectedProfession(e.target.value);
   };
+
+  useEffect(() => {
+    if (date) {
+      setFieldValue('dob', date);
+    }
+  }, [date, setFieldValue]);
 
   return (
     <div className='flex flex-col gap-2'>
@@ -91,7 +100,18 @@ const ProfessinalDetail = () => {
         onChange={handleChange}
       />
 
-      <TextInput
+      <DatePicker
+        startDate={date}
+        setStartDate={setDate}
+        required
+        name='dob'
+        label='Date of Birth'
+      />
+      <span className='text-sm text-primary-red'>
+        {errors.dob && touched.dob ? errors.dob : String.fromCharCode(160)}
+      </span>
+
+      {/* <TextInput
         label='Date of Birth'
         required
         name='dob'
@@ -102,14 +122,14 @@ const ProfessinalDetail = () => {
         touched={touched.dob}
         onBlur={handleBlur}
         onChange={handleChange}
-      />
+      /> */}
 
       <div>
         <label htmlFor='property-identication' className='flex gap-0.5 font-medium text-black'>
           Profession <span className='text-primary-red text-xs'>*</span>
         </label>
         <div className='flex justify-between gap-4 mt-2'>
-          {LoanTypeData.map((data, index) => (
+          {loanTypeDate.map((data, index) => (
             <CardRadio
               key={index}
               name='profDetails'
@@ -127,13 +147,12 @@ const ProfessinalDetail = () => {
 
       {selectedProfession && professionData[selectedProfession]}
 
-      <TextInput
+      <CurrencyInput
         label='Monthly Family Income'
         hint='Total monthly earnings of all family members. This helps to improve your loan eligibility'
         required
         name='monthlyFamilyIncome'
         placeholder='Ex: 1,00,000'
-        Icon={IconRupee}
         value={values.monthlyFamilyIncome}
         error={errors.monthlyFamilyIncome}
         touched={touched.monthlyFamilyIncome}
@@ -141,13 +160,12 @@ const ProfessinalDetail = () => {
         onChange={handleChange}
       />
 
-      <TextInput
+      <CurrencyInput
         label='Ongoing EMI'
         hint='TMention all of the ongoing monthly payments'
         required
         name='onGoingEmi'
         placeholder='Ex: 10,000'
-        Icon={IconRupee}
         value={values.onGoingEmi}
         error={errors.onGoingEmi}
         touched={touched.onGoingEmi}

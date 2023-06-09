@@ -24,7 +24,12 @@ const FormButton = () => {
         </Button>
       )}
       {activeStepIndex !== steps.length - 1 && (
-        <Button disabled={nextStep} type='button' primary onClick={() => setActiveStepIndex((prev) => prev + 1)}>
+        <Button
+          disabled={nextStep}
+          type='button'
+          primary
+          onClick={() => setActiveStepIndex((prev) => prev + 1)}
+        >
           Next
         </Button>
       )}

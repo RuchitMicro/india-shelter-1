@@ -48,7 +48,7 @@ const LeadGenerationForm = () => {
         </div>
       </div>
     ),
-    [activeStepIndex, handleSubmit, onClick, steps],
+    [activeStepIndex, handleSubmit, onClick],
   );
 
   if (innerWidth < 768) {
@@ -75,4 +75,3 @@ const LeadGenerationForm = () => {
 };
 
 export default LeadGenerationForm;
-

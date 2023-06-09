@@ -1,7 +1,16 @@
 import * as Yup from 'Yup';
+import { parse, isDate } from 'date-fns';
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+function parseDateString(value, originalValue) {
+  const parsedDate = isDate(originalValue)
+    ? originalValue
+    : parse(originalValue, 'yyyy-MM-dd', new Date());
+
+  return parsedDate;
+}
 
 export const signUpSchema = Yup.object({
   // loanAmount: Yup.string().required('fill the loan amount'),
@@ -15,7 +24,10 @@ export const signUpSchema = Yup.object({
     .matches(phoneRegExp, 'phone number is not valid')
     .required('please enter your number'),
   panNumber: Yup.string().required('please enter your pan number'),
-  dob: Yup.date().max(new Date()).required('please enter your birth date'),
+  dob: Yup.date()
+    .transform(parseDateString)
+    .required('please enter your birth date')
+    .max(new Date()),
   monthlyFamilyIncome: Yup.string().required('please enter your monthly family income'),
   onGoingEmi: Yup.string().required('please enter your ongoing emi amount'),
   estimatePropertyValue: Yup.string().required('please enter your ongoing emi amount'),

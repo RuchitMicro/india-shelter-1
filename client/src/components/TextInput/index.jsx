@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
  * @param Icon React JSX Element
  */
 const TextInput = forwardRef(function TextInput(
-  { label, name, hint, error, touched, Icon, ...props },
+  { label, name, hint, error, touched, Icon, inputClasses, ...props },
   ref,
 ) {
   const inputRef = useRef();
@@ -39,7 +39,7 @@ const TextInput = forwardRef(function TextInput(
       >
         {Icon && <Icon />}
         <input
-          className='w-full focus:outline-none'
+          className={`w-full focus:outline-none ${inputClasses}`}
           ref={ref || inputRef}
           id={name}
           name={name}
@@ -64,4 +64,5 @@ TextInput.propTypes = {
   touched: PropTypes.bool,
   Icon: PropTypes.elementType,
   value: PropTypes.string,
+  inputClasses: PropTypes.string,
 };

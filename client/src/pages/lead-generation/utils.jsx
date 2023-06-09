@@ -9,7 +9,7 @@ import {
 } from '../../assets/icons';
 import PersonalDetails from './PersonalDetails';
 import ProfessionalDetails from './ProfessionalDetails';
-import PropertyDetails from './property-details'
+import PropertyDetails from './property-details';
 import BalanceTransferFields from './property-details/BalanceTransferFields';
 import HomeLoanFields from './property-details/HomeLoanFields';
 import LoanAgainstPropertyFields from './property-details/LoanAgainstPropertyFields';

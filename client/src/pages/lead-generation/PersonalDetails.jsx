@@ -139,6 +139,7 @@ const PersonalDetail = () => {
         touched={touched.pinCode}
         onBlur={handleBlur}
         onChange={handleChange}
+        inputClasses='hidearrow'
       />
       <TextInput
         label='Mobile number'
