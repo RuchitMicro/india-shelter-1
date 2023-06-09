@@ -34,7 +34,8 @@ const TextInput = forwardRef(function TextInput(
           error && touched
             ? 'border-primary-red shadow-primary shadow-primary-red'
             : 'border-light-grey'
-        }`}
+        }
+        ${props.value ? 'border-light-grey' : 'border-stroke'}`}
       >
         {Icon && <Icon />}
         <input
@@ -62,4 +63,5 @@ TextInput.propTypes = {
   error: PropTypes.string,
   touched: PropTypes.bool,
   Icon: PropTypes.elementType,
+  value: PropTypes.string,
 };
