@@ -15,7 +15,7 @@ const RangeSlider = ({ initialValue, onChange, minValueLabel, maxValueLabel, ...
         {...props}
         className='w-full'
         type='range'
-        value={initialValue || 0}
+        value={isNaN(parseFloat(initialValue)) ? 0 : initialValue}
         onChange={onChange}
         style={{
           background: inputBackground,
