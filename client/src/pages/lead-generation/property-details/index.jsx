@@ -1,4 +1,4 @@
-import { useCallback, useState, useContext, createContext } from 'react';
+import { useCallback, useState, useContext, createContext, useEffect } from 'react';
 import { DropDown, TextInput, OtpInput } from '../../../components';
 import { AuthContext } from '../../../context/AuthContext';
 import { propertyIdentificationOptions, propertyDetailsMap } from '../utils';
@@ -10,8 +10,9 @@ const PropertyDetail = () => {
   const [propertyCategory, setPropertyCategory] = useState(null);
   const [loanPurpose, setLoanPurpose] = useState();
   const [showOTPInput, setShowOTPInput] = useState(false);
-  const { values, errors, touched, handleBlur, handleChange, selectedLoanType } =
+  const { values, errors, touched, handleBlur, handleChange, selectedLoanType, setNextStep } =
     useContext(AuthContext);
+  const { propertyType, propertyPincode } = values;
 
   const handleLoanPursposeChange = useCallback((value) => {
     setLoanPurpose(value);
@@ -23,6 +24,14 @@ const PropertyDetail = () => {
     propertyIdentified,
     setPropertyIdentified,
   };
+
+  useEffect(() => {
+    const moveToNextStep = () => {
+      if (propertyType && propertyPincode) setNextStep(false);
+      else setNextStep(true);
+    };
+    moveToNextStep();
+  }, [propertyPincode, propertyType]);
 
   return (
     <PropertyDetailContext.Provider value={value}>

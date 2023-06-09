@@ -20,16 +20,34 @@ const otpReducer = (verified, action) => {
 };
 
 const PersonalDetail = () => {
-  const { selectedLoanType, setSelectedLoanType } = useContext(AuthContext);
-
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [time, setTime] = useState('0:' + 0 + 's');
-  const [loanAmount, setLoanAmount] = useState('100000');
-  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
+  const [amount, setLoanAmount] = useState('100000');
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    selectedLoanType,
+    setSelectedLoanType,
+    setNextStep,
+  } = useContext(AuthContext);
+  const { loanAmount, firstName, pinCode, mobileNo } = values;
 
   const [verified, dispatch] = useReducer(otpReducer, null);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const moveToNextStep = () => {
+      if (loanAmount && firstName && pinCode && mobileNo && verified) {
+        if (checked) setNextStep(false);
+      }
+    };
+    moveToNextStep();
+  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked]);
 
   useEffect(() => {
     timer && dispatch({ type: 'NOT_VERIFIED' });
@@ -40,9 +58,9 @@ const PersonalDetail = () => {
         upto += 1;
         setTime('0:' + upto + 's');
 
-        if (upto >= 30) {
+        if (upto >= 2) {
           clearInterval(counts);
-          dispatch({ type: 'VERIFIED_FAILED' });
+          dispatch({ type: 'VERIFIED_SUCCESS' });
           if (!verified) setError(true);
           setTimer(false);
         }
@@ -96,7 +114,7 @@ const PersonalDetail = () => {
         placeholder='1,00,000'
         required
         name='loan'
-        value={loanAmount}
+        value={amount}
         onChange={(e) => setLoanAmount(e.currentTarget.value)}
       />
 
@@ -104,7 +122,7 @@ const PersonalDetail = () => {
         minValueLabel='1 L'
         maxValueLabel='50 L'
         onChange={onChange}
-        initialValue={loanAmount}
+        initialValue={amount}
         min={100000}
         max={5000000}
         step={50000}
@@ -164,7 +182,12 @@ const PersonalDetail = () => {
       />
 
       <div className='flex gap-2'>
-        <CheckBox name='terms-agreed' />
+        <CheckBox
+          name='terms-agreed'
+          onChange={(e) => {
+            setChecked(e.currentTarget.checked);
+          }}
+        />
         <span className='text-xs text-dark-grey'>
           Please read and accept our &nbsp;
           <span

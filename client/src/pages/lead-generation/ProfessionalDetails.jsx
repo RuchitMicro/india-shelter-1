@@ -71,14 +71,31 @@ const professionData = {
 const ProfessinalDetail = () => {
   const [current, setCurrent] = useState(null);
   const [selectedProfession, setselectedProfession] = useState(null);
-  const { values, errors, touched, handleBlur, handleChange, setFieldValue } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    setFieldValue,
+    activeStepIndex,
+    setNextStep,
+  } = useContext(AuthContext);
+  const { panNumber, dob, monthlyFamilyIncome, onGoingEmi } = values;
   const [date, setDate] = useState();
 
   const onChange = (e) => {
     setCurrent(e.currentTarget.value);
     setselectedProfession(e.target.value);
   };
+
+  useEffect(() => {
+    const moveToNextStep = () => {
+      if (panNumber && dob && monthlyFamilyIncome && onGoingEmi) setNextStep(false);
+      else setNextStep(true);
+    };
+    moveToNextStep();
+  }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome]);
 
   useEffect(() => {
     if (date) {
@@ -110,19 +127,6 @@ const ProfessinalDetail = () => {
       <span className='text-sm text-primary-red'>
         {errors.dob && touched.dob ? errors.dob : String.fromCharCode(160)}
       </span>
-
-      {/* <TextInput
-        label='Date of Birth'
-        required
-        name='dob'
-        placeholder='15/05/1999'
-        type='date'
-        value={values.dob}
-        error={errors.dob}
-        touched={touched.dob}
-        onBlur={handleBlur}
-        onChange={handleChange}
-      /> */}
 
       <div>
         <label htmlFor='property-identication' className='flex gap-0.5 font-medium text-black'>

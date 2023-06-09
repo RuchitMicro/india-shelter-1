@@ -20,7 +20,7 @@ const defaultValues = {
   estimatePropertyValue: '',
   propertyPincode: '',
   loanPurpose: '',
-  propertyType: '',
+  propertyType: 'residential',
   promoCode: '',
   email: '',
   bankerName: '',
