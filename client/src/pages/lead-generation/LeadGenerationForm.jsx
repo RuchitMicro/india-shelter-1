@@ -2,14 +2,16 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import Stepper from '../../components/Stepper/index';
 import DesktopStepper from '../../components/DesktopStepper/index';
 import { AuthContext } from '../../context/AuthContext';
-import PropTypes from 'prop-types';
 import Sheet from 'react-modal-sheet';
 import { BottomSheetHandle } from '../../components';
+import { steps } from './utils';
 
 const snapPoints = [0.92, 0.6];
 const initialSnap = 1;
 
-const LeadGenerationForm = ({ activeStepIndex, steps }) => {
+const LeadGenerationForm = () => {
+  const { activeStepIndex } = useContext(AuthContext);
+
   const modalRef = useRef(null);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
 
@@ -74,7 +76,3 @@ const LeadGenerationForm = ({ activeStepIndex, steps }) => {
 
 export default LeadGenerationForm;
 
-LeadGenerationForm.propTypes = {
-  activeStepIndex: PropTypes.number,
-  steps: PropTypes.array,
-};
