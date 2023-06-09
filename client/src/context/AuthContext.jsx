@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { loanTypeOptions } from '../pages/lead-generation/utils';
 
 const defaultValues = {
-  loanAmount: '',
+  loanAmount: '100000',
   firstName: '',
   middleName: '',
   lastName: '',
@@ -23,6 +23,8 @@ const defaultValues = {
   propertyType: '',
   promoCode: '',
   email: '',
+  bankerName: '',
+  loanTenure: '',
 };
 
 export const AuthContext = createContext(defaultValues);
@@ -37,10 +39,12 @@ const AuthContextProvider = ({ children }) => {
     },
   });
 
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [selectedLoanType, setSelectedLoanType] = useState(loanTypeOptions[0].value);
+  const [nextStep, setNextStep] = useState(true);
 
   return (
-    <AuthContext.Provider value={{ ...formik, selectedLoanType, setSelectedLoanType }}>
+    <AuthContext.Provider value={{ ...formik, activeStepIndex, setActiveStepIndex, selectedLoanType, setSelectedLoanType, nextStep, setNextStep }}>
       {children}
     </AuthContext.Provider>
   );

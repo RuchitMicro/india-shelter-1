@@ -2,31 +2,10 @@ import LeadGenerationForm from './LeadGenerationForm';
 import leftImg from '../../assets/left-contain-image.png';
 import logoSm from '../../assets/LogoMobile.svg';
 import islandimg from '../../assets/islandSm.svg';
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
-import PersonalDetails from '../../pages/lead-generation/PersonalDetails';
-import ProfessionalDetails from '../../pages/lead-generation/ProfessionalDetails';
-import PropertyDetails from '../../pages/lead-generation/property-details';
-import { Button } from '../../components';
 import AuthContextProvider from '../../context/AuthContext';
-
-const steps = [
-  {
-    label: 'Personal Details',
-    Component: PersonalDetails,
-  },
-  {
-    label: 'Professional Details',
-    Component: ProfessionalDetails,
-  },
-  {
-    label: 'Property Details',
-    Component: PropertyDetails,
-  },
-];
+import FormButton from './FormButton';
 
 const LeadGeneration = () => {
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
 
   return (
     <AuthContextProvider>
@@ -45,42 +24,9 @@ const LeadGeneration = () => {
 
         <form id='lead-form-container' className='w-full md:w-[732px]'>
           <div className='h-screen overflow-auto'>
-            <LeadGenerationForm steps={steps} activeStepIndex={activeStepIndex} />
+            <LeadGenerationForm />
           </div>
-
-          {createPortal(
-            <div
-              style={{
-                zIndex: 100 * 100000,
-                height: 127,
-                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 45.31%)',
-              }}
-              className={`${
-                activeStepIndex > 0 ? 'justify-between' : 'justify-end'
-              } fixed flex bottom-0 w-full md:pr-[175px] md:pl-1 right-0 md:w-[732px] items-end pb-6 px-4 md:px-0`}
-            >
-              {activeStepIndex > 0 && (
-                <Button type='button' onClick={() => setActiveStepIndex((prev) => prev - 1)}>
-                  Previous
-                </Button>
-              )}
-              {activeStepIndex !== steps.length - 1 && (
-                <Button
-                  type='button'
-                  primary
-                  onClick={() => setActiveStepIndex((prev) => prev + 1)}
-                >
-                  Next
-                </Button>
-              )}
-              {activeStepIndex === steps.length - 1 && (
-                <Button type='submit' primary>
-                  Submit
-                </Button>
-              )}
-            </div>,
-            document.body,
-          )}
+          <FormButton />
         </form>
       </div>
     </AuthContextProvider>

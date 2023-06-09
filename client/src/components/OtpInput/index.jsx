@@ -46,7 +46,7 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
             key={index}
             type='number'
             className={`${
-              (error && 'border-primary-red shadow-primary') ||
+              (error && 'border-primary-red shadow-primary shadow-primary-red') ||
               (verified && 'border-dark-grey') ||
               (activeOtpIndex === null ? 'border-stroke' : 'border-secondary-blue shadow-primary')
             } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow`}
