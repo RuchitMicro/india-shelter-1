@@ -8,6 +8,7 @@ import DropDown from './DropDown';
 import OtpInput from './OtpInput';
 import BottomSheetHandle from './BottomSheetHandle';
 import TermsAndConditions from './TermsAndConditions';
+import CurrencyInput from './CurrencyInput';
 
 export {
   TextInput,
@@ -20,4 +21,5 @@ export {
   OtpInput,
   BottomSheetHandle,
   TermsAndConditions,
+  CurrencyInput,
 };
