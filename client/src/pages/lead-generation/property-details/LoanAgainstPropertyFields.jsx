@@ -1,6 +1,5 @@
 import { useContext, useCallback } from 'react';
-import { IconRupee } from '../../../assets/icons';
-import { CardRadio, TextInput } from '../../../components';
+import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
@@ -70,11 +69,10 @@ const LoanAgainstPropertyFields = () => {
 
       {propertyIdentificationOptions[0].value === propertyIdentified ? (
         <div className='flex flex-col gap-2'>
-          <TextInput
+          <CurrencyInput
             name='estimatePropertyValue'
             label='My property value is estimated to be'
             required
-            Icon={IconRupee}
             placeholder='1,00,000'
             value={values.estimatePropertyValue}
             error={errors.estimatePropertyValue}
