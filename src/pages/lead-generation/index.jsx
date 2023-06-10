@@ -1,12 +1,11 @@
 import LeadGenerationForm from './LeadGenerationForm';
 import leftImg from '../../assets/left-contain-image.png';
-import logoSm from '../../assets/LogoMobile.svg';
-import islandimg from '../../assets/islandSm.svg';
+import logoSm from '../../assets/logo-mobile.svg';
+import islandimg from '../../assets/island-sm.svg';
 import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
 
 const LeadGeneration = () => {
-
   return (
     <AuthContextProvider>
       <div className='flex w-full flex-col md:flex-row md:justify-between gap-[111px]'>
