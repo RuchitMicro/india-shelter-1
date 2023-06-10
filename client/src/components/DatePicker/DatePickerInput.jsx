@@ -16,7 +16,18 @@ const DatePickerInput = forwardRef(function DatePickerInput({ name, ...props }, 
         {props.label}
         {true && <span className='text-primary-red text-sm'>*</span>}
       </label>
-      <div className='input-container px-4 py-3 border justify-between border-stroke rounded-lg flex w-full items-center'>
+      <div
+        role='presentation'
+        onKeyDown={() => {
+          if (inputRef.current === document.activeElement) inputRef.current?.focus();
+          else inputRef.current?.blur();
+        }}
+        onClick={() => {
+          if (inputRef.current === document.activeElement) inputRef.current?.focus();
+          else inputRef.current?.blur();
+        }}
+        className='input-container px-4 py-3 border justify-between border-stroke rounded-lg flex w-full items-center'
+      >
         <input {...props} placeholder='DD/MM/YYYY' className='w-full' name={name} ref={inputRef} />
         <IconCalendar />
       </div>
