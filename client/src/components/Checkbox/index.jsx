@@ -40,12 +40,15 @@ const Checkbox = forwardRef(function Checkbox({ name, ...props }, ref) {
       </svg>
 
       <input
+        {...props}
         name={name}
         type='checkbox'
-        onChange={(e) => setChecked(e.currentTarget.checked)}
+        onChange={(e) => {
+          setChecked(e.currentTarget.checked);
+          props.onChange(e);
+        }}
         ref={ref}
         className='absolute top-0 left-0 w-full h-full opacity-0'
-        {...props}
       />
     </label>
   );
@@ -56,4 +59,5 @@ export default Checkbox;
 Checkbox.propTypes = {
   name: PropTypes.string.isRequired,
   checked: PropTypes.bool,
+  onChange: PropTypes.func,
 };

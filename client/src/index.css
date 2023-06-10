@@ -100,6 +100,7 @@ body {
 
 .react-modal-sheet-container {
   /* box-shadow: 0px 8px 11px -4px rgba(0, 0, 0, 0.8) !important; */
+  box-shadow: 0px 8px 11px -4px #0000000d !important;
   background-color: white !important;
   border-top-left-radius: 12px !important;
   border-top-right-radius: 12px !important;
@@ -146,4 +147,20 @@ body {
 .react-datepicker__navigation.react-datepicker__navigation--next {
   left: auto;
   right: 16px;
+}
+
+.hidearrow::-webkit-outer-spin-button,
+.hidearrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

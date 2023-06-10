@@ -7,7 +7,8 @@ import RangeSlider from './RangeSlider';
 import DropDown from './DropDown';
 import OtpInput from './OtpInput';
 import BottomSheetHandle from './BottomSheetHandle';
-import DatePicker from './DatePicker';
+import TermsAndConditions from './TermsAndConditions';
+import CurrencyInput from './CurrencyInput';
 
 export {
   TextInput,
@@ -19,5 +20,6 @@ export {
   DropDown,
   OtpInput,
   BottomSheetHandle,
-  DatePicker,
+  TermsAndConditions,
+  CurrencyInput,
 };

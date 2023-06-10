@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
 
-const CardRadio = ({ label, current, children, value, name, onChange }) => {
+const CardRadio = ({ label, current, children, value, name, onChange, containerClasses }) => {
   return (
-    <label htmlFor={value} className='flex flex-col w-[99px] gap-2 '>
+    <label htmlFor={value} className={`flex flex-col gap-2 w-full ${containerClasses}`}>
       <div
-        className={`w-fit border boder-2  rounded-lg py-4 px-7 
-      ${
-        current === value
-          ? 'bg-light-green border-secondary-green stroke-secondary-green'
-          : 'bg-transparent stroke-light-grey border-stroke'
-      } `}
+        className={`w-full border rounded-lg py-4 flex items-center justify-center cursor-pointer
+        ${
+          current === value
+            ? 'bg-light-green border-secondary-green stroke-secondary-green'
+            : 'bg-transparent stroke-light-grey border-stroke'
+        } transition-all duration-300 ease-out`}
+        tabIndex={0}
+        role='radio'
+        aria-checked={current === value}
       >
         <input
           type='radio'
@@ -29,7 +32,7 @@ const CardRadio = ({ label, current, children, value, name, onChange }) => {
           current === value
             ? 'text-secondary-green font-semibold'
             : 'text-primary-black font-normal'
-        }
+        } transition-colors ease-out duration-300
         `}
         >
           {label}
@@ -41,11 +44,12 @@ const CardRadio = ({ label, current, children, value, name, onChange }) => {
 
 CardRadio.propTypes = {
   label: PropTypes.string,
-  current: PropTypes.bool,
+  current: PropTypes.string,
   children: PropTypes.element,
   value: PropTypes.string.isRequired,
   name: PropTypes.string,
   onChange: PropTypes.func,
+  containerClasses: PropTypes.string,
 };
 
 export default CardRadio;

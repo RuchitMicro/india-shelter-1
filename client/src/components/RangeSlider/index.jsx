@@ -1,15 +1,13 @@
 import PropTypes from 'prop-types';
-import { useCallback } from 'react';
+import { useMemo } from 'react';
 
 const RangeSlider = ({ initialValue, onChange, minValueLabel, maxValueLabel, ...props }) => {
-  const handleChange = useCallback(
-    (e) => {
-      const progress = (e.currentTarget.value / props.max) * 100;
-      e.currentTarget.style.background = `linear-gradient(to right, #E33439 ${progress}%, #f7c3c4 ${progress}%)`;
-      onChange(e);
-    },
-    [onChange, props.max],
-  );
+  const inputBackground = useMemo(() => {
+    if (isNaN(parseInt(initialValue)))
+      return `linear-gradient(to right, #E33439 ${0}%, #f7c3c4 ${0}%)`;
+    const progress = (parseInt(initialValue) / props.max) * 100;
+    return `linear-gradient(to right, #E33439 ${progress}%, #f7c3c4 ${progress}%)`;
+  }, [initialValue, props.max]);
 
   return (
     <div className='flex flex-col gap-1'>
@@ -17,8 +15,11 @@ const RangeSlider = ({ initialValue, onChange, minValueLabel, maxValueLabel, ...
         {...props}
         className='w-full'
         type='range'
-        value={initialValue}
-        onChange={handleChange}
+        value={isNaN(parseFloat(initialValue)) ? 0 : initialValue}
+        onChange={onChange}
+        style={{
+          background: inputBackground,
+        }}
       />
       <div className='flex justify-between w-full'>
         <div className='text-sm text-light-grey'>{minValueLabel}</div>
@@ -31,7 +32,7 @@ const RangeSlider = ({ initialValue, onChange, minValueLabel, maxValueLabel, ...
 export default RangeSlider;
 
 RangeSlider.propTypes = {
-  initialValue: PropTypes.number,
+  initialValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onChange: PropTypes.func,
   minValueLabel: PropTypes.string,
   maxValueLabel: PropTypes.string,

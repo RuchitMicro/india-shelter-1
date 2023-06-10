@@ -5,7 +5,7 @@ let currentOtpIndex = 0;
 // const tries = 0;
 
 const OtpInput = ({ label, required, error, verified, timer, time, onClick }) => {
-  const [otp, setOtp] = useState(new Array(6).fill(''));
+  const [otp, setOtp] = useState(new Array(5).fill(''));
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
   const [disabled, setDisabled] = useState(true);
 
@@ -46,10 +46,10 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
             key={index}
             type='number'
             className={`${
-              (error && 'border-primary-red shadow-primary') ||
+              (error && 'border-primary-red shadow-primary shadow-primary-red') ||
               (verified && 'border-dark-grey') ||
               (activeOtpIndex === null ? 'border-stroke' : 'border-secondary-blue shadow-primary')
-            } w-14 h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg`}
+            } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow`}
             onChange={handleOnChange}
             onKeyDown={(e) => handleKeyDown(e, index)}
             value={otp[index]}
@@ -108,6 +108,7 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
           )}
         </div>
         <button
+          type='button'
           className='text-primary-red cursor-pointer font-semibold'
           onClick={() => {
             setActiveOtpIndex(0);

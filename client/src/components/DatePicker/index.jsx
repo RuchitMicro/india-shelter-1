@@ -4,12 +4,14 @@ import DatePickerHeader from './DatePickerHeader';
 import { useRef } from 'react';
 import DatePickerInput from './DatePickerInput';
 
-const DatePicker = ({ startDate, setStartDate }) => {
+const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
   const datePickerRef = useRef(null);
+  const today = new Date();
 
   return (
     <ReactDatePicker
-      customInput={<DatePickerInput />}
+      {...props}
+      customInput={<DatePickerInput {...props} label={label} />}
       ref={datePickerRef}
       className='bg-white'
       shouldCloseOnSelect={false}
@@ -41,6 +43,7 @@ const DatePicker = ({ startDate, setStartDate }) => {
       }}
       weekDayClassName={(_) => 'mx-1.5 text-light-grey font-semibold text-base mx-auto my-0'}
       onChange={(date) => setStartDate(date)}
+      // maxDate={today}
     >
       <div className='w-full h-fit flex justify-end'>
         <button
@@ -62,5 +65,6 @@ export default DatePicker;
 
 DatePicker.propTypes = {
   startDate: PropTypes.object,
-  setStartDate: PropTypes.func.isRequired,
+  setStartDate: PropTypes.func,
+  label: PropTypes.string,
 };
