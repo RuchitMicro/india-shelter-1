@@ -63,6 +63,6 @@ TextInput.propTypes = {
   error: PropTypes.string,
   touched: PropTypes.bool,
   Icon: PropTypes.elementType,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inputClasses: PropTypes.string,
 };
