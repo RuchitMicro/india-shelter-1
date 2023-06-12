@@ -16,7 +16,7 @@ const Stepper = ({ steps, activeStep }) => {
           (step, index) =>
             activeStep === index && (
               <h4 className='text-xs text-right text-primary-black leading-[18px]' key={index}>
-                <span className='font-semibold'>{activeStep + 1}</span>/{steps.length}
+                <span className='font-semibold text-xs'>{activeStep + 1}</span>/{steps.length}
               </h4>
             ),
         )}
@@ -24,8 +24,8 @@ const Stepper = ({ steps, activeStep }) => {
           {steps.map((_, index) => (
             <span
               key={index}
-              className={` ${index <= activeStep ? 'bg-primary-red' : 'bg-stroke'}
-                h-1 w-[10px] rounded-[10px]`}
+              className={`${index <= activeStep ? 'bg-primary-red' : 'bg-stroke'}
+                h-1 w-2.5 rounded-[10px]`}
             />
           ))}
         </div>
