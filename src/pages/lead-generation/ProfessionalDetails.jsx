@@ -95,7 +95,7 @@ const ProfessinalDetail = () => {
       else setNextStep(true);
     };
     moveToNextStep();
-  }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome]);
+  }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome, setNextStep]);
 
   useEffect(() => {
     if (date) {

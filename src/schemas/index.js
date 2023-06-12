@@ -18,8 +18,8 @@ export const signUpSchema = Yup.object({
   pinCode: Yup.string()
     .required('please enter your pincode')
     .matches(/^[0-9]+$/, 'Must be only digits')
-    .min(5, 'Must be exactly 5 digits')
-    .max(5, 'Must be exactly 5 digits'),
+    .min(6, 'Must be exactly 6 digits')
+    .max(6, 'Must be exactly 6 digits'),
   mobileNo: Yup.string()
     .matches(phoneRegExp, 'phone number is not valid')
     .required('please enter your number'),

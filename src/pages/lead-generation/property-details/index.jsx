@@ -31,7 +31,7 @@ const PropertyDetail = () => {
       else setNextStep(true);
     };
     moveToNextStep();
-  }, [propertyPincode, propertyType]);
+  }, [propertyPincode, propertyType, setNextStep]);
 
   return (
     <PropertyDetailContext.Provider value={value}>

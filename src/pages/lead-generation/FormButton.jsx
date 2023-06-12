@@ -1,11 +1,22 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { Button } from '../../components';
 import { createPortal } from 'react-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { steps } from './utils';
+import PropTypes from 'prop-types';
 
-const FormButton = () => {
+const FormButton = ({ onButtonClickCB }) => {
   const { activeStepIndex, setActiveStepIndex, nextStep } = useContext(AuthContext);
+
+  const onNextButtonClick = useCallback(() => {
+    setActiveStepIndex((prev) => prev + 1);
+    onButtonClickCB && onButtonClickCB();
+  }, [onButtonClickCB, setActiveStepIndex]);
+
+  const onPreviousButtonClick = useCallback(() => {
+    setActiveStepIndex((prev) => prev - 1);
+    onButtonClickCB && onButtonClickCB();
+  }, [onButtonClickCB, setActiveStepIndex]);
 
   return createPortal(
     <div
@@ -19,28 +30,25 @@ const FormButton = () => {
       } fixed flex bottom-0 w-full md:pr-[175px] md:pl-1 right-0 md:w-[732px] items-end pb-6 px-4 md:px-0`}
     >
       {activeStepIndex > 0 && (
-        <Button type='button' onClick={() => setActiveStepIndex((prev) => prev - 1)}>
+        <Button type='button' onClick={onPreviousButtonClick}>
           Previous
         </Button>
       )}
-      {activeStepIndex !== steps.length - 1 && (
-        <Button
-          disabled={nextStep}
-          type='button'
-          primary
-          onClick={() => setActiveStepIndex((prev) => prev + 1)}
-        >
-          Next
-        </Button>
-      )}
-      {activeStepIndex === steps.length - 1 && (
-        <Button disabled={nextStep} type='submit' primary>
-          Submit
-        </Button>
-      )}
+      <Button
+        disabled={nextStep}
+        type={activeStepIndex === steps.length - 1 ? 'submit' : 'button'}
+        primary
+        onClick={activeStepIndex === steps.length - 1 ? null : onNextButtonClick}
+      >
+        {activeStepIndex === steps.length - 1 ? 'Submit' : 'Next'}
+      </Button>
     </div>,
     document.body,
   );
 };
 
 export default FormButton;
+
+FormButton.propTypes = {
+  onButtonClickCB: PropTypes.func,
+};

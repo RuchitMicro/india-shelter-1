@@ -1,18 +1,18 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Stepper from '../../components/Stepper/index';
 import DesktopStepper from '../../components/DesktopStepper/index';
 import { AuthContext } from '../../context/AuthContext';
 import Sheet from 'react-modal-sheet';
 import { BottomSheetHandle } from '../../components';
 import { steps } from './utils';
+import PropTypes from 'prop-types';
 
 const snapPoints = [0.92, 0.6];
 const initialSnap = 1;
 
-const LeadGenerationForm = () => {
+const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
   const { activeStepIndex } = useContext(AuthContext);
 
-  const modalRef = useRef(null);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -23,32 +23,32 @@ const LeadGenerationForm = () => {
     return () => window.removeEventListener('resize', handleWindowResize);
   });
 
-  const { handleSubmit } = useContext(AuthContext);
-
   const onClick = useCallback(() => {
     modalRef.current?.snapTo(0);
-  }, []);
+  }, [modalRef]);
+
+  const ActiveStepComponent = steps.find((_, index) => index === activeStepIndex).Component;
 
   const Form = useMemo(
     () => (
-      <div className='relative h-full overflow-y-hidden'>
-        <Stepper steps={steps} activeStep={activeStepIndex} />
-        <DesktopStepper steps={steps} activeStep={activeStepIndex} />
+      <Suspense fallback={<h1>Loading next step...</h1>}>
+        <div className='relative h-full overflow-y-hidden'>
+          <Stepper steps={steps} activeStep={activeStepIndex} />
+          <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 
-        <div
-          role='presentation'
-          onClick={() => onClick && onClick()}
-          onKeyDown={() => onClick && onClick()}
-          className='mt-6 pb-[180px] md:pb-[260px] h-full overflow-auto md:pr-[175px] no-scrollbar px-1'
-          onSubmit={handleSubmit}
-        >
-          {steps.map(({ Component, label }, index) => {
-            return activeStepIndex === index ? <Component key={label} /> : null;
-          })}
+          <div
+            ref={formContainerRef}
+            role='presentation'
+            onClick={onClick}
+            onKeyDown={onClick}
+            className='mt-6 pb-[180px] md:pb-[260px] h-full overflow-auto md:pr-[175px] no-scrollbar px-1'
+          >
+            <ActiveStepComponent />
+          </div>
         </div>
-      </div>
+      </Suspense>
     ),
-    [activeStepIndex, handleSubmit, onClick],
+    [activeStepIndex, formContainerRef, onClick],
   );
 
   if (innerWidth < 768) {
@@ -75,3 +75,8 @@ const LeadGenerationForm = () => {
 };
 
 export default LeadGenerationForm;
+
+LeadGenerationForm.propTypes = {
+  formContainerRef: PropTypes.object,
+  modalRef: PropTypes.object,
+};

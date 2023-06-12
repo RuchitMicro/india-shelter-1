@@ -4,8 +4,17 @@ import logoSm from '../../assets/logo-mobile.svg';
 import islandimg from '../../assets/island-sm.svg';
 import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
+import { useCallback, useRef } from 'react';
 
 const LeadGeneration = () => {
+  const modalRef = useRef(null);
+  const formContainerRef = useRef(null);
+
+  const onFormButtonClick = useCallback(() => {
+    modalRef.current?.snapTo(1);
+    formContainerRef.current?.scrollTo(0, 0);
+  }, []);
+
   return (
     <AuthContextProvider>
       <div className='flex w-full flex-col md:flex-row md:justify-between gap-[111px]'>
@@ -21,11 +30,18 @@ const LeadGeneration = () => {
           <img src={leftImg} alt='' className='hidden lg:block w-[597px] h-screen' />
         </div>
 
-        <form id='lead-form-container' className='w-full md:w-[732px]'>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log('Submitted');
+          }}
+          id='lead-form-container'
+          className='w-full md:w-[732px]'
+        >
           <div className='h-screen overflow-auto'>
-            <LeadGenerationForm />
+            <LeadGenerationForm modalRef={modalRef} formContainerRef={formContainerRef} />
           </div>
-          <FormButton />
+          <FormButton onButtonClickCB={onFormButtonClick} />
         </form>
       </div>
     </AuthContextProvider>
