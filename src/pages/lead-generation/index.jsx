@@ -15,6 +15,12 @@ const LeadGeneration = () => {
     formContainerRef.current?.scrollTo(0, 0);
   }, []);
 
+  // TODO: Replace placeholder onSubmit function
+  const onSubmit = useCallback((e) => {
+    e.preventDefault();
+    console.log('Submitting');
+  }, []);
+
   return (
     <AuthContextProvider>
       <div className='flex w-full flex-col md:flex-row md:justify-between gap-[111px]'>
@@ -30,18 +36,11 @@ const LeadGeneration = () => {
           <img src={leftImg} alt='' className='hidden lg:block w-[597px] h-screen' />
         </div>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            console.log('Submitted');
-          }}
-          id='lead-form-container'
-          className='w-full md:w-[732px]'
-        >
+        <form id='lead-form-container' className='w-full md:w-[732px]'>
           <div className='h-screen overflow-auto'>
             <LeadGenerationForm modalRef={modalRef} formContainerRef={formContainerRef} />
           </div>
-          <FormButton onButtonClickCB={onFormButtonClick} />
+          <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
         </form>
       </div>
     </AuthContextProvider>

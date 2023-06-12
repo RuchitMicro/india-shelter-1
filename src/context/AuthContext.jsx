@@ -7,8 +7,8 @@ import { loanTypeOptions } from '../pages/lead-generation/utils';
 const defaultValues = {
   loanAmount: '100000',
   firstName: '',
-  middleName: '',
-  lastName: '',
+  middle_name: '',
+  last_name: '',
   pinCode: '',
   mobileNo: '',
   otp: [],
