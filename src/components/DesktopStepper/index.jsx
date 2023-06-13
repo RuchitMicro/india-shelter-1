@@ -12,8 +12,10 @@ const DesktopStepper = ({ steps, activeStep }) => {
           ></div>
           <div className='mt-2'>
             <h2
-              className={`${
-                index <= activeStep ? 'text-primary-red' : 'text-stroke'
+              className={`${index === activeStep && 'text-primary-red'} ${
+                index < activeStep && 'text-primary-black'
+              } ${
+                index > activeStep && 'text-stroke'
               } text-xs leading-[18px] font-medium uppercase`}
             >
               Step {index + 1}

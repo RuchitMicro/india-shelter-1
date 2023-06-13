@@ -50,20 +50,22 @@ const loanTypeDate = [
 ];
 
 const professionData = {
-  salaried: (
+  salaried: (selectDropDownOption) => (
     <DropDown
       label='Mode of Salary'
       required
       options={loanTypeDate[0].options}
       placeholder='Ex: Bank Transfer'
+      onChange={selectDropDownOption}
     />
   ),
-  'self-employed': (
+  'self-employed': (selectDropDownOption) => (
     <DropDown
       label='Occupation'
       required
       options={loanTypeDate[1].options}
       placeholder='Ex: Purchase'
+      onChange={selectDropDownOption}
     />
   ),
 };
@@ -98,10 +100,17 @@ const ProfessinalDetail = () => {
   }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome]);
 
   useEffect(() => {
-    if (date) {
+    if (date && selectedProfession) {
       setFieldValue('dob', date);
+      setFieldValue('profession', selectedProfession);
     }
-  }, [date, setFieldValue]);
+  }, [date, setFieldValue, selectedProfession]);
+
+  console.log(selectedProfession);
+
+  const handleData = (value) => {
+    setFieldValue('profession', value);
+  };
 
   return (
     <div className='flex flex-col gap-2'>
@@ -109,7 +118,7 @@ const ProfessinalDetail = () => {
         label='PAN number'
         required
         name='panNumber'
-        placeholder='ABCD12345'
+        placeholder='Ex: ABCD1234'
         value={values.panNumber}
         error={errors.panNumber}
         touched={touched.panNumber}
@@ -149,7 +158,7 @@ const ProfessinalDetail = () => {
         <span className='text-sm text-primary-red mt-1'>{false || String.fromCharCode(160)}</span>
       </div>
 
-      {selectedProfession && professionData[selectedProfession]}
+      {selectedProfession && professionData[selectedProfession](handleData)}
 
       <CurrencyInput
         label='Monthly Family Income'
@@ -162,6 +171,7 @@ const ProfessinalDetail = () => {
         touched={touched.monthlyFamilyIncome}
         onBlur={handleBlur}
         onChange={handleChange}
+        inputClasses='font-semibold'
       />
 
       <CurrencyInput
@@ -175,6 +185,7 @@ const ProfessinalDetail = () => {
         touched={touched.onGoingEmi}
         onBlur={handleBlur}
         onChange={handleChange}
+        inputClasses='font-semibold'
       />
     </div>
   );

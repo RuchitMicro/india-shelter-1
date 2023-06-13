@@ -3,8 +3,15 @@ import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
 import { AuthContext } from '../../context/AuthContext';
-import { CheckBox, TermsAndConditions, CardRadio, CurrencyInput } from '../../components';
+import {
+  CheckBox,
+  TermsAndConditions,
+  CardRadio,
+  CurrencyInput,
+  DesktopPopUp,
+} from '../../components';
 import { loanTypeOptions } from './utils';
+import termsAndConditions from '../../global/terms-conditions';
 
 const otpReducer = (verified, action) => {
   switch (action.type) {
@@ -23,7 +30,7 @@ const PersonalDetail = () => {
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [time, setTime] = useState('0:' + 0 + 's');
+  const [time, setTime] = useState('0:' + 30 + 's');
   const [amount, setLoanAmount] = useState('100000');
   const {
     values,
@@ -53,12 +60,12 @@ const PersonalDetail = () => {
     timer && dispatch({ type: 'NOT_VERIFIED' });
 
     const runTimer = () => {
-      var upto = 0;
+      var upto = 1;
       const counts = setInterval(() => {
-        upto += 1;
+        upto -= 1;
         setTime('0:' + upto + 's');
 
-        if (upto >= 2) {
+        if (upto <= 0) {
           clearInterval(counts);
           dispatch({ type: 'VERIFIED_SUCCESS' });
           if (!verified) setError(true);
@@ -116,6 +123,7 @@ const PersonalDetail = () => {
         name='loan'
         value={amount}
         onChange={(e) => setLoanAmount(e.currentTarget.value)}
+        inputClasses='font-semibold'
       />
 
       <RangeSlider
@@ -188,21 +196,25 @@ const PersonalDetail = () => {
             setChecked(e.currentTarget.checked);
           }}
         />
-        <span className='text-xs text-dark-grey'>
-          Please read and accept our &nbsp;
+        <div className='text-xs text-dark-grey'>
+          Please read and accept our
           <span
             tabIndex={-1}
             onClick={() => setShowTerms(true)}
             onKeyDown={() => setShowTerms(true)}
             role='button'
-            className='text-xs font-medium underline text-primary-black'
+            className='text-xs font-medium underline text-primary-black ml-1'
           >
             Terms and Conditions
           </span>
-        </span>
+        </div>
       </div>
-
-      <TermsAndConditions setShow={setShowTerms} show={showTerms} />
+      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms}>
+        {termsAndConditions}
+      </DesktopPopUp>
+      <TermsAndConditions setShow={setShowTerms} show={showTerms}>
+        {termsAndConditions}
+      </TermsAndConditions>
     </div>
   );
 };
