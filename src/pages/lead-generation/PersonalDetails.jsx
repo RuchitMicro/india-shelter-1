@@ -33,7 +33,7 @@ const PersonalDetail = () => {
     handleChange,
     selectedLoanType,
     setSelectedLoanType,
-    setNextStep,
+    setDisableNextStep,
     setFieldValue,
   } = useContext(AuthContext);
   const { loanAmount, firstName, pinCode, mobileNo } = values;
@@ -44,11 +44,11 @@ const PersonalDetail = () => {
   useEffect(() => {
     const moveToNextStep = () => {
       if (loanAmount && firstName && pinCode && mobileNo && verified) {
-        if (checked) setNextStep(false);
+        if (checked) setDisableNextStep(false);
       }
     };
     moveToNextStep();
-  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked, setNextStep]);
+  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked, setDisableNextStep]);
 
   useEffect(() => {
     timer && dispatch({ type: 'NOT_VERIFIED' });

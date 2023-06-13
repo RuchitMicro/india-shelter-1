@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useCallback, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
 import PropTypes from 'prop-types';
@@ -40,8 +40,23 @@ const AuthContextProvider = ({ children }) => {
   });
 
   const [activeStepIndex, setActiveStepIndex] = useState(0);
+  const previousStepIndex = useRef(activeStepIndex);
   const [selectedLoanType, setSelectedLoanType] = useState(loanTypeOptions[0].value);
-  const [nextStep, setNextStep] = useState(true);
+  const [disableNextStep, setDisableNextStep] = useState(true);
+
+  const goToPreviousStep = useCallback(() => {
+    setActiveStepIndex((prev) => {
+      previousStepIndex.current = prev;
+      return prev - 1;
+    });
+  }, []);
+
+  const goToNextStep = useCallback(() => {
+    setActiveStepIndex((prev) => {
+      previousStepIndex.current = prev;
+      return prev + 1;
+    });
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -51,8 +66,11 @@ const AuthContextProvider = ({ children }) => {
         setActiveStepIndex,
         selectedLoanType,
         setSelectedLoanType,
-        nextStep,
-        setNextStep,
+        disableNextStep,
+        setDisableNextStep,
+        previousStepIndex,
+        goToNextStep,
+        goToPreviousStep,
       }}
     >
       {children}

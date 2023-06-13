@@ -79,7 +79,7 @@ const ProfessinalDetail = () => {
     handleChange,
     setFieldValue,
     activeStepIndex,
-    setNextStep,
+    setDisableNextStep,
   } = useContext(AuthContext);
   const { panNumber, dob, monthlyFamilyIncome, onGoingEmi } = values;
   const [date, setDate] = useState();
@@ -91,11 +91,11 @@ const ProfessinalDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (panNumber && dob && monthlyFamilyIncome && onGoingEmi) setNextStep(false);
-      else setNextStep(true);
+      if (panNumber && dob && monthlyFamilyIncome && onGoingEmi) setDisableNextStep(false);
+      else setDisableNextStep(true);
     };
     moveToNextStep();
-  }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome, setNextStep]);
+  }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome, setDisableNextStep]);
 
   useEffect(() => {
     if (date) {
@@ -166,7 +166,7 @@ const ProfessinalDetail = () => {
 
       <CurrencyInput
         label='Ongoing EMI'
-        hint='TMention all of the ongoing monthly payments'
+        hint='Mention all of the ongoing monthly payments'
         required
         name='onGoingEmi'
         placeholder='Ex: 10,000'

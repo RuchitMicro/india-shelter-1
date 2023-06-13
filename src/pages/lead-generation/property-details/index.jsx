@@ -10,8 +10,15 @@ const PropertyDetail = () => {
   const [propertyCategory, setPropertyCategory] = useState(null);
   const [loanPurpose, setLoanPurpose] = useState();
   const [showOTPInput, setShowOTPInput] = useState(false);
-  const { values, errors, touched, handleBlur, handleChange, selectedLoanType, setNextStep } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    selectedLoanType,
+    setDisableNextStep,
+  } = useContext(AuthContext);
   const { propertyType, propertyPincode } = values;
 
   const handleLoanPursposeChange = useCallback((value) => {
@@ -27,11 +34,11 @@ const PropertyDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (propertyType && propertyPincode) setNextStep(false);
-      else setNextStep(true);
+      if (propertyType && propertyPincode) setDisableNextStep(false);
+      else setDisableNextStep(true);
     };
     moveToNextStep();
-  }, [propertyPincode, propertyType, setNextStep]);
+  }, [propertyPincode, propertyType, setDisableNextStep]);
 
   return (
     <PropertyDetailContext.Provider value={value}>

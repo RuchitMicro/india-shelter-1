@@ -21,11 +21,13 @@ const BalanceTransferFields = () => {
         onChange={handleChange}
       />
 
-      <div className='flex gap-2 items-end'>
+      <div className='flex gap-2 items-center'>
         <div className='flex-1'>
           <TextInput name='loan-tenure' placeholder='Ex: 10' label='Loan Tenure' required />
         </div>
-        <DropDown options={loanTenureOptions} placeholder='Months' />
+        <div className='mt-1'>
+          <DropDown options={loanTenureOptions} placeholder='Months' showError={false} />
+        </div>
       </div>
 
       <TextInput
