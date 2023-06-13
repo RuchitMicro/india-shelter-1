@@ -13,13 +13,18 @@ function parseDateString(value, originalValue) {
 }
 
 export const signUpSchema = Yup.object({
-  // loanAmount: Yup.string().required('fill the loan amount'),
+  loanAmount: Yup.number()
+    .required('Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
+    .min(100000, 'Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
+    .max(5000000, 'Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000'),
   firstName: Yup.string().min(2).max(10).required('please enter your name'),
+  middle_name: Yup.string().min(2).max(10),
+  last_name: Yup.string().min(2).max(10),
   pinCode: Yup.string()
     .required('please enter your pincode')
     .matches(/^[0-9]+$/, 'Must be only digits')
-    .min(5, 'Must be exactly 5 digits')
-    .max(5, 'Must be exactly 5 digits'),
+    .min(6, 'Must be exactly 6 digits')
+    .max(6, 'Must be exactly 6 digits'),
   mobileNo: Yup.string()
     .matches(phoneRegExp, 'phone number is not valid')
     .required('please enter your number'),

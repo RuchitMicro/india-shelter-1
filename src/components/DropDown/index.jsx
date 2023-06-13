@@ -2,7 +2,15 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { IconArrowDown, IconTick } from '../../assets/icons';
 
-const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxHeight }) => {
+const DropDown = ({
+  placeholder,
+  label,
+  required,
+  options,
+  onChange,
+  optionsMaxHeight,
+  showError = true,
+}) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -75,7 +83,11 @@ const DropDown = ({ placeholder, label, required, options, onChange, optionsMaxH
           ))}
         </div>
       )}
-      <span className='text-sm text-primary-red mt-1'>{false || String.fromCharCode(160)}</span>
+      {showError ? (
+        <span className='text-sm text-primary-red mt-1'>{false || String.fromCharCode(160)}</span>
+      ) : (
+        ''
+      )}
     </div>
   );
 };
@@ -84,9 +96,10 @@ export default DropDown;
 
 DropDown.propTypes = {
   placeholder: PropTypes.string,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   required: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })),
   onChange: PropTypes.func,
   optionsMaxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  showError: PropTypes.bool,
 };

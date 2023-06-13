@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, useContext } from 'react';
+import { useState, useEffect, useReducer, useContext, useCallback } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
@@ -40,7 +40,8 @@ const PersonalDetail = () => {
     handleChange,
     selectedLoanType,
     setSelectedLoanType,
-    setNextStep,
+    setDisableNextStep,
+    setFieldValue,
   } = useContext(AuthContext);
   const { loanAmount, firstName, pinCode, mobileNo } = values;
 
@@ -50,11 +51,11 @@ const PersonalDetail = () => {
   useEffect(() => {
     const moveToNextStep = () => {
       if (loanAmount && firstName && pinCode && mobileNo && verified) {
-        if (checked) setNextStep(false);
+        if (checked) setDisableNextStep(false);
       }
     };
     moveToNextStep();
-  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked]);
+  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked, setDisableNextStep]);
 
   useEffect(() => {
     timer && dispatch({ type: 'NOT_VERIFIED' });
@@ -85,11 +86,16 @@ const PersonalDetail = () => {
     setTimer(true);
   };
 
-  const onChange = (e) => setLoanAmount(e.currentTarget.value);
-
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
   };
+
+  const handleLoanAmountChange = useCallback(
+    (e) => {
+      setFieldValue('loanAmount', e.currentTarget.value);
+    },
+    [setFieldValue],
+  );
 
   return (
     <div className='flex flex-col gap-2'>
@@ -120,21 +126,28 @@ const PersonalDetail = () => {
         label='I want a loan of'
         placeholder='1,00,000'
         required
-        name='loan'
-        value={amount}
-        onChange={(e) => setLoanAmount(e.currentTarget.value)}
+        name='loanAmount'
+        value={loanAmount}
+        onBlur={handleBlur}
+        onChange={handleLoanAmountChange}
+        displayError={false}
         inputClasses='font-semibold'
       />
 
       <RangeSlider
         minValueLabel='1 L'
         maxValueLabel='50 L'
-        onChange={onChange}
-        initialValue={amount}
+        onChange={handleLoanAmountChange}
+        initialValue={loanAmount}
         min={100000}
         max={5000000}
         step={50000}
       />
+
+      <span className='text-xs text-primary-red mt-1'>
+        {errors.loanAmount && touched.loanAmount ? errors.loanAmount : String.fromCharCode(160)}
+      </span>
+
       <TextInput
         label='First Name'
         placeholder='Ex: Suresh, Priya'
@@ -148,10 +161,24 @@ const PersonalDetail = () => {
       />
       <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
         <div className='w-full'>
-          <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' name='middleName' />
+          <TextInput
+            value={values.middle_name}
+            label='Middle Name'
+            placeholder='Ex: Ramji, Sreenath'
+            name='middle_name'
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
         </div>
         <div className='w-full'>
-          <TextInput label='Last Name' placeholder='Ex: Swami, Singh' name='lastName' />
+          <TextInput
+            value={values.last_name}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            label='Last Name'
+            placeholder='Ex: Swami, Singh'
+            name='last_name'
+          />
         </div>
       </div>
       <TextInput
