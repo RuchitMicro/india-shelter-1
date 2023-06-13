@@ -7,7 +7,7 @@ import { BottomSheetHandle } from '../../components';
 import { steps } from './utils';
 import PropTypes from 'prop-types';
 
-const snapPoints = [0.92, 0.6];
+const snapPoints = [0.92, 0.55];
 const initialSnap = 1;
 
 const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
