@@ -106,8 +106,6 @@ const ProfessinalDetail = () => {
     }
   }, [date, setFieldValue, selectedProfession]);
 
-  console.log(selectedProfession);
-
   const handleData = (value) => {
     setFieldValue('profession', value);
   };
@@ -118,7 +116,7 @@ const ProfessinalDetail = () => {
         label='PAN number'
         required
         name='panNumber'
-        placeholder='Ex: ABCD1234'
+        placeholder='ABCD1234A'
         value={values.panNumber}
         error={errors.panNumber}
         touched={touched.panNumber}
