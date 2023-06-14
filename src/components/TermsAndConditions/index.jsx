@@ -11,7 +11,7 @@ const TermsAndConditions = ({ show, setShow, children }) => {
       }}
       isOpen={show}
       onClose={() => setShow(false)}
-      snapPoints={[0.5]}
+      snapPoints={[0.7]}
       initialSnap={0}
       className='md:hidden'
     >
@@ -26,6 +26,7 @@ const TermsAndConditions = ({ show, setShow, children }) => {
           </div>
         </Sheet.Header>
         <Sheet.Content
+          disableDrag={true}
           className='px-4 text-dark-grey leading-6 my-4'
           dangerouslySetInnerHTML={{
             __html: children,
@@ -41,4 +42,5 @@ export default TermsAndConditions;
 TermsAndConditions.propTypes = {
   show: PropTypes.bool.isRequired,
   setShow: PropTypes.func.isRequired,
+  children: PropTypes.elementType,
 };

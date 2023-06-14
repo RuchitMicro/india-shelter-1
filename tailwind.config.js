@@ -15,6 +15,7 @@ export default {
         'light-green': '#D9F2CB',
         'neutral-white': '#FEFEFE',
         'light-red': '#F1999C',
+        'grey-white': '#F3F3F3',
         stroke: '#D9D9D9',
       },
     },

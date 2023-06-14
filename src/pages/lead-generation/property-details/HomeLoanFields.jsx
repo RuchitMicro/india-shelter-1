@@ -41,25 +41,25 @@ const HomeLoanFields = () => {
       {propertyIdentificationOptions[0].value === propertyIdentified ? (
         <div className='flex flex-col gap-2'>
           <CurrencyInput
-            name='estimatePropertyValue'
+            name='property_estimation'
             label='My property value is estimated to be'
             required
             placeholder='1,00,000'
-            value={values.estimatePropertyValue}
-            error={errors.estimatePropertyValue}
-            touched={touched.estimatePropertyValue}
+            value={values.property_estimation}
+            error={errors.property_estimation}
+            touched={touched.property_estimation}
             onBlur={handleBlur}
             onChange={handleChange}
             inputClasses='font-semibold'
           />
           <TextInput
-            name='propertyPincode'
+            name='property_pincode'
             label='Property Pincode'
             required
             placeholder='123456'
-            value={values.propertyPincode}
-            error={errors.propertyPincode}
-            touched={touched.propertyPincode}
+            value={values.property_pincode}
+            error={errors.property_pincode}
+            touched={touched.property_pincode}
             onBlur={handleBlur}
             onChange={handleChange}
           />

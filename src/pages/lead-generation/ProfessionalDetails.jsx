@@ -83,7 +83,7 @@ const ProfessinalDetail = () => {
     activeStepIndex,
     setDisableNextStep,
   } = useContext(AuthContext);
-  const { panNumber, dob, monthlyFamilyIncome, onGoingEmi } = values;
+  const { pan_number, date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
 
   const onChange = (e) => {
@@ -93,21 +93,33 @@ const ProfessinalDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (panNumber && dob && monthlyFamilyIncome && onGoingEmi) setDisableNextStep(false);
+      if (pan_number && date_of_birth && monthly_family_income && ongoing_emi)
+        setDisableNextStep(false);
       else setDisableNextStep(true);
     };
     moveToNextStep();
-  }, [activeStepIndex, panNumber, dob, onGoingEmi, monthlyFamilyIncome, setDisableNextStep]);
+  }, [
+    activeStepIndex,
+    pan_number,
+    date_of_birth,
+    monthly_family_income,
+    ongoing_emi,
+    setDisableNextStep,
+  ]);
 
   useEffect(() => {
-    if (date && selectedProfession) {
-      setFieldValue('dob', date);
-      setFieldValue('profession', selectedProfession);
-    }
+    if (date) setFieldValue('date_of_birth', date);
+    if (selectedProfession) setFieldValue('profession', selectedProfession);
   }, [date, setFieldValue, selectedProfession]);
 
   const handleData = (value) => {
-    setFieldValue('profession', value);
+    if (selectedProfession === 'salaried') {
+      setFieldValue('mode_of_salary', value);
+      setFieldValue('occupation', '');
+    } else {
+      setFieldValue('occupation', value);
+      setFieldValue('mode_of_salary', '');
+    }
   };
 
   return (
@@ -115,11 +127,11 @@ const ProfessinalDetail = () => {
       <TextInput
         label='PAN number'
         required
-        name='panNumber'
+        name='pan_number'
         placeholder='ABCD1234A'
-        value={values.panNumber}
-        error={errors.panNumber}
-        touched={touched.panNumber}
+        value={values.pan_number}
+        error={errors.pan_number}
+        touched={touched.pan_number}
         onBlur={handleBlur}
         onChange={handleChange}
       />
@@ -128,11 +140,13 @@ const ProfessinalDetail = () => {
         startDate={date}
         setStartDate={setDate}
         required
-        name='dob'
+        name='date_of_birth'
         label='Date of Birth'
       />
       <span className='text-sm text-primary-red'>
-        {errors.dob && touched.dob ? errors.dob : String.fromCharCode(160)}
+        {errors.date_of_birth && touched.date_of_birth
+          ? errors.date_of_birth
+          : String.fromCharCode(160)}
       </span>
 
       <div>
@@ -162,11 +176,11 @@ const ProfessinalDetail = () => {
         label='Monthly Family Income'
         hint='Total monthly earnings of all family members. This helps to improve your loan eligibility'
         required
-        name='monthlyFamilyIncome'
+        name='monthly_family_income'
         placeholder='Ex: 1,00,000'
-        value={values.monthlyFamilyIncome}
-        error={errors.monthlyFamilyIncome}
-        touched={touched.monthlyFamilyIncome}
+        value={values.monthly_family_income}
+        error={errors.monthly_family_income}
+        touched={touched.monthly_family_income}
         onBlur={handleBlur}
         onChange={handleChange}
         inputClasses='font-semibold'
@@ -176,11 +190,11 @@ const ProfessinalDetail = () => {
         label='Ongoing EMI'
         hint='Mention all of the ongoing monthly payments'
         required
-        name='onGoingEmi'
+        name='ongoing_emi'
         placeholder='Ex: 10,000'
-        value={values.onGoingEmi}
-        error={errors.onGoingEmi}
-        touched={touched.onGoingEmi}
+        value={values.ongoing_emi}
+        error={errors.ongoing_emi}
+        touched={touched.ongoing_emi}
         onBlur={handleBlur}
         onChange={handleChange}
         inputClasses='font-semibold'

@@ -16,13 +16,19 @@ const PropertyDetail = () => {
     touched,
     handleBlur,
     handleChange,
+    setFieldValue,
     selectedLoanType,
     setDisableNextStep,
   } = useContext(AuthContext);
-  const { propertyType, propertyPincode } = values;
+  const { property_type, property_pincode } = values;
 
   const handleLoanPursposeChange = useCallback((value) => {
     setLoanPurpose(value);
+    setFieldValue('purpose_of_loan', value);
+  }, []);
+
+  const handlePropertyType = useCallback((value) => {
+    setFieldValue('property_type', value);
   }, []);
 
   const value = {
@@ -34,11 +40,26 @@ const PropertyDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (propertyType && propertyPincode) setDisableNextStep(false);
+      if (property_type && property_pincode) setDisableNextStep(false);
       else setDisableNextStep(true);
     };
     moveToNextStep();
-  }, [propertyPincode, propertyType, setDisableNextStep]);
+  }, [property_pincode, property_type, setDisableNextStep]);
+
+  useEffect(() => {
+    const getPropertyIdentification = () => {
+      if (selectedLoanType !== 'balance-transfer') setFieldValue('property_identification', propertyIdentified);
+      else setFieldValue('property_identification', '');
+    };
+    getPropertyIdentification();
+  }, [propertyIdentified]);
+
+  useEffect(() => {
+    const resetPropertyCategory = () => {
+      if (selectedLoanType !== 'loan-against-property') setFieldValue('purpose_type', '');
+    };
+    resetPropertyCategory();
+  }, [selectedLoanType]);
 
   return (
     <PropertyDetailContext.Provider value={value}>
@@ -63,6 +84,7 @@ const PropertyDetail = () => {
             required
             placeholder='Ex: Residential'
             options={propertyDetailsMap[selectedLoanType]['propertyTypeOptions'][loanPurpose]}
+            onChange={handlePropertyType}
           />
         ) : null}
 
@@ -70,10 +92,10 @@ const PropertyDetail = () => {
           label='Promo Code'
           hint='To avail advantages or perks associated with a loan'
           placeholder='Ex: AH34bg'
-          name='promoCode'
-          value={values.promoCode}
-          error={errors.promoCode}
-          touched={touched.promoCode}
+          name='promo_code'
+          value={values.promo_code}
+          error={errors.promo_code}
+          touched={touched.promo_code}
           onBlur={handleBlur}
           onChange={handleChange}
         />

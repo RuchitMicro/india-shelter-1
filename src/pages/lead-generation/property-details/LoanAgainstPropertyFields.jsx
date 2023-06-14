@@ -1,4 +1,4 @@
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useEffect } from 'react';
 import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
@@ -7,11 +7,13 @@ import { PropertyDetailContext } from '.';
 const LoanAgainstPropertyFields = () => {
   const { setPropertyIdentified, propertyIdentified, propertyCategory, setPropertyCategory } =
     useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
+  const { values, errors, touched, handleBlur, handleChange, setFieldValue, selectedLoanType } =
+    useContext(AuthContext);
 
   const handleOnPropertyCategoryChange = useCallback(
     (e) => {
       setPropertyCategory(e.currentTarget.value);
+      setFieldValue('purpose_type', e.currentTarget.value);
     },
     [setPropertyCategory],
   );
@@ -70,25 +72,25 @@ const LoanAgainstPropertyFields = () => {
       {propertyIdentificationOptions[0].value === propertyIdentified ? (
         <div className='flex flex-col gap-2'>
           <CurrencyInput
-            name='estimatePropertyValue'
+            name='property_estimation'
             label='My property value is estimated to be'
             required
             placeholder='1,00,000'
-            value={values.estimatePropertyValue}
-            error={errors.estimatePropertyValue}
-            touched={touched.estimatePropertyValue}
+            value={values.property_estimation}
+            error={errors.property_estimation}
+            touched={touched.property_estimation}
             onBlur={handleBlur}
             onChange={handleChange}
             inputClasses='font-semibold'
           />
           <TextInput
-            name='propertyPincode'
+            name='property_pincode'
             label='Property Pincode'
             required
             placeholder='123456'
-            value={values.propertyPincode}
-            error={errors.propertyPincode}
-            touched={touched.propertyPincode}
+            value={values.property_pincode}
+            error={errors.property_pincode}
+            touched={touched.property_pincode}
             onBlur={handleBlur}
             onChange={handleChange}
           />
