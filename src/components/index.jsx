@@ -9,7 +9,7 @@ import OtpInput from './OtpInput';
 import BottomSheetHandle from './BottomSheetHandle';
 import TermsAndConditions from './TermsAndConditions';
 import CurrencyInput from './CurrencyInput';
-import DesktopPopUp from './DektopPopUp';
+import DesktopPopUp from './DesktopPopUp';
 
 export {
   TextInput,
@@ -23,5 +23,5 @@ export {
   BottomSheetHandle,
   TermsAndConditions,
   CurrencyInput,
-  DesktopPopUp
+  DesktopPopUp,
 };

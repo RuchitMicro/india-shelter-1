@@ -11,7 +11,7 @@ const TermsAndConditions = ({ show, setShow, children }) => {
       }}
       isOpen={show}
       onClose={() => setShow(false)}
-      snapPoints={[0.5]}
+      snapPoints={[0.6]}
       initialSnap={0}
       className='md:hidden'
     >
@@ -41,4 +41,5 @@ export default TermsAndConditions;
 TermsAndConditions.propTypes = {
   show: PropTypes.bool.isRequired,
   setShow: PropTypes.func.isRequired,
+  children: PropTypes.elementType,
 };
