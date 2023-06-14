@@ -55,7 +55,9 @@ const PropertyDetail = () => {
           onChange={handleLoanPursposeChange}
         />
 
-        {loanPurpose && propertyIdentificationOptions[0].value === propertyIdentified ? (
+        {loanPurpose &&
+        (propertyIdentificationOptions[0].value === propertyIdentified ||
+          selectedLoanType === 'balance-transfer') ? (
           <DropDown
             label='Property Type'
             required
