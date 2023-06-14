@@ -235,7 +235,7 @@ const PersonalDetail = () => {
           }}
         />
         <div className='text-xs text-dark-grey'>
-          Please read and accept our
+          I agree with the
           <span
             tabIndex={-1}
             onClick={() => setShowTerms(true)}
@@ -243,8 +243,10 @@ const PersonalDetail = () => {
             role='button'
             className='text-xs font-medium underline text-primary-black ml-1'
           >
-            Terms and Conditions
+            T&C and Privacy Policy
           </span>
+          . I authorize India Shelter Finance or its representative to Call, WhatsApp, Email or SMS
+          me with reference to my loan enquiry.
         </div>
       </div>
       <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms}>

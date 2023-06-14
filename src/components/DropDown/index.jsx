@@ -64,18 +64,20 @@ const DropDown = ({
           style={{
             maxHeight: optionsMaxHeight ?? 250,
           }}
-          className='rounded-lg bg-white shadow-secondary p-2 mt-2 absolute top-100 w-full overflow-y-auto z-20'
+          className='rounded-lg bg-white shadow-secondary p-2 mt-2 absolute top-100 w-full overflow-y-auto z-20 border border-stroke'
         >
           {options.map((option, index) => (
             <button
               key={option.value}
               onClick={() => handleSelect(option)}
               className={`${
-                option.value === selectedOption?.value ? 'text-primary-red' : 'text-primary-black'
+                option.value === selectedOption?.value
+                  ? 'text-primary-red'
+                  : 'text-primary-black hover:bg-grey-white'
               } 
               ${
                 index ? 'border-t' : 'border-none'
-              } border-light-grey py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto`}
+              } border-light-grey py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
             >
               {option.label}
               {selectedOption?.value === option.value ? <IconTick /> : <div></div>}

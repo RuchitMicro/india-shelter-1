@@ -8,7 +8,7 @@ const CardRadio = ({ label, current, children, value, name, onChange, containerC
         ${
           current === value
             ? 'bg-light-green border-secondary-green stroke-secondary-green'
-            : 'bg-transparent stroke-light-grey border-stroke'
+            : 'bg-transparent stroke-light-grey border-stroke hover:bg-grey-white'
         } transition-all duration-300 ease-out`}
         tabIndex={0}
         role='radio'
