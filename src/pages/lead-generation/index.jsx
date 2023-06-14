@@ -21,20 +21,18 @@ const LeadGeneration = () => {
 
   return (
     <AuthContextProvider>
-      <div className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start gap-[111px]'>
-        {/* left section */}
-
+      <div className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start gap-[111px] overflow-y-hidden'>
         <AnimationBanner />
 
-        <form id='lead-form-container' className='w-full md:max-w-[732px]'>
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          id='lead-form-container'
+          className='w-full md:max-w-[732px]'
+        >
           <div className='h-screen overflow-auto'>
             <LeadGenerationForm modalRef={modalRef} formContainerRef={formContainerRef} />
           </div>
-          <FormButton
-            onButtonClickCB={onFormButtonClick}
-            onSubmit={onSubmit}
-            formContainerRef={formContainerRef}
-          />
+          <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
         </form>
       </div>
     </AuthContextProvider>
