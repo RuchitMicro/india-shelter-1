@@ -10,6 +10,7 @@ import IconBalanceTransfer from './balance-transfer';
 import IconLoanAgainstProperty from './loan-against-property';
 import IconResidential from './residential';
 import IconCommercial from './commercial';
+import IconBack from './back';
 
 export {
   IconClose,
@@ -24,4 +25,5 @@ export {
   IconLoanAgainstProperty,
   IconResidential,
   IconCommercial,
+  IconBack,
 };

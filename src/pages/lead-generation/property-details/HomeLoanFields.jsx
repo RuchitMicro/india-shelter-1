@@ -50,6 +50,7 @@ const HomeLoanFields = () => {
             touched={touched.estimatePropertyValue}
             onBlur={handleBlur}
             onChange={handleChange}
+            inputClasses='font-semibold'
           />
           <TextInput
             name='propertyPincode'

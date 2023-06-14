@@ -164,3 +164,13 @@ body {
     scrollbar-width: none;
   }
 }
+
+.btn-bg {
+  z-index: 10000000;
+}
+
+@media (min-width: 728px) {
+  .btn-bg {
+    z-index: 10;
+  }
+}

@@ -10,8 +10,15 @@ const PropertyDetail = () => {
   const [propertyCategory, setPropertyCategory] = useState(null);
   const [loanPurpose, setLoanPurpose] = useState();
   const [showOTPInput, setShowOTPInput] = useState(false);
-  const { values, errors, touched, handleBlur, handleChange, selectedLoanType, setNextStep } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    selectedLoanType,
+    setDisableNextStep,
+  } = useContext(AuthContext);
   const { propertyType, propertyPincode } = values;
 
   const handleLoanPursposeChange = useCallback((value) => {
@@ -27,11 +34,11 @@ const PropertyDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (propertyType && propertyPincode) setNextStep(false);
-      else setNextStep(true);
+      if (propertyType && propertyPincode) setDisableNextStep(false);
+      else setDisableNextStep(true);
     };
     moveToNextStep();
-  }, [propertyPincode, propertyType]);
+  }, [propertyPincode, propertyType, setDisableNextStep]);
 
   return (
     <PropertyDetailContext.Provider value={value}>
@@ -48,7 +55,9 @@ const PropertyDetail = () => {
           onChange={handleLoanPursposeChange}
         />
 
-        {loanPurpose && propertyIdentificationOptions[0].value === propertyIdentified ? (
+        {loanPurpose &&
+        (propertyIdentificationOptions[0].value === propertyIdentified ||
+          selectedLoanType === 'balance-transfer') ? (
           <DropDown
             label='Property Type'
             required

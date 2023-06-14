@@ -1,10 +1,17 @@
-import { useState, useEffect, useReducer, useContext } from 'react';
+import { useState, useEffect, useReducer, useContext, useCallback } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
 import { AuthContext } from '../../context/AuthContext';
-import { CheckBox, TermsAndConditions, CardRadio, CurrencyInput } from '../../components';
+import {
+  CheckBox,
+  TermsAndConditions,
+  CardRadio,
+  CurrencyInput,
+  DesktopPopUp,
+} from '../../components';
 import { loanTypeOptions } from './utils';
+import termsAndConditions from '../../global/terms-conditions';
 
 const otpReducer = (verified, action) => {
   switch (action.type) {
@@ -23,7 +30,7 @@ const PersonalDetail = () => {
   const [error, setError] = useState(false);
   const [timer, setTimer] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [time, setTime] = useState('0:' + 0 + 's');
+  const [time, setTime] = useState('0:' + 30 + 's');
   const [amount, setLoanAmount] = useState('100000');
   const {
     values,
@@ -33,7 +40,8 @@ const PersonalDetail = () => {
     handleChange,
     selectedLoanType,
     setSelectedLoanType,
-    setNextStep,
+    setDisableNextStep,
+    setFieldValue,
   } = useContext(AuthContext);
   const { loanAmount, firstName, pinCode, mobileNo } = values;
 
@@ -43,22 +51,22 @@ const PersonalDetail = () => {
   useEffect(() => {
     const moveToNextStep = () => {
       if (loanAmount && firstName && pinCode && mobileNo && verified) {
-        if (checked) setNextStep(false);
+        if (checked) setDisableNextStep(false);
       }
     };
     moveToNextStep();
-  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked]);
+  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked, setDisableNextStep]);
 
   useEffect(() => {
     timer && dispatch({ type: 'NOT_VERIFIED' });
 
     const runTimer = () => {
-      var upto = 0;
+      var upto = 1;
       const counts = setInterval(() => {
-        upto += 1;
+        upto -= 1;
         setTime('0:' + upto + 's');
 
-        if (upto >= 2) {
+        if (upto <= 0) {
           clearInterval(counts);
           dispatch({ type: 'VERIFIED_SUCCESS' });
           if (!verified) setError(true);
@@ -78,11 +86,16 @@ const PersonalDetail = () => {
     setTimer(true);
   };
 
-  const onChange = (e) => setLoanAmount(e.currentTarget.value);
-
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
   };
+
+  const handleLoanAmountChange = useCallback(
+    (e) => {
+      setFieldValue('loanAmount', e.currentTarget.value);
+    },
+    [setFieldValue],
+  );
 
   return (
     <div className='flex flex-col gap-2'>
@@ -113,20 +126,28 @@ const PersonalDetail = () => {
         label='I want a loan of'
         placeholder='1,00,000'
         required
-        name='loan'
-        value={amount}
-        onChange={(e) => setLoanAmount(e.currentTarget.value)}
+        name='loanAmount'
+        value={loanAmount}
+        onBlur={handleBlur}
+        onChange={handleLoanAmountChange}
+        displayError={false}
+        inputClasses='font-semibold'
       />
 
       <RangeSlider
         minValueLabel='1 L'
         maxValueLabel='50 L'
-        onChange={onChange}
-        initialValue={amount}
+        onChange={handleLoanAmountChange}
+        initialValue={loanAmount}
         min={100000}
         max={5000000}
         step={50000}
       />
+
+      <span className='text-xs text-primary-red mt-1'>
+        {errors.loanAmount && touched.loanAmount ? errors.loanAmount : String.fromCharCode(160)}
+      </span>
+
       <TextInput
         label='First Name'
         placeholder='Ex: Suresh, Priya'
@@ -137,13 +158,28 @@ const PersonalDetail = () => {
         touched={touched.firstName}
         onBlur={handleBlur}
         onChange={handleChange}
+        inputClasses='capitalize'
       />
       <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
         <div className='w-full'>
-          <TextInput label='Middle Name' placeholder='Ex: Ramji, Sreenath' name='middleName' />
+          <TextInput
+            value={values.middle_name}
+            label='Middle Name'
+            placeholder='Ex: Ramji, Sreenath'
+            name='middle_name'
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
         </div>
         <div className='w-full'>
-          <TextInput label='Last Name' placeholder='Ex: Swami, Singh' name='lastName' />
+          <TextInput
+            value={values.last_name}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            label='Last Name'
+            placeholder='Ex: Swami, Singh'
+            name='last_name'
+          />
         </div>
       </div>
       <TextInput
@@ -188,21 +224,25 @@ const PersonalDetail = () => {
             setChecked(e.currentTarget.checked);
           }}
         />
-        <span className='text-xs text-dark-grey'>
-          Please read and accept our &nbsp;
+        <div className='text-xs text-dark-grey'>
+          Please read and accept our
           <span
             tabIndex={-1}
             onClick={() => setShowTerms(true)}
             onKeyDown={() => setShowTerms(true)}
             role='button'
-            className='text-xs font-medium underline text-primary-black'
+            className='text-xs font-medium underline text-primary-black ml-1'
           >
             Terms and Conditions
           </span>
-        </span>
+        </div>
       </div>
-
-      <TermsAndConditions setShow={setShowTerms} show={showTerms} />
+      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms}>
+        {termsAndConditions}
+      </DesktopPopUp>
+      <TermsAndConditions setShow={setShowTerms} show={showTerms}>
+        {termsAndConditions}
+      </TermsAndConditions>
     </div>
   );
 };

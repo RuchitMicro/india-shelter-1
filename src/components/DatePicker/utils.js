@@ -6,7 +6,7 @@ export function getYearRange(start, end) {
   });
 }
 
-export const years = getYearRange(1990, getYear(new Date()) + 1, 1);
+export const years = getYearRange(1990, getYear(new Date()), 1);
 
 export const months = [
   'January',

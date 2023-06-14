@@ -7,12 +7,11 @@ import {
   IconPropertyUnIdentified,
   IconResidential,
 } from '../../assets/icons';
-import PersonalDetails from './PersonalDetails';
-import ProfessionalDetails from './ProfessionalDetails';
-import PropertyDetails from './property-details';
+
 import BalanceTransferFields from './property-details/BalanceTransferFields';
 import HomeLoanFields from './property-details/HomeLoanFields';
 import LoanAgainstPropertyFields from './property-details/LoanAgainstPropertyFields';
+import { lazy } from 'react';
 
 export const loanTypeOptions = [
   {
@@ -132,14 +131,14 @@ export const loanTenureOptions = [
 export const steps = [
   {
     label: 'Personal Details',
-    Component: PersonalDetails,
+    Component: lazy(() => import('./PersonalDetails')),
   },
   {
     label: 'Professional Details',
-    Component: ProfessionalDetails,
+    Component: lazy(() => import('./ProfessionalDetails')),
   },
   {
     label: 'Property Details',
-    Component: PropertyDetails,
+    Component: lazy(() => import('./property-details')),
   },
 ];
