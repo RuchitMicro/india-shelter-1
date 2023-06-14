@@ -1,8 +1,9 @@
 import * as Yup from 'yup';
 import { parse, isDate } from 'date-fns';
 
-const phoneRegExp =
-  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+// const phoneRegExp =
+//   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+// .matches(phoneRegExp, 'phone number is not valid')
 
 function parseDateString(value, originalValue) {
   const parsedDate = isDate(originalValue)
@@ -26,7 +27,8 @@ export const signUpSchema = Yup.object({
     .min(6, 'Must be exactly 6 digits')
     .max(6, 'Must be exactly 6 digits'),
   mobileNo: Yup.string()
-    .matches(phoneRegExp, 'phone number is not valid')
+    .min(10, 'Must be exactly 10 digits')
+    .max(10, 'Must be exactly 10 digits')
     .required('please enter your number'),
   panNumber: Yup.string().required('please enter your pan number'),
   dob: Yup.date()
@@ -36,7 +38,11 @@ export const signUpSchema = Yup.object({
   monthlyFamilyIncome: Yup.string().required('please enter your monthly family income'),
   onGoingEmi: Yup.string().required('please enter your ongoing emi amount'),
   estimatePropertyValue: Yup.string().required('please enter your ongoing emi amount'),
-  propertyPincode: Yup.string().required('please enter your property pincode'),
+  propertyPincode: Yup.string()
+    .required('please enter your property pincode')
+    .matches(/^[0-9]+$/, 'Must be only digits')
+    .min(6, 'Must be exactly 6 digits')
+    .max(6, 'Must be exactly 6 digits'),
   // email: Yup.string().email().required('please enter your email'),
   // password: Yup.string().min(6).required('please enter your password'),
   // confirmPassword: Yup.string()
