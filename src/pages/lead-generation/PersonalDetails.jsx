@@ -167,7 +167,13 @@ const PersonalDetail = () => {
         error={errors.first_name}
         touched={touched.first_name}
         onBlur={handleBlur}
-        onChange={handleChange}
+        onChange={(e) => {
+          const value = e.currentTarget.value;
+          const pattern = /[A-za-z]+/g;
+          if (pattern.exec(value[value.length - 1])) {
+            handleChange(e);
+          }
+        }}
         inputClasses='capitalize'
       />
       <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
@@ -210,12 +216,13 @@ const PersonalDetail = () => {
         placeholder='Please enter 10 digit mobile no'
         required
         name='phone_number'
-        type='tel'
+        type='number'
         value={values.phone_number}
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
         onChange={handleChange}
+        inputClasses='hidearrow'
       />
       <OtpInput
         label='Enter OTP'
