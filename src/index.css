@@ -96,6 +96,15 @@ body {
     appearance: none;
     @apply h-8 w-8 bg-primary-red rounded-full border-none transition-all ease-out duration-200;
   }
+
+  ul {
+    list-style: initial;
+    margin: initial;
+    padding: 0 0 0 40px;
+  }
+  li {
+    display: list-item;
+  }
 }
 
 .react-modal-sheet-container {
