@@ -31,7 +31,6 @@ const PersonalDetail = () => {
   const [timer, setTimer] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [time, setTime] = useState('0:' + 30 + 's');
-  const [amount, setLoanAmount] = useState('100000');
   const {
     values,
     errors,
@@ -43,25 +42,33 @@ const PersonalDetail = () => {
     setDisableNextStep,
     setFieldValue,
   } = useContext(AuthContext);
-  const { loanAmount, firstName, pinCode, mobileNo } = values;
+  const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [verified, dispatch] = useReducer(otpReducer, null);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (loanAmount && firstName && pinCode && mobileNo && verified) {
+      if (loan_request_amount && first_name && pincode && phone_number && verified) {
         if (checked) setDisableNextStep(false);
       }
     };
     moveToNextStep();
-  }, [loanAmount, firstName, pinCode, mobileNo, verified, checked, setDisableNextStep]);
+  }, [
+    loan_request_amount,
+    first_name,
+    pincode,
+    phone_number,
+    verified,
+    checked,
+    setDisableNextStep,
+  ]);
 
   useEffect(() => {
     timer && dispatch({ type: 'NOT_VERIFIED' });
 
     const runTimer = () => {
-      var upto = 1;
+      var upto = 30;
       const counts = setInterval(() => {
         upto -= 1;
         setTime('0:' + upto + 's');
@@ -88,11 +95,12 @@ const PersonalDetail = () => {
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
+    setFieldValue('loan_type', e.currentTarget.value);
   };
 
   const handleLoanAmountChange = useCallback(
     (e) => {
-      setFieldValue('loanAmount', e.currentTarget.value);
+      setFieldValue('loan_request_amount', e.currentTarget.value);
     },
     [setFieldValue],
   );
@@ -126,8 +134,8 @@ const PersonalDetail = () => {
         label='I want a loan of'
         placeholder='1,00,000'
         required
-        name='loanAmount'
-        value={loanAmount}
+        name='loan_request_amount'
+        value={loan_request_amount}
         onBlur={handleBlur}
         onChange={handleLoanAmountChange}
         displayError={false}
@@ -138,24 +146,26 @@ const PersonalDetail = () => {
         minValueLabel='1 L'
         maxValueLabel='50 L'
         onChange={handleLoanAmountChange}
-        initialValue={loanAmount}
+        initialValue={loan_request_amount}
         min={100000}
         max={5000000}
         step={50000}
       />
 
       <span className='text-xs text-primary-red mt-1'>
-        {errors.loanAmount && touched.loanAmount ? errors.loanAmount : String.fromCharCode(160)}
+        {errors.loan_request_amount && touched.loan_request_amount
+          ? errors.loan_request_amount
+          : String.fromCharCode(160)}
       </span>
 
       <TextInput
         label='First Name'
         placeholder='Ex: Suresh, Priya'
         required
-        name='firstName'
-        value={values.firstName}
-        error={errors.firstName}
-        touched={touched.firstName}
+        name='first_name'
+        value={values.first_name}
+        error={errors.first_name}
+        touched={touched.first_name}
         onBlur={handleBlur}
         onChange={handleChange}
         inputClasses='capitalize'
@@ -186,11 +196,11 @@ const PersonalDetail = () => {
         label='Current Pincode'
         placeholder='Ex: 123456'
         required
-        name='pinCode'
+        name='pincode'
         type='number'
-        value={values.pinCode}
-        error={errors.pinCode}
-        touched={touched.pinCode}
+        value={values.pincode}
+        error={errors.pincode}
+        touched={touched.pincode}
         onBlur={handleBlur}
         onChange={handleChange}
         inputClasses='hidearrow'
@@ -199,11 +209,11 @@ const PersonalDetail = () => {
         label='Mobile number'
         placeholder='Please enter 10 digit mobile no'
         required
-        name='mobileNo'
+        name='phone_number'
         type='tel'
-        value={values.mobileNo}
-        error={errors.mobileNo}
-        touched={touched.mobileNo}
+        value={values.phone_number}
+        error={errors.phone_number}
+        touched={touched.phone_number}
         onBlur={handleBlur}
         onChange={handleChange}
       />
