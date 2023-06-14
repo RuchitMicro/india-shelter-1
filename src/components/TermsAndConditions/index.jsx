@@ -26,6 +26,7 @@ const TermsAndConditions = ({ show, setShow, children }) => {
           </div>
         </Sheet.Header>
         <Sheet.Content
+          disableDrag={true}
           className='px-4 text-dark-grey leading-6 my-4'
           dangerouslySetInnerHTML={{
             __html: children,
