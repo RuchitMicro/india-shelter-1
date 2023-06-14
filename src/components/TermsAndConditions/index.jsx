@@ -11,7 +11,7 @@ const TermsAndConditions = ({ show, setShow, children }) => {
       }}
       isOpen={show}
       onClose={() => setShow(false)}
-      snapPoints={[0.6]}
+      snapPoints={[0.7]}
       initialSnap={0}
       className='md:hidden'
     >
