@@ -1,5 +1,6 @@
 import homeLoanAnimation from '../../assets/anim/home-loan.json';
 import homeLoanBgAnimation from '../../assets/anim/home-loan-bg.json';
+import loanAgainstPropertyAnimation from '../../assets/anim/loan-against-property.json';
 import Lottie from 'react-lottie-player';
 import { Header } from '../../components';
 import { create } from '@lottiefiles/lottie-interactivity';
@@ -7,6 +8,7 @@ import { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import iconBack from '../../assets/icons/back.svg';
 import logo from '../../assets/logo.svg';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const frames = [
   [0, 3],
@@ -15,11 +17,12 @@ const frames = [
 ];
 
 const AnimationBanner = () => {
-  const { activeStepIndex, previousStepIndex, goToPreviousStep } = useContext(AuthContext);
+  const { activeStepIndex, previousStepIndex, goToPreviousStep, selectedLoanType } =
+    useContext(AuthContext);
   const lottiePlayerRef = useRef(null);
 
   useEffect(() => {
-    if (lottiePlayerRef.current)
+    if (lottiePlayerRef.current && selectedLoanType !== 'loan-against-property')
       create({
         player: lottiePlayerRef.current,
         mode: 'chain',
@@ -34,7 +37,7 @@ const AnimationBanner = () => {
           },
         ],
       });
-  }, [activeStepIndex, previousStepIndex]);
+  }, [activeStepIndex, previousStepIndex, selectedLoanType]);
 
   return (
     <div
@@ -61,24 +64,51 @@ const AnimationBanner = () => {
             style={{ color: '#04584C' }}
             className='text-center text-base md:text-xl font-medium pr-4'
           >
-            Find your shelter with us
+            {selectedLoanType === 'loan-against-property'
+              ? 'Get the right value for your property'
+              : 'Find the shelter with us'}
           </h4>
         </div>
       </div>
 
-      <Lottie
-        id='home-loan-bg-animation'
-        className='absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]'
-        loop
-        play
-        animationData={homeLoanBgAnimation}
-      />
-      <Lottie
-        ref={lottiePlayerRef}
-        id='home-loan-animation'
-        className='md:absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]'
-        animationData={homeLoanAnimation}
-      />
+      <AnimatePresence>
+        {selectedLoanType !== 'loan-against-property' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transitionDuration: 2 }}
+            exit={{ opacity: 0 }}
+          >
+            <Lottie
+              id='home-loan-bg-animation'
+              className={`absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]`}
+              loop
+              play
+              animationData={homeLoanBgAnimation}
+            />
+            <Lottie
+              ref={lottiePlayerRef}
+              id='home-loan-animation'
+              className='md:absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]'
+              animationData={homeLoanAnimation}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {selectedLoanType === 'loan-against-property' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transitionDuration: 2 }}
+            exit={{ opacity: 0 }}
+          >
+            <Lottie
+              play
+              className='md:absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]'
+              animationData={loanAgainstPropertyAnimation}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
