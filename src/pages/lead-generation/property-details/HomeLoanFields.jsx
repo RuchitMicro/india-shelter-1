@@ -1,12 +1,18 @@
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useEffect } from 'react';
 import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
 
+const disableSubmitMap = {
+  done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
+  'not-yet': ['purpose_of_loan'],
+};
+
 const HomeLoanFields = () => {
   const { setPropertyIdentified, propertyIdentified } = useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
+  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep } =
+    useContext(AuthContext);
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
@@ -14,6 +20,18 @@ const HomeLoanFields = () => {
     },
     [setPropertyIdentified],
   );
+
+  useEffect(() => {
+    if (!propertyIdentified) return;
+
+    let disableSubmitting = disableSubmitMap[propertyIdentified].reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !Object.keys(errors).includes(field);
+    }, true);
+
+    setDisableNextStep(!disableSubmitting);
+  }, [propertyIdentified, errors, setDisableNextStep]);
 
   return (
     <>

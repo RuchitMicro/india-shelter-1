@@ -7,6 +7,8 @@ import IconSelfEmployed from '../../assets/icons/self-employed';
 import { AuthContext } from '../../context/AuthContext';
 import DatePicker from '../../components/DatePicker';
 import { CurrencyInput } from '../../components';
+import { checkBre99, checkCibil, checkDedupe, editLeadById, verifyPan } from '../../global';
+import { useDebounce } from '../../hooks';
 
 const loanTypeDate = [
   {
@@ -80,11 +82,13 @@ const ProfessinalDetail = () => {
     handleBlur,
     handleChange,
     setFieldValue,
+    setFieldError,
     activeStepIndex,
     setDisableNextStep,
   } = useContext(AuthContext);
   const { pan_number, date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
+  const deferedPanNumber = useDebounce(pan_number, 3000);
 
   const onChange = (e) => {
     setCurrent(e.currentTarget.value);
@@ -93,7 +97,12 @@ const ProfessinalDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (pan_number && date_of_birth && monthly_family_income && ongoing_emi)
+      if (
+        !errors.pan_number &&
+        !errors.date_of_birth &&
+        monthly_family_income > 0 &&
+        ongoing_emi > 0
+      )
         setDisableNextStep(false);
       else setDisableNextStep(true);
     };
@@ -122,6 +131,61 @@ const ProfessinalDetail = () => {
     }
   };
 
+  useEffect(() => {
+    if (!deferedPanNumber) return;
+
+    const editLead = async () => {
+      //call editlead
+      const editRes = await editLeadById(49, { pan_number: values.pan_number });
+      console.log(editRes);
+
+      if (editRes) {
+        //call dedupe
+        await checkDedupe(49).then((res) => console.log(res));
+        console.log('called dedupe');
+
+        //call bre99
+        const callBre99 = async () => {
+          const res = await checkBre99(49);
+          console.log('called bre99');
+
+          if (res.status === 200) {
+            const responseArr = res.data.bre_99_response.body;
+
+            responseArr.map((data) => {
+              if (data.Rule_Name === 'PAN') {
+                if (data.Rule_Value === 'YES') {
+                  const callPan = async () => {
+                    const res = await verifyPan(49);
+                    console.log(res.data.body.status);
+                    if (res.data.body.status === 'In-Valid')
+                      setFieldError('pan_number', 'Please enter your valid PAN number');
+                    console.log('called pan');
+                  };
+                  callPan();
+                }
+              }
+              if (data.Rule_Name === 'Bureau') {
+                if (data.Rule_Value === 'YES') {
+                  const callCibil = async () => {
+                    //call cibil
+                    await checkCibil(49).then((res) => console.log(res));
+                    console.log('called cibil');
+                  };
+                  callCibil();
+                }
+              }
+            });
+          }
+        };
+        callBre99();
+      }
+    };
+    editLead();
+  }, [deferedPanNumber]);
+
+  // console.log(validPan);
+
   return (
     <div className='flex flex-col gap-2'>
       <TextInput
@@ -135,6 +199,10 @@ const ProfessinalDetail = () => {
         onBlur={handleBlur}
         onChange={handleChange}
       />
+      {/* <div>
+        <span className='text-sm text-primary-red'>{validPan === 'In-Valid' && 'Invalid pan'}</span>
+        <span className='text-sm text-green-500'>{validPan === 'Valid' && 'Valid pan'}</span>
+      </div> */}
 
       <DatePicker
         startDate={date}

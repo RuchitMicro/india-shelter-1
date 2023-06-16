@@ -31,12 +31,12 @@ async function getLeadByPhoneNumber(phoneNumber) {
 
 async function getLeadById(id) {
   const res = await axios.get(`${API_LEAD_URL}/${id}`, {}, requestOptions);
-  return res.data;
+  return res;
 }
 
 async function editLeadById(id, leadData) {
   const res = await axios.patch(`${API_LEAD_URL}/edit/${id}`, leadData, requestOptions);
-  return res.data;
+  return res;
 }
 
 async function deleteLeadById(id) {
@@ -69,12 +69,12 @@ async function getEmailOtp(email) {
 }
 
 async function verifyEmailOtp(email, leadOtp) {
-  const res = await axios.post(`${API_URL}/lead-mobile-otp/${email}`, leadOtp, requestOptions);
-  return res.data;
+  const res = await axios.post(`${API_URL}/lead-email-otp/${email}`, leadOtp, requestOptions);
+  return res;
 }
 
-async function verifyPan(id, leadPan) {
-  const res = await axios.post(`${API_URL}/pan/${id}`, leadPan, requestOptions);
+async function verifyPan(id) {
+  const res = await axios.post(`${API_URL}/pan/${id}`, {}, requestOptions);
   return res.data;
 }
 
@@ -98,6 +98,34 @@ async function getDropDownOptions(dropDownTitle) {
   return res.data;
 }
 
+async function updateLeadDataOnBlur(leadId, fieldName, value) {
+  const inputName = fieldName;
+  const updatedFieldValue = {};
+  updatedFieldValue[inputName] = value;
+  editLeadById(leadId, updatedFieldValue);
+}
+
+
+async function checkBre99(id) {
+  const res = await axios.post(`${API_URL}/bre-99/${id}`, {}, requestOptions);
+  return res;
+}
+
+async function checkBre100(id) {
+  const res = await axios.post(`${API_URL}/bre-100/${id}`, {}, requestOptions);
+  return res;
+}
+
+async function checkCibil(id) {
+  const res = await axios.post(`${API_URL}/cibil/${id}`, {}, requestOptions);
+  return res;
+}
+
+async function checkDedupe(id) {
+  const res = await axios.post(`${API_URL}/dedpue/${id}`, {}, requestOptions);
+  return res;
+}
+
 export {
   API_URL,
   pingAPI,
@@ -117,4 +145,9 @@ export {
   getPropertyIdentification,
   getProfessionalType,
   getDropDownOptions,
+  updateLeadDataOnBlur,
+  checkBre99,
+  checkBre100,
+  checkCibil,
+  checkDedupe
 };

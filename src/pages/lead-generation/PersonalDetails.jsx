@@ -17,7 +17,6 @@ import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../gl
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
 
 const PersonalDetail = () => {
-  const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [otpVerified, setOTPVerified] = useState(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
@@ -33,6 +32,8 @@ const PersonalDetail = () => {
     setDisableNextStep,
     setFieldValue,
     setFieldError,
+    isLeadGenerated,
+    setIsLeadGenearted,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -145,7 +146,16 @@ const PersonalDetail = () => {
         setFieldError('pincode', '');
       });
     });
-  }, [errors, first_name, pincode, phone_number, isLeadGenerated, setFieldError]);
+  }, [
+    errors,
+    first_name,
+    pincode,
+    phone_number,
+    isLeadGenerated,
+    setFieldError,
+    values.purpose_of_loan,
+    setIsLeadGenearted,
+  ]);
 
   return (
     <div className='flex flex-col gap-2'>
@@ -253,6 +263,7 @@ const PersonalDetail = () => {
         onChange={handleChange}
         inputClasses='hidearrow'
       />
+
       <TextInput
         label='Mobile number'
         placeholder='Please enter 10 digit mobile no'
@@ -266,6 +277,7 @@ const PersonalDetail = () => {
         onChange={handleChange}
         inputClasses='hidearrow'
       />
+
       <OtpInput
         label='Enter OTP'
         required

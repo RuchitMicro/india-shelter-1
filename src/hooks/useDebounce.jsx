@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const DEFAULT_DEBOUNCE_DURATION = 1000;
 
-function useDebouce(value, delay = DEFAULT_DEBOUNCE_DURATION) {
+function useDebounce(value, delay = DEFAULT_DEBOUNCE_DURATION) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
@@ -18,4 +18,4 @@ function useDebouce(value, delay = DEFAULT_DEBOUNCE_DURATION) {
   return debouncedValue;
 }
 
-export default useDebouce;
+export default useDebounce;
