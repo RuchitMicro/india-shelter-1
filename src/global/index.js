@@ -31,12 +31,12 @@ async function getLeadByPhoneNumber(phoneNumber) {
 
 async function getLeadById(id) {
   const res = await axios.get(`${API_LEAD_URL}/${id}`, {}, requestOptions);
-  return res.data;
+  return res;
 }
 
 async function editLeadById(id, leadData) {
   const res = await axios.patch(`${API_LEAD_URL}/edit/${id}`, leadData, requestOptions);
-  return res.data;
+  return res;
 }
 
 async function deleteLeadById(id) {
@@ -69,8 +69,8 @@ async function getEmailOtp(email) {
 }
 
 async function verifyEmailOtp(email, leadOtp) {
-  const res = await axios.post(`${API_URL}/lead-mobile-otp/${email}`, leadOtp, requestOptions);
-  return res.data;
+  const res = await axios.post(`${API_URL}/lead-email-otp/${email}`, leadOtp, requestOptions);
+  return res;
 }
 
 async function verifyPan(id, leadPan) {
@@ -98,6 +98,13 @@ async function getDropDownOptions(dropDownTitle) {
   return res.data;
 }
 
+async function updateLeadDataOnBlur(leadId, fieldName, value) {
+  const inputName = fieldName;
+  const updatedFieldValue = {};
+  updatedFieldValue[inputName] = value;
+  editLeadById(leadId, updatedFieldValue);
+}
+
 export {
   API_URL,
   pingAPI,
@@ -117,4 +124,5 @@ export {
   getPropertyIdentification,
   getProfessionalType,
   getDropDownOptions,
+  updateLeadDataOnBlur,
 };
