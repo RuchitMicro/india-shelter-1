@@ -3,6 +3,7 @@ import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { useCallback, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
+import { checkBre100, editLeadById, getLeadById } from '../../global';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
@@ -14,9 +15,28 @@ const LeadGeneration = () => {
   }, []);
 
   // TODO: Replace placeholder onSubmit function
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-    console.log('Submitting');
+  const onSubmit = useCallback((values) => {
+    const sendFinalLead = async () => {
+      const data = await getLeadById(49);
+      console.log(data);
+
+      // const updatedValues = {
+      //   ...data,
+      //   loan_request_amount: parseInt(data.loan_request_amount),
+      //   property_estimation: parseInt(data.property_estimation),
+      //   phone_number: values.phone_number.toString(),
+      //   date_of_birth: values.date_of_birth.toISOString(),
+      // };
+      // const res = editLeadById(49, data);
+  
+      if (data) {
+        const callBre100 = async () => {
+          await checkBre100(49).then((res) => console.log(res));
+        };
+        callBre100();
+      }
+    };
+    sendFinalLead();
   }, []);
 
   return (

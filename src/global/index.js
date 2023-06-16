@@ -73,8 +73,8 @@ async function verifyEmailOtp(email, leadOtp) {
   return res;
 }
 
-async function verifyPan(id, leadPan) {
-  const res = await axios.post(`${API_URL}/pan/${id}`, leadPan, requestOptions);
+async function verifyPan(id) {
+  const res = await axios.post(`${API_URL}/pan/${id}`, {}, requestOptions);
   return res.data;
 }
 
@@ -105,6 +105,27 @@ async function updateLeadDataOnBlur(leadId, fieldName, value) {
   editLeadById(leadId, updatedFieldValue);
 }
 
+
+async function checkBre99(id) {
+  const res = await axios.post(`${API_URL}/bre-99/${id}`, {}, requestOptions);
+  return res;
+}
+
+async function checkBre100(id) {
+  const res = await axios.post(`${API_URL}/bre-100/${id}`, {}, requestOptions);
+  return res;
+}
+
+async function checkCibil(id) {
+  const res = await axios.post(`${API_URL}/cibil/${id}`, {}, requestOptions);
+  return res;
+}
+
+async function checkDedupe(id) {
+  const res = await axios.post(`${API_URL}/dedpue/${id}`, {}, requestOptions);
+  return res;
+}
+
 export {
   API_URL,
   pingAPI,
@@ -125,4 +146,8 @@ export {
   getProfessionalType,
   getDropDownOptions,
   updateLeadDataOnBlur,
+  checkBre99,
+  checkBre100,
+  checkCibil,
+  checkDedupe
 };

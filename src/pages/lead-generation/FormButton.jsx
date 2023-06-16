@@ -5,7 +5,7 @@ import { steps } from './utils';
 import PropTypes from 'prop-types';
 
 const FormButton = ({ onButtonClickCB, onSubmit }) => {
-  const { activeStepIndex, goToNextStep, goToPreviousStep, disableNextStep } =
+  const { activeStepIndex, goToNextStep, goToPreviousStep, disableNextStep, values } =
     useContext(AuthContext);
 
   const onNextButtonClick = useCallback(() => {
@@ -34,10 +34,17 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         </Button>
       )}
       <Button
-        disabled={disableNextStep}
+        // disabled={disableNextStep}
         type={activeStepIndex === steps.length - 1 ? 'submit' : 'button'}
         primary
-        onClick={activeStepIndex === steps.length - 1 ? onSubmit : onNextButtonClick}
+        onClick={
+          activeStepIndex === steps.length - 1
+            ? (e) => {
+                e.preventDefault();
+                onSubmit(values);
+              }
+            : onNextButtonClick
+        }
       >
         {activeStepIndex === steps.length - 1 ? 'Submit' : 'Next'}
       </Button>
