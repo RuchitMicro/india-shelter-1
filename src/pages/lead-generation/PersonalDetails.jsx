@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
@@ -12,25 +12,16 @@ import {
 } from '../../components';
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
+import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
 
-const otpReducer = (verified, action) => {
-  switch (action.type) {
-    case 'NOT_VERIFIED':
-      return null;
-    case 'VERIFIED_SUCCESS':
-      return true;
-    case 'VERIFIED_FAILED':
-      return false;
-    default:
-      verified;
-  }
-};
+const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
 
 const PersonalDetail = () => {
-  const [error, setError] = useState(false);
-  const [timer, setTimer] = useState(false);
+  const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [time, setTime] = useState('0:' + 30 + 's');
+  const [otpVerified, setOTPVerified] = useState(null);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+
   const {
     values,
     errors,
@@ -41,16 +32,14 @@ const PersonalDetail = () => {
     setSelectedLoanType,
     setDisableNextStep,
     setFieldValue,
+    setFieldError,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
-  const [verified, dispatch] = useReducer(otpReducer, null);
-  const [checked, setChecked] = useState(false);
-
   useEffect(() => {
     const moveToNextStep = () => {
-      if (loan_request_amount && first_name && pincode && phone_number && verified) {
-        if (checked) setDisableNextStep(false);
+      if (loan_request_amount && first_name && pincode && phone_number && otpVerified) {
+        if (isTermsAccepted) setDisableNextStep(false);
       }
     };
     moveToNextStep();
@@ -59,39 +48,37 @@ const PersonalDetail = () => {
     first_name,
     pincode,
     phone_number,
-    verified,
-    checked,
+    isTermsAccepted,
     setDisableNextStep,
+    otpVerified,
   ]);
 
-  useEffect(() => {
-    timer && dispatch({ type: 'NOT_VERIFIED' });
-
-    const runTimer = () => {
-      var upto = 30;
-      const counts = setInterval(() => {
-        upto -= 1;
-        setTime('0:' + upto + 's');
-
-        if (upto <= 0) {
-          clearInterval(counts);
-          dispatch({ type: 'VERIFIED_SUCCESS' });
-          if (!verified) setError(true);
-          setTimer(false);
-        }
-      }, 1000);
-    };
-
-    timer && runTimer();
-
-    return () => {
-      clearInterval(runTimer);
-    };
-  }, [timer, verified, error]);
-
-  const onClick = () => {
-    setTimer(true);
-  };
+  const onOTPSendClick = useCallback(() => {
+    sendMobileOTP(phone_number).then((data) => {
+      if (data.status === 500) {
+        setFieldError('otp', data.message);
+      }
+      // FIXME: Need to check this in https instance as this does not work on http
+      if ('OTPCredential' in window) {
+        window.addEventListener('DOMContentLoaded', (e) => {
+          const ac = new AbortController();
+          navigator.credentials
+            .get({
+              otp: { transport: ['sms'] },
+              signal: ac.signal,
+            })
+            .then((otp) => {
+              alert(otp.code);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      } else {
+        alert('WebOTP not supported!.');
+      }
+    });
+  }, [phone_number, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
@@ -104,6 +91,61 @@ const PersonalDetail = () => {
     },
     [setFieldValue],
   );
+
+  const verifyLeadOTP = useCallback(
+    async (otp) => {
+      try {
+        const res = await verifyMobileOtp(phone_number, { otp });
+        if (res.status !== 200) {
+          console.log('OTP verification failed');
+          setOTPVerified(false);
+          return;
+        }
+        setOTPVerified(true);
+      } catch {
+        setOTPVerified(false);
+      }
+    },
+    [phone_number],
+  );
+
+  useEffect(() => {
+    if (isLeadGenerated) return;
+
+    let canCreateLead = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !Object.keys(errors).includes(field);
+    }, true);
+
+    if (!canCreateLead) return;
+
+    if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
+
+    getPincode(pincode).then((data) => {
+      if (!data) {
+        canCreateLead = false;
+        return;
+      }
+      canCreateLead = !data.ogl;
+      if (!canCreateLead) {
+        setFieldError('pincode', 'Out of Geographic limit');
+        return;
+      }
+      createLead({
+        first_name,
+        pincode,
+        phone_number: phone_number.toString(),
+      }).then((res) => {
+        if (res.status !== 200) {
+          setIsLeadGenearted(false);
+          return;
+        }
+        setIsLeadGenearted(true);
+        setFieldError('pincode', '');
+      });
+    });
+  }, [errors, first_name, pincode, phone_number, isLeadGenerated, setFieldError]);
 
   return (
     <div className='flex flex-col gap-2'>
@@ -227,18 +269,18 @@ const PersonalDetail = () => {
       <OtpInput
         label='Enter OTP'
         required
-        error={error}
-        verified={verified}
-        timer={timer}
-        time={time}
-        onClick={onClick}
+        verified={otpVerified}
+        setOTPVerified={setOTPVerified}
+        onSendOTPClick={onOTPSendClick}
+        disableSendOTP={isLeadGenerated}
+        verifyOTPCB={verifyLeadOTP}
       />
 
       <div className='flex gap-2'>
         <CheckBox
           name='terms-agreed'
           onChange={(e) => {
-            setChecked(e.currentTarget.checked);
+            setIsTermsAccepted(e.currentTarget.checked);
           }}
         />
         <div className='text-xs text-dark-grey'>

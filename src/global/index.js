@@ -5,14 +5,14 @@ const API_LEAD_URL = `${API_URL}/lead`;
 
 const requestOptions = {};
 
-async function getApi() {
+async function pingAPI() {
   const res = await axios.get(`${API_URL}`, {}, requestOptions);
   return res.data;
 }
 
 async function createLead(leadData) {
   const res = await axios.post(`${API_LEAD_URL}/add`, leadData, requestOptions);
-  return res.data;
+  return res;
 }
 
 async function getAllLeads() {
@@ -49,7 +49,7 @@ async function getPincode(pincode) {
   return res.data;
 }
 
-async function getMobileOtp(phoneNumber) {
+async function sendMobileOTP(phoneNumber) {
   const res = await axios.get(`${API_URL}/lead-mobile-otp/${phoneNumber}`, {}, requestOptions);
   return res.data;
 }
@@ -60,7 +60,7 @@ async function verifyMobileOtp(phoneNumber, leadOtp) {
     leadOtp,
     requestOptions,
   );
-  return res.data;
+  return res;
 }
 
 async function getEmailOtp(email) {
@@ -100,7 +100,7 @@ async function getDropDownOptions(dropDownTitle) {
 
 export {
   API_URL,
-  getApi,
+  pingAPI,
   createLead,
   getAllLeads,
   getLeadByPhoneNumber,
@@ -108,7 +108,7 @@ export {
   editLeadById,
   deleteLeadById,
   getPincode,
-  getMobileOtp,
+  sendMobileOTP,
   verifyMobileOtp,
   getEmailOtp,
   verifyEmailOtp,
