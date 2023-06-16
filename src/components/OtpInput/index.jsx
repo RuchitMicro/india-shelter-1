@@ -1,36 +1,90 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import otpVerified from '../../assets/icons/otp-verified.svg';
+import otpNotVerified from '../../assets/icons/otp-not-verified.svg';
 
 let currentOtpIndex = 0;
-// const tries = 0;
 
-const OtpInput = ({ label, required, error, verified, timer, time, onClick }) => {
+const OtpInput = ({
+  label,
+  required,
+  verified,
+  setOTPVerified,
+  onSendOTPClick,
+  disableSendOTP,
+  verifyOTPCB,
+  defaultResendTime,
+}) => {
   const [otp, setOtp] = useState(new Array(5).fill(''));
+  const [error, setError] = useState(false);
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
-  const [disabled, setDisabled] = useState(true);
+  const [inputDisabled, setInputDisabled] = useState(true);
+  const [timer, setTimer] = useState(false);
+  const [resendTime, setResendTime] = useState(defaultResendTime || 30);
 
   const inputRef = useRef(null);
 
-  const handleOnChange = (e) => {
-    const { value } = e.target;
-    const newOTP = [...otp];
-    newOTP[currentOtpIndex] = value.substring(value.length - 1);
+  const handleOnChange = useCallback(
+    (e) => {
+      const { value } = e.target;
+      const newOTP = [...otp];
+      newOTP[currentOtpIndex] = value.substring(value.length - 1);
 
-    if (!value) setActiveOtpIndex(currentOtpIndex - 1);
-    else setActiveOtpIndex(currentOtpIndex + 1);
+      if (!value) setActiveOtpIndex(currentOtpIndex - 1);
+      else setActiveOtpIndex(currentOtpIndex + 1);
 
-    setOtp(newOTP);
-  };
+      setOtp(newOTP);
+      const otpAsString = newOTP.join('');
+      if (otpAsString.length >= 5) {
+        setInputDisabled(true);
+        verifyOTPCB(otpAsString);
+        setTimer(false);
+      }
+    },
+    [otp, verifyOTPCB],
+  );
+
+  const handleOnOTPSend = useCallback(() => {
+    setActiveOtpIndex(0);
+    setInputDisabled(false);
+    onSendOTPClick();
+    setTimer(true);
+  }, [onSendOTPClick]);
+
+  useEffect(() => {
+    let interval = null;
+    if (timer) {
+      setOTPVerified(null);
+      let time = 30;
+      interval = setInterval(() => {
+        time -= 1;
+        setResendTime(time);
+
+        if (time <= 0) {
+          clearInterval(interval);
+          if (!verified) setError(true);
+          setTimer(false);
+        }
+      }, 1000);
+    } else {
+      clearInterval(interval);
+      setTimer(false);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [verified, timer, setOTPVerified]);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDown = useCallback((e, index) => {
     currentOtpIndex = index;
     if (e.key === 'Backspace') setActiveOtpIndex(currentOtpIndex - 1);
     if (e.key === 'Enter') setActiveOtpIndex(currentOtpIndex + 1);
-  };
+  }, []);
 
   return (
     <div className='otp-container'>
@@ -41,7 +95,7 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
       <div className='flex gap-2 mt-1'>
         {otp.map((_, index) => (
           <input
-            disabled={disabled}
+            disabled={inputDisabled}
             ref={index === activeOtpIndex ? inputRef : null}
             key={index}
             type='number'
@@ -58,66 +112,45 @@ const OtpInput = ({ label, required, error, verified, timer, time, onClick }) =>
       </div>
       <div className='mt-3 flex justify-between items-center'>
         <div className='flex gap-0.5'>
-          {timer && <span className='text-primary-red text-xs leading-[18px]'>{time}</span>}
+          {verified === null && timer && (
+            <span className='text-primary-red text-xs leading-[18px]'>0:{resendTime}s</span>
+          )}
           {verified === true && (
-            <>
-              <span className='text-primary-black text-xs leading-[18px]'>OTP Verified</span>
-              <svg
-                width='18'
-                height='18'
-                viewBox='0 0 18 18'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M15 4.5L6.75 12.75L3 9'
-                  stroke='#00C30C'
-                  strokeWidth='1.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </>
+            <span className='flex text-primary-black text-xs leading-[18px]'>
+              OTP Verified
+              <img src={otpVerified} alt='Otp Verified' role='presentation' />
+            </span>
           )}
           {verified === false && (
-            <>
-              <span className='text-primary-black text-xs leading-[18px]'>OTP not Verified</span>
-              <svg
-                width='18'
-                height='18'
-                viewBox='0 0 18 18'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M13.5 4.5L4.5 13.5'
-                  stroke='#E33439'
-                  strokeWidth='1.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M4.5 4.5L13.5 13.5'
-                  stroke='#E33439'
-                  strokeWidth='1.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-            </>
+            <span className='flex text-primary-black text-xs leading-[18px]'>
+              OTP not Verified
+              <img src={otpNotVerified} alt='Otp Verified' role='presentation' />
+            </span>
           )}
         </div>
-        <button
-          type='button'
-          className='text-primary-red cursor-pointer font-semibold'
-          onClick={() => {
-            setActiveOtpIndex(0);
-            setDisabled(false);
-            onClick();
-          }}
-        >
-          {verified === null && <span> {timer ? 'Resend OTP' : 'Send OTP'} </span>}
-        </button>
+        {disableSendOTP ? (
+          <button
+            type='button'
+            className='text-primary-red cursor-pointer font-semibold'
+            onClick={handleOnOTPSend}
+          >
+            {verified === null && <span>Send OTP</span>}
+          </button>
+        ) : (
+          ''
+        )}
+        {!timer && verified === false && (
+          <button
+            type='button'
+            className='text-sm text-primary-red cursor-pointer font-semibold'
+            onClick={() => {
+              setOtp(new Array(5).fill(''));
+              handleOnOTPSend();
+            }}
+          >
+            Resend OTP
+          </button>
+        )}
       </div>
     </div>
   );
@@ -128,9 +161,10 @@ export default OtpInput;
 OtpInput.propTypes = {
   label: PropTypes.string.isRequired,
   required: PropTypes.bool,
-  error: PropTypes.bool,
   verified: PropTypes.any,
-  timer: PropTypes.bool,
-  time: PropTypes.string,
-  onClick: PropTypes.func,
+  setOTPVerified: PropTypes.func,
+  onSendOTPClick: PropTypes.func,
+  disableSendOTP: PropTypes.bool,
+  verifyOTPCB: PropTypes.func,
+  defaultResendTime: PropTypes.number,
 };

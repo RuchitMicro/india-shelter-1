@@ -29,9 +29,10 @@ const defaultValues = {
   pincode: '',
   property_pincode: '',
   promo_code: '',
-  email: 'ruchitbharwa@gmail.com',
+  email: '',
   email_otp: [],
   otp: [],
+  Out_Of_Geographic_Limit: false,
 };
 
 export const AuthContext = createContext(defaultValues);
