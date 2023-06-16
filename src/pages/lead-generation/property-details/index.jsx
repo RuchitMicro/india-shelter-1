@@ -2,6 +2,7 @@ import { useCallback, useState, useContext, createContext, useEffect } from 'rea
 import { DropDown, TextInput, OtpInput } from '../../../components';
 import { AuthContext } from '../../../context/AuthContext';
 import { propertyIdentificationOptions, propertyDetailsMap } from '../utils';
+import { editLeadById, getEmailOtp, verifyEmailOtp } from '../../../global';
 
 export const PropertyDetailContext = createContext(null);
 
@@ -10,6 +11,8 @@ const PropertyDetail = () => {
   const [propertyCategory, setPropertyCategory] = useState(null);
   const [loanPurpose, setLoanPurpose] = useState();
   const [showOTPInput, setShowOTPInput] = useState(false);
+  const [emailOTPVerified, setEmailOTPVerified] = useState(null);
+
   const {
     values,
     errors,
@@ -18,18 +21,24 @@ const PropertyDetail = () => {
     handleChange,
     setFieldValue,
     selectedLoanType,
-    setDisableNextStep,
+    setFieldError,
+    hidePromoCode,
   } = useContext(AuthContext);
-  const { property_type, property_pincode } = values;
 
-  const handleLoanPursposeChange = useCallback((value) => {
-    setLoanPurpose(value);
-    setFieldValue('purpose_of_loan', value);
-  }, []);
+  const handleLoanPursposeChange = useCallback(
+    (value) => {
+      setLoanPurpose(value);
+      setFieldValue('purpose_of_loan', value);
+    },
+    [setFieldValue],
+  );
 
-  const handlePropertyType = useCallback((value) => {
-    setFieldValue('property_type', value);
-  }, []);
+  const handlePropertyType = useCallback(
+    (value) => {
+      setFieldValue('property_type', value);
+    },
+    [setFieldValue],
+  );
 
   const value = {
     propertyCategory,
@@ -38,28 +47,42 @@ const PropertyDetail = () => {
     setPropertyIdentified,
   };
 
-  useEffect(() => {
-    const moveToNextStep = () => {
-      if (property_type && property_pincode) setDisableNextStep(false);
-      else setDisableNextStep(true);
-    };
-    moveToNextStep();
-  }, [property_pincode, property_type, setDisableNextStep]);
+  const { email } = values;
 
   useEffect(() => {
-    const getPropertyIdentification = () => {
-      if (selectedLoanType !== 'balance-transfer') setFieldValue('property_identification', propertyIdentified);
-      else setFieldValue('property_identification', '');
-    };
-    getPropertyIdentification();
-  }, [propertyIdentified]);
+    if (selectedLoanType !== 'loan-against-property') setFieldValue('purpose_type', '');
+  }, [selectedLoanType, setFieldValue]);
 
-  useEffect(() => {
-    const resetPropertyCategory = () => {
-      if (selectedLoanType !== 'loan-against-property') setFieldValue('purpose_type', '');
-    };
-    resetPropertyCategory();
-  }, [selectedLoanType]);
+  const handleOnEmailBlur = useCallback(async (email) => {
+    const res = await editLeadById(45, { email });
+    if (res.status === 200) {
+      setShowOTPInput(true);
+    }
+  }, []);
+
+  const sendEmailOTP = useCallback(async () => {
+    const data = await getEmailOtp(email);
+    if (data.status === 500) {
+      setFieldError('otp', data.message);
+    }
+  }, [email, setFieldError]);
+
+  const verifyLeadEmailOTP = useCallback(
+    async (otp) => {
+      try {
+        const res = await verifyEmailOtp(email, { otp });
+        if (res.status !== 200) {
+          console.log('OTP verification failed');
+          setEmailOTPVerified(false);
+          return;
+        }
+        setEmailOTPVerified(true);
+      } catch {
+        setEmailOTPVerified(false);
+      }
+    },
+    [email],
+  );
 
   return (
     <PropertyDetailContext.Provider value={value}>
@@ -88,30 +111,51 @@ const PropertyDetail = () => {
           />
         ) : null}
 
-        <TextInput
-          label='Promo Code'
-          hint='To avail advantages or perks associated with a loan'
-          placeholder='Ex: AH34bg'
-          name='promo_code'
-          value={values.promo_code}
-          error={errors.promo_code}
-          touched={touched.promo_code}
-          onBlur={handleBlur}
-          onChange={handleChange}
-        />
+        {hidePromoCode ? (
+          ''
+        ) : (
+          <TextInput
+            label='Promo Code'
+            hint='To avail advantages or perks associated with a loan'
+            placeholder='Ex: AH34bg'
+            name='promo_code'
+            value={values.promo_code}
+            error={errors.promo_code}
+            touched={touched.promo_code}
+            onBlur={(e) => {
+              handleBlur(e);
+              // validatedPromoCode(e.currentTarget.value).then(res => {
+              // res.status
+              // });
+            }}
+            onChange={handleChange}
+          />
+        )}
 
         <TextInput
           label='Enter your Email ID'
           type='email'
+          value={email}
           placeholder='Please enter your Email ID'
           name='email'
-          onChange={(e) => {
-            if (e.currentTarget.value) setShowOTPInput(true);
-            else setShowOTPInput(false);
+          onBlur={(e) => {
+            handleOnEmailBlur(e.currentTarget.value);
+            handleBlur(e);
           }}
+          onChange={handleChange}
         />
 
-        {showOTPInput ? <OtpInput label='Enter OTP' /> : null}
+        {showOTPInput ? (
+          <OtpInput
+            label='Enter OTP'
+            required
+            verified={emailOTPVerified}
+            setOTPVerified={setEmailOTPVerified}
+            disableSendOTP={true}
+            onSendOTPClick={sendEmailOTP}
+            verifyOTPCB={verifyLeadEmailOTP}
+          />
+        ) : null}
       </div>
     </PropertyDetailContext.Provider>
   );
