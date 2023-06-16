@@ -14,7 +14,7 @@ function parseDateString(value, originalValue) {
 }
 
 export const signUpSchema = Yup.object({
-  loan_amount: Yup.number()
+  loan_request_amount: Yup.number()
     .required('Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
     .min(100000, 'Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
     .max(5000000, 'Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000'),
@@ -46,9 +46,12 @@ export const signUpSchema = Yup.object({
   banker_name: Yup.string().required(
     'Please enter a right Bank Name. Entered Bank name was not found',
   ),
+  purpose_of_loan: Yup.string().required('Please select the purpose of the loan.'),
+  property_type: Yup.string().required('Please select the property type.'),
   loan_tenure: Yup.string().required('Please enter the Loan tenure period within 12 months'),
+  purpose_type: Yup.string().required('Property category not selected.'),
 
-  // email: Yup.string().email().required('please enter your email'),
+  email: Yup.string().email().required('please enter your email'),
   // password: Yup.string().min(6).required('please enter your password'),
   // confirmPassword: Yup.string()
   //   .required('re enter your password')

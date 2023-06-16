@@ -4,10 +4,15 @@ import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
 
+const disableSubmitMap = {
+  done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
+  'not-yet': ['purpose_of_loan'],
+};
+
 const LoanAgainstPropertyFields = () => {
   const { setPropertyIdentified, propertyIdentified, propertyCategory, setPropertyCategory } =
     useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setFieldValue, selectedLoanType } =
+  const { values, errors, touched, handleBlur, handleChange, setFieldValue, setDisableNextStep } =
     useContext(AuthContext);
 
   const handleOnPropertyCategoryChange = useCallback(
@@ -15,15 +20,30 @@ const LoanAgainstPropertyFields = () => {
       setPropertyCategory(e.currentTarget.value);
       setFieldValue('purpose_type', e.currentTarget.value);
     },
-    [setPropertyCategory],
+    [setFieldValue, setPropertyCategory],
   );
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
       setPropertyIdentified(e.currentTarget.value);
+      setFieldValue('property_identification', e.currentTarget.value);
     },
-    [setPropertyIdentified],
+    [setFieldValue, setPropertyIdentified],
   );
+
+  useEffect(() => {
+    if (!propertyIdentified) return;
+
+    let disableSubmitting = disableSubmitMap[propertyIdentified].reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !Object.keys(errors).includes(field);
+    }, true);
+
+    disableSubmitting = disableSubmitting && !errors.purpose_type;
+
+    setDisableNextStep(!disableSubmitting);
+  }, [propertyIdentified, errors, setDisableNextStep]);
 
   return (
     <>

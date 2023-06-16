@@ -4,8 +4,26 @@ import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
 import { loanTenureOptions } from '../utils';
 
+const fieldsRequiredForSubmitting = [
+  'banker_name',
+  'loan_tenure',
+  'loan_amount',
+  'purpose_of_loan',
+  'property_type',
+];
+
 const BalanceTransferFields = () => {
-  const { values, errors, touched, handleBlur, handleChange } = useContext(AuthContext);
+  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    let disablSubmit = fieldsRequiredForSubmitting.reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !Object.keys(errors).includes(field);
+    }, true);
+    setDisableNextStep(!disablSubmit);
+  }, [errors, setDisableNextStep]);
 
   return (
     <div className='flex flex-col gap-2'>
