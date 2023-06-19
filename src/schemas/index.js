@@ -16,6 +16,7 @@ function parseDateString(value, originalValue) {
 export const signUpSchema = Yup.object({
   loan_request_amount: Yup.number()
     .required('Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
+    .typeError('Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
     .min(100000, 'Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000')
     .max(5000000, 'Total loan amount should not be less than ₹ 50,000 and more than ₹ 50,00,000'),
   first_name: Yup.string().min(2).max(10).required('please enter your name'),
@@ -30,7 +31,8 @@ export const signUpSchema = Yup.object({
     .min(10, 'Must be exactly 10 digits')
     .max(10, 'Must be exactly 10 digits')
     .required('Please enter your valid 10 digit mobile number'),
-  pan_number: Yup.string().required('Please enter your valid PAN number'),
+  pan_number: Yup.string().required('Please enter your valid PAN number')
+  .matches(/^[A-Z]{5}\d{4}[A-Z]{1}$/, "Pan Number Must be in the following format ex. ABCDE1234F"),
   date_of_birth: Yup.date()
     .transform(parseDateString)
     .required('please enter your birth date')
@@ -51,7 +53,8 @@ export const signUpSchema = Yup.object({
   loan_tenure: Yup.string().required('Please enter the Loan tenure period within 12 months'),
   purpose_type: Yup.string().required('Property category not selected.'),
 
-  email: Yup.string().email().required('please enter your email'),
+  email: Yup.string().email().required('please enter your email')
+  .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "Enter a Valid Email"),
   // password: Yup.string().min(6).required('please enter your password'),
   // confirmPassword: Yup.string()
   //   .required('re enter your password')
