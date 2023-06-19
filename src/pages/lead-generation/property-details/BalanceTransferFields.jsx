@@ -40,7 +40,7 @@ const BalanceTransferFields = () => {
       />
 
       <div className='flex gap-2 items-center'>
-        <div className='flex-1'>
+        <div className='grow'>
           <TextInput
             name='loan_tenure'
             placeholder='Ex: 10'
@@ -51,9 +51,11 @@ const BalanceTransferFields = () => {
             touched={touched.loan_tenure}
             onBlur={handleBlur}
             onChange={handleChange}
+            type="number"
+            inputClasses="hidearrow"
           />
         </div>
-        <div className='mt-1'>
+        <div className='mt-1 grow'>
           <DropDown options={loanTenureOptions} placeholder='Months' showError={false} />
         </div>
       </div>

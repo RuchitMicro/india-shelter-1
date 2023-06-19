@@ -34,6 +34,7 @@ const PersonalDetail = () => {
     setFieldError,
     isLeadGenerated,
     setIsLeadGenearted,
+    setCurrentLeadId,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -143,6 +144,7 @@ const PersonalDetail = () => {
           return;
         }
         setIsLeadGenearted(true);
+        setCurrentLeadId(res.data.id);
         setFieldError('pincode', '');
       });
     });
@@ -155,6 +157,7 @@ const PersonalDetail = () => {
     setFieldError,
     values.purpose_of_loan,
     setIsLeadGenearted,
+    setCurrentLeadId,
   ]);
 
   return (
