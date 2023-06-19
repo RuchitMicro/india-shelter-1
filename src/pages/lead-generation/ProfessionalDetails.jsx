@@ -10,7 +10,7 @@ import { CurrencyInput } from '../../components';
 import { checkBre99, checkCibil, checkDedupe, editLeadById, verifyPan } from '../../global';
 import { useDebounce } from '../../hooks';
 
-const loanTypeDate = [
+const loanTypeData = [
   {
     label: 'Salaried',
     value: 'salaried',
@@ -56,7 +56,7 @@ const professionData = {
     <DropDown
       label='Mode of Salary'
       required
-      options={loanTypeDate[0].options}
+      options={loanTypeData[0].options}
       placeholder='Ex: Bank Transfer'
       onChange={selectDropDownOption}
     />
@@ -65,7 +65,7 @@ const professionData = {
     <DropDown
       label='Occupation'
       required
-      options={loanTypeDate[1].options}
+      options={loanTypeData[1].options}
       placeholder='Ex: Purchase'
       onChange={selectDropDownOption}
     />
@@ -85,6 +85,7 @@ const ProfessinalDetail = () => {
     setFieldError,
     activeStepIndex,
     setDisableNextStep,
+    currentLeadId,
   } = useContext(AuthContext);
   const { pan_number, date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
@@ -114,12 +115,17 @@ const ProfessinalDetail = () => {
     monthly_family_income,
     ongoing_emi,
     setDisableNextStep,
+    errors.pan_number,
+    errors.date_of_birth,
   ]);
 
   useEffect(() => {
     if (date) setFieldValue('date_of_birth', date);
+  }, [date, setFieldValue]);
+
+  useEffect(() => {
     if (selectedProfession) setFieldValue('profession', selectedProfession);
-  }, [date, setFieldValue, selectedProfession]);
+  }, [selectedProfession, setFieldValue]);
 
   const handleData = (value) => {
     if (selectedProfession === 'salaried') {
@@ -136,17 +142,17 @@ const ProfessinalDetail = () => {
 
     const editLead = async () => {
       //call editlead
-      const editRes = await editLeadById(49, { pan_number: values.pan_number });
+      const editRes = await editLeadById(currentLeadId, { pan_number: values.pan_number });
       console.log(editRes);
 
       if (editRes) {
         //call dedupe
-        await checkDedupe(49).then((res) => console.log(res));
+        await checkDedupe(currentLeadId).then((res) => console.log(res));
         console.log('called dedupe');
 
         //call bre99
         const callBre99 = async () => {
-          const res = await checkBre99(49);
+          const res = await checkBre99(currentLeadId);
           console.log('called bre99');
 
           if (res.status === 200) {
@@ -156,7 +162,7 @@ const ProfessinalDetail = () => {
               if (data.Rule_Name === 'PAN') {
                 if (data.Rule_Value === 'YES') {
                   const callPan = async () => {
-                    const res = await verifyPan(49);
+                    const res = await verifyPan(currentLeadId);
                     console.log(res.data.body.status);
                     if (res.data.body.status === 'In-Valid')
                       setFieldError('pan_number', 'Please enter your valid PAN number');
@@ -169,7 +175,7 @@ const ProfessinalDetail = () => {
                 if (data.Rule_Value === 'YES') {
                   const callCibil = async () => {
                     //call cibil
-                    await checkCibil(49).then((res) => console.log(res));
+                    await checkCibil(currentLeadId).then((res) => console.log(res));
                     console.log('called cibil');
                   };
                   callCibil();
@@ -182,7 +188,7 @@ const ProfessinalDetail = () => {
       }
     };
     editLead();
-  }, [deferedPanNumber]);
+  }, [currentLeadId, deferedPanNumber, setFieldError, values.pan_number]);
 
   // console.log(validPan);
 
@@ -192,7 +198,7 @@ const ProfessinalDetail = () => {
         label='PAN number'
         required
         name='pan_number'
-        placeholder='ABCD1234A'
+        placeholder='ABCDE1234A'
         value={values.pan_number}
         error={errors.pan_number}
         touched={touched.pan_number}
@@ -222,7 +228,7 @@ const ProfessinalDetail = () => {
           Profession <span className='text-primary-red text-xs'>*</span>
         </label>
         <div className='flex justify-between gap-4 mt-2'>
-          {loanTypeDate.map((data, index) => (
+          {loanTypeData.map((data, index) => (
             <CardRadio
               key={index}
               name='profDetails'

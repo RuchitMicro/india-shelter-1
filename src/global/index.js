@@ -105,14 +105,13 @@ async function updateLeadDataOnBlur(leadId, fieldName, value) {
   editLeadById(leadId, updatedFieldValue);
 }
 
-
 async function checkBre99(id) {
   const res = await axios.post(`${API_URL}/bre-99/${id}`, {}, requestOptions);
   return res;
 }
 
-async function checkBre100(id) {
-  const res = await axios.post(`${API_URL}/bre-100/${id}`, {}, requestOptions);
+async function checkBre100(id, options = {}) {
+  const res = await axios.post(`${API_URL}/bre-100/${id}`, {}, { ...requestOptions, ...options });
   return res;
 }
 
@@ -149,5 +148,5 @@ export {
   checkBre99,
   checkBre100,
   checkCibil,
-  checkDedupe
+  checkDedupe,
 };

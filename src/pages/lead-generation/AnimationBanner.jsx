@@ -1,14 +1,14 @@
-import homeLoanAnimation from '../../assets/anim/home-loan.json';
-import homeLoanBgAnimation from '../../assets/anim/home-loan-bg.json';
-import loanAgainstPropertyAnimation from '../../assets/anim/loan-against-property.json';
-import Lottie from 'react-lottie-player';
 import { Header } from '../../components';
 import { create } from '@lottiefiles/lottie-interactivity';
-import { useContext, useEffect, useRef } from 'react';
+import { lazy, useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import iconBack from '../../assets/icons/back.svg';
 import logo from '../../assets/logo.svg';
 import { AnimatePresence, motion } from 'framer-motion';
+
+const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
+const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
+const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
 
 const frames = [
   [0, 3],
@@ -41,8 +41,8 @@ const AnimationBanner = () => {
 
   return (
     <div
-      style={{ backgroundColor: '#EEF0DD' }}
-      className='flex flex-col w-full md:w-[597px] 2xl:w-2/4 relative'
+      style={{ backgroundColor: '#CCE2BE' }}
+      className='flex flex-col w-full md:w-[597px] 2xl:w-2/4 relative transition-colors ease-out duration-300'
     >
       <div className='relative md:hidden'>
         <Header />
@@ -66,7 +66,7 @@ const AnimationBanner = () => {
           >
             {selectedLoanType === 'loan-against-property'
               ? 'Get the right value for your property'
-              : 'Find the shelter with us'}
+              : 'Find your shelter with us'}
           </h4>
         </div>
       </div>
@@ -78,18 +78,16 @@ const AnimationBanner = () => {
             animate={{ opacity: 1, transitionDuration: 2 }}
             exit={{ opacity: 0 }}
           >
-            <Lottie
+            <BackgroundAnimation
               id='home-loan-bg-animation'
               className={`absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]`}
               loop
               play
-              animationData={homeLoanBgAnimation}
             />
-            <Lottie
+            <HomeLoanAnimation
               ref={lottiePlayerRef}
               id='home-loan-animation'
               className='md:absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]'
-              animationData={homeLoanAnimation}
             />
           </motion.div>
         )}
@@ -101,10 +99,9 @@ const AnimationBanner = () => {
             animate={{ opacity: 1, transitionDuration: 2 }}
             exit={{ opacity: 0 }}
           >
-            <Lottie
+            <LoanAgainstPropertyAnimation
               play
               className='md:absolute bottom-0 left-0 w-full max-h-[600px] 2xl:max-h-[80vh]'
-              animationData={loanAgainstPropertyAnimation}
             />
           </motion.div>
         )}

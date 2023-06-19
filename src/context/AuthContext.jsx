@@ -2,7 +2,6 @@ import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
 import PropTypes from 'prop-types';
-import { loanTypeOptions } from '../pages/lead-generation/utils';
 import { useSearchParams } from 'react-router-dom';
 import { getLeadById } from '../global';
 
@@ -43,6 +42,7 @@ export const AuthContext = createContext(defaultValues);
 const AuthContextProvider = ({ children }) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
+  const [currentLeadId, setCurrentLeadId] = useState(null);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -54,9 +54,10 @@ const AuthContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    const leadID = searchParams.get('li');
-    if (!leadID) return;
-    getLeadById(leadID).then((res) => {
+    const _leadID = searchParams.get('li');
+    if (!_leadID) return;
+    setCurrentLeadId(_leadID);
+    getLeadById(_leadID).then((res) => {
       if (res.status !== 200) return;
       setIsLeadGenearted(true);
       const data = {};
@@ -69,9 +70,10 @@ const AuthContextProvider = ({ children }) => {
       });
       formik.setValues({ ...formik.values, ...data });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const [activeStepIndex, setActiveStepIndex] = useState(2);
+  const [activeStepIndex, setActiveStepIndex] = useState(0);
   const previousStepIndex = useRef(activeStepIndex);
   const [hidePromoCode, setHidePromoCode] = useState(false);
   const [selectedLoanType, setSelectedLoanType] = useState(formik.values.loan_type);
@@ -114,6 +116,8 @@ const AuthContextProvider = ({ children }) => {
         hidePromoCode,
         isLeadGenerated,
         setIsLeadGenearted,
+        currentLeadId,
+        setCurrentLeadId,
       }}
     >
       {children}

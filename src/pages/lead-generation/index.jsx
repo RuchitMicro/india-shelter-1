@@ -1,13 +1,16 @@
 import LeadGenerationForm from './LeadGenerationForm';
 import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
-import { useCallback, useRef } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { checkBre100, editLeadById, getLeadById } from '../../global';
+import { getLeadById } from '../../global';
+import CongratulationBanner from './CongratulationBanner';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
   const formContainerRef = useRef(null);
+  const [processingBRE, setProcessingBRE] = useState(false);
 
   const onFormButtonClick = useCallback(() => {
     modalRef.current?.snapTo(1);
@@ -15,47 +18,51 @@ const LeadGeneration = () => {
   }, []);
 
   // TODO: Replace placeholder onSubmit function
-  const onSubmit = useCallback((values) => {
-    const sendFinalLead = async () => {
-      const data = await getLeadById(49);
-      console.log(data);
-
-      // const updatedValues = {
-      //   ...data,
-      //   loan_request_amount: parseInt(data.loan_request_amount),
-      //   property_estimation: parseInt(data.property_estimation),
-      //   phone_number: values.phone_number.toString(),
-      //   date_of_birth: values.date_of_birth.toISOString(),
-      // };
-      // const res = editLeadById(49, data);
-  
-      if (data) {
-        const callBre100 = async () => {
-          await checkBre100(49).then((res) => console.log(res));
-        };
-        callBre100();
-      }
-    };
-    sendFinalLead();
+  const onSubmit = useCallback(async (leadId) => {
+    const data = await getLeadById(leadId);
+    if (data) {
+      setProcessingBRE(true);
+    }
   }, []);
 
   return (
-    <AuthContextProvider>
-      <div className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start gap-[111px] overflow-y-hidden'>
-        <AnimationBanner />
-
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          id='lead-form-container'
-          className='w-full md:max-w-[732px]'
-        >
-          <div className='h-screen overflow-auto'>
-            <LeadGenerationForm modalRef={modalRef} formContainerRef={formContainerRef} />
-          </div>
-          <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
-        </form>
-      </div>
-    </AuthContextProvider>
+    <Suspense fallback={<h1>Loading...</h1>}>
+      <AuthContextProvider>
+        {processingBRE ? (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transitionDuration: 2 }}
+              exit={{ opacity: 0 }}
+              className='w-full md:w-screen'
+            >
+              <CongratulationBanner isLoading={processingBRE} setProcessingBRE={setProcessingBRE} />
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transitionDuration: 2 }}
+              exit={{ opacity: 0 }}
+              className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start min-h-screen md:gap-[111px] overflow-y-hidden'
+            >
+              <AnimationBanner />
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                id='lead-form-container'
+                className='w-full md:max-w-[732px]'
+              >
+                <div className='h-screen overflow-auto'>
+                  <LeadGenerationForm modalRef={modalRef} formContainerRef={formContainerRef} />
+                </div>
+                <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
+              </form>
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </AuthContextProvider>
+    </Suspense>
   );
 };
 
