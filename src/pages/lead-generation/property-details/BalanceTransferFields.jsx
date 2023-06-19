@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
 import { loanTenureOptions } from '../utils';
+import { updateLeadDataOnBlur } from '../../../global';
 
 const fieldsRequiredForSubmitting = [
   'banker_name',
@@ -35,7 +36,11 @@ const BalanceTransferFields = () => {
         value={values.banker_name}
         error={errors.banker_name}
         touched={touched.banker_name}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
+        onBlur={(e)=>{
+          handleBlur(e);
+          updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value);
+        }}
         onChange={handleChange}
       />
 
@@ -49,7 +54,11 @@ const BalanceTransferFields = () => {
             value={values.loan_tenure}
             error={errors.loan_tenure}
             touched={touched.loan_tenure}
-            onBlur={handleBlur}
+            // onBlur={handleBlur}
+            onBlur={(e)=>{
+              handleBlur(e);
+              updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value)
+            }}
             onChange={handleChange}
           />
         </div>
@@ -67,7 +76,12 @@ const BalanceTransferFields = () => {
         value={values.loan_amount}
         error={errors.loan_amount}
         touched={touched.loan_amount}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
+        onBlur={(e)=>{
+          handleBlur(e);
+          updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value)
+          // console.log(49, e.currentTarget.name, e.currentTarget.value);
+        }}
         onChange={handleChange}
       />
     </div>

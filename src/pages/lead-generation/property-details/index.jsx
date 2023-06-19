@@ -2,7 +2,7 @@ import { useCallback, useState, useContext, createContext, useEffect } from 'rea
 import { DropDown, TextInput, OtpInput } from '../../../components';
 import { AuthContext } from '../../../context/AuthContext';
 import { propertyIdentificationOptions, propertyDetailsMap } from '../utils';
-import { editLeadById, getEmailOtp, verifyEmailOtp } from '../../../global';
+import { editLeadById, getEmailOtp, updateLeadDataOnBlur, verifyEmailOtp } from '../../../global';
 
 export const PropertyDetailContext = createContext(null);
 
@@ -29,6 +29,8 @@ const PropertyDetail = () => {
     (value) => {
       setLoanPurpose(value);
       setFieldValue('purpose_of_loan', value);
+      updateLeadDataOnBlur(47,'purpose_of_loan', value);
+      // console.log(47,'purpose_of_loan', value);
     },
     [setFieldValue],
   );
@@ -36,6 +38,7 @@ const PropertyDetail = () => {
   const handlePropertyType = useCallback(
     (value) => {
       setFieldValue('property_type', value);
+      updateLeadDataOnBlur(49, 'property_type', value);
     },
     [setFieldValue],
   );
@@ -97,6 +100,7 @@ const PropertyDetail = () => {
           placeholder='Ex: Purchase'
           options={propertyDetailsMap[selectedLoanType]['loanPurposeOptions']}
           onChange={handleLoanPursposeChange}
+          
         />
 
         {loanPurpose &&
@@ -124,6 +128,8 @@ const PropertyDetail = () => {
             touched={touched.promo_code}
             onBlur={(e) => {
               handleBlur(e);
+              updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value);
+              // console.log(49, e.currentTarget.name, e.currentTarget.value);
               // validatedPromoCode(e.currentTarget.value).then(res => {
               // res.status
               // });
@@ -141,6 +147,8 @@ const PropertyDetail = () => {
           onBlur={(e) => {
             handleOnEmailBlur(e.currentTarget.value);
             handleBlur(e);
+            updateLeadDataOnBlur(49, e.currentTarget.name , e.currentTarget.value)
+            // console.log(49, e.currentTarget.name , e.currentTarget.value);
           }}
           onChange={handleChange}
         />

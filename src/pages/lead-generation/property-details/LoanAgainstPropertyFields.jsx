@@ -3,6 +3,7 @@ import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
+import { updateLeadDataOnBlur } from '../../../global';
 
 const disableSubmitMap = {
   done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
@@ -19,6 +20,7 @@ const LoanAgainstPropertyFields = () => {
     (e) => {
       setPropertyCategory(e.currentTarget.value);
       setFieldValue('purpose_type', e.currentTarget.value);
+      updateLeadDataOnBlur(49, 'purpose_type', e.currentTarget.value)
     },
     [setFieldValue, setPropertyCategory],
   );
@@ -27,6 +29,8 @@ const LoanAgainstPropertyFields = () => {
     (e) => {
       setPropertyIdentified(e.currentTarget.value);
       setFieldValue('property_identification', e.currentTarget.value);
+      updateLeadDataOnBlur(49, 'property_identification', e.currentTarget.value)
+      // console.log(49, 'property_identification', e.currentTarget.value);
     },
     [setFieldValue, setPropertyIdentified],
   );
@@ -99,7 +103,12 @@ const LoanAgainstPropertyFields = () => {
             value={values.property_estimation}
             error={errors.property_estimation}
             touched={touched.property_estimation}
-            onBlur={handleBlur}
+            // onBlur={handleBlur}
+            onBlur={(e)=> {
+              handleBlur(e);
+              updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value);
+              // console.log(49, e.currentTarget.name, e.currentTarget.value);
+            }}
             onChange={handleChange}
             inputClasses='font-semibold'
           />
@@ -111,7 +120,11 @@ const LoanAgainstPropertyFields = () => {
             value={values.property_pincode}
             error={errors.property_pincode}
             touched={touched.property_pincode}
-            onBlur={handleBlur}
+            // onBlur={handleBlur}
+            onBlur={(e)=>{
+              handleBlur(e);
+              updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value)
+            }}
             onChange={handleChange}
           />
         </div>

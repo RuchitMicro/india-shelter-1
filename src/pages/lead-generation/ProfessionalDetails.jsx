@@ -7,7 +7,7 @@ import IconSelfEmployed from '../../assets/icons/self-employed';
 import { AuthContext } from '../../context/AuthContext';
 import DatePicker from '../../components/DatePicker';
 import { CurrencyInput } from '../../components';
-import { checkBre99, checkCibil, checkDedupe, editLeadById, verifyPan } from '../../global';
+import { checkBre99, checkCibil, checkDedupe, editLeadById, updateLeadDataOnBlur, verifyPan } from '../../global';
 import { useDebounce } from '../../hooks';
 
 const loanTypeDate = [
@@ -85,6 +85,7 @@ const ProfessinalDetail = () => {
     setFieldError,
     activeStepIndex,
     setDisableNextStep,
+    
   } = useContext(AuthContext);
   const { pan_number, date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
@@ -125,9 +126,11 @@ const ProfessinalDetail = () => {
     if (selectedProfession === 'salaried') {
       setFieldValue('mode_of_salary', value);
       setFieldValue('occupation', '');
+      updateLeadDataOnBlur(49, 'mode_of_salary', value)
     } else {
       setFieldValue('occupation', value);
       setFieldValue('mode_of_salary', '');
+      updateLeadDataOnBlur(49, 'occupation', value)
     }
   };
 
@@ -227,7 +230,13 @@ const ProfessinalDetail = () => {
               key={index}
               name='profDetails'
               label={data.label}
-              onChange={onChange}
+              // onChange={onChange}
+              onChange={(e) => {
+                setCurrent(e.currentTarget.value);
+                setselectedProfession(e.target.value);
+                updateLeadDataOnBlur(49, e.target.getAttribute('name'), e.currentTarget.value)
+              }
+              }
               current={current}
               value={data.value}
             >
@@ -249,7 +258,11 @@ const ProfessinalDetail = () => {
         value={values.monthly_family_income}
         error={errors.monthly_family_income}
         touched={touched.monthly_family_income}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
+        onBlur={(e)=>{
+          handleBlur(e);
+          updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value)
+        }}
         onChange={handleChange}
         inputClasses='font-semibold'
       />
@@ -263,7 +276,11 @@ const ProfessinalDetail = () => {
         value={values.ongoing_emi}
         error={errors.ongoing_emi}
         touched={touched.ongoing_emi}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
+        onBlur={(e)=>{
+          handleBlur(e);
+          updateLeadDataOnBlur(49, e.currentTarget.name, e.currentTarget.value)
+        }}
         onChange={handleChange}
         inputClasses='font-semibold'
       />
