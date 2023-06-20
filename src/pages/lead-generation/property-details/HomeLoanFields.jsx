@@ -80,6 +80,8 @@ const HomeLoanFields = () => {
             touched={touched.property_pincode}
             onBlur={handleBlur}
             onChange={handleChange}
+            type="number"
+            inputClasses="hidearrow"
           />
         </div>
       ) : null}

@@ -47,7 +47,7 @@ const AnimationBanner = () => {
       <div className='relative md:hidden'>
         <Header />
       </div>
-      <div className='flex w-full items-center justify-between md:items-start p-4 md:px-16 md:pt-14 gap-1 z-50'>
+      <div className='flex w-full items-center justify-between md:items-start p-4 md:pl-12 md:pr-24 md:pt-14 gap-1 z-50'>
         <button
           title='Go back'
           onClick={goToPreviousStep}
@@ -62,7 +62,7 @@ const AnimationBanner = () => {
           <img className='hidden md:inline' src={logo} alt='India Shelter' />
           <h4
             style={{ color: '#04584C' }}
-            className='text-center text-base md:text-xl font-medium pr-4'
+            className='text-center text-base md:text-xl font-medium'
           >
             {selectedLoanType === 'loan-against-property'
               ? 'Get the right value for your property'

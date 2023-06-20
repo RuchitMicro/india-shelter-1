@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom';
 import { IconClose } from '../../assets/icons';
 import PropTypes from 'prop-types';
 
-const DesktopPopUp = ({ showpopup, setShowPopUp, children }) => {
+const DesktopPopUp = ({ showpopup, setShowPopUp, children,popupTitle }) => {
   if (showpopup)
     return createPortal(
       <div
@@ -21,7 +21,7 @@ const DesktopPopUp = ({ showpopup, setShowPopUp, children }) => {
           className='hidden md:flex absolute top-2/4 -translate-y-2/4 left-2/4 -translate-x-2/4 rounded-lg shadow-lg flex-col w-full bg-white outline-none focus:outline-none'
         >
           <div className='flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t'>
-            <h3 className='text-xl text-primary-black font-semibold'>Terms and Conditions</h3>
+            <h3 className='text-xl text-primary-black font-semibold'>{popupTitle}</h3>
             <button className='p-1 ml-auto' onClick={() => setShowPopUp(false)}>
               <IconClose />
             </button>

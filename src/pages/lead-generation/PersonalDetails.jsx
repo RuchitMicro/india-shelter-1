@@ -12,12 +12,14 @@ import {
 } from '../../components';
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
+import privacypolicy from '../../global/privacy-policy';
 import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
 
 const PersonalDetail = () => {
   const [showTerms, setShowTerms] = useState(false);
+  const [showPolicy, setShowPolicy] = useState(false);
   const [otpVerified, setOTPVerified] = useState(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
@@ -238,18 +240,30 @@ const PersonalDetail = () => {
             label='Middle Name'
             placeholder='Ex: Ramji, Sreenath'
             name='middle_name'
-            onChange={handleChange}
             onBlur={handleBlur}
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              const pattern = /[A-za-z]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
           />
         </div>
         <div className='w-full'>
           <TextInput
             value={values.last_name}
-            onChange={handleChange}
             onBlur={handleBlur}
             label='Last Name'
             placeholder='Ex: Swami, Singh'
             name='last_name'
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              const pattern = /[A-za-z]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
           />
         </div>
       </div>
@@ -307,17 +321,37 @@ const PersonalDetail = () => {
             role='button'
             className='text-xs font-medium underline text-primary-black ml-1'
           >
-            T&C and Privacy Policy
+            T&C
+          </span>{' '}
+          and{' '}
+          <span
+            tabIndex={-1}
+            onClick={() => setShowPolicy(true)}
+            onKeyDown={() => setShowPolicy(true)}
+            role='button'
+            className='text-xs font-medium underline text-primary-black ml-1'
+          >
+            Privacy Policy
           </span>
           . I authorize India Shelter Finance or its representative to Call, WhatsApp, Email or SMS
           me with reference to my loan enquiry.
         </div>
       </div>
-      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms}>
-        {termsAndConditions}
+      {/* Terms & conditions Modal */}
+      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms} popupTitle="Terms and Conditions">
+        {termsAndConditions} 
       </DesktopPopUp>
-      <TermsAndConditions setShow={setShowTerms} show={showTerms}>
+      {/* Proivacy Policy Modal */}
+      <DesktopPopUp showpopup={showPolicy} setShowPopUp={setShowPolicy} popupTitle="Privacy Policy">
+        {privacypolicy}
+      </DesktopPopUp>
+      {/* Terms and conditions Sheet */}
+      <TermsAndConditions setShow={setShowTerms} show={showTerms} popupTitle="Terms and Conditions">
         {termsAndConditions}
+      </TermsAndConditions>
+      {/* Privacy Policy Sheet */}
+      <TermsAndConditions setShow={setShowPolicy} show={showPolicy} popupTitle="Privacy Policy">
+        {privacypolicy}
       </TermsAndConditions>
     </div>
   );

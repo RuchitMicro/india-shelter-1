@@ -36,7 +36,13 @@ const BalanceTransferFields = () => {
         error={errors.banker_name}
         touched={touched.banker_name}
         onBlur={handleBlur}
-        onChange={handleChange}
+        onChange={(e) => {
+          const value = e.currentTarget.value;
+          const pattern = /^[A-Za-z ]+$/;
+          if (pattern.exec(value[value.length - 1])) {
+            handleChange(e);
+          }
+        }}
       />
 
       <div className='flex gap-2 items-center'>
@@ -51,8 +57,8 @@ const BalanceTransferFields = () => {
             touched={touched.loan_tenure}
             onBlur={handleBlur}
             onChange={handleChange}
-            type="number"
-            inputClasses="hidearrow"
+            type='number'
+            inputClasses='hidearrow'
           />
         </div>
         <div className='mt-1 grow'>
@@ -71,6 +77,7 @@ const BalanceTransferFields = () => {
         touched={touched.loan_amount}
         onBlur={handleBlur}
         onChange={handleChange}
+        className="font-semibold"
       />
     </div>
   );
