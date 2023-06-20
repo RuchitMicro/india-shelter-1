@@ -19,8 +19,6 @@ const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
   const [progress, setProgress] = useState(10);
   const [isQualified, setIsQualified] = useState(false);
 
-  console.log(values.loan_type);
-
   useEffect(() => {
     const paths = document.querySelectorAll('.foreground path');
     paths.forEach((path) => {

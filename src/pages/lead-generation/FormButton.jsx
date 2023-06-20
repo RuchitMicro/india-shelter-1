@@ -34,7 +34,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         </Button>
       )}
       <Button
-        disabled={disableNextStep}
+        // disabled={disableNextStep}
         type={activeStepIndex === steps.length - 1 ? 'submit' : 'button'}
         primary
         onClick={
