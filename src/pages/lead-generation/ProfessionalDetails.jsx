@@ -74,7 +74,7 @@ const professionData = {
 
 const ProfessinalDetail = () => {
   const [current, setCurrent] = useState(null);
-  const [selectedProfession, setselectedProfession] = useState(null);
+  const [selectedProfession, setSelectedProfession] = useState(null);
   const {
     values,
     errors,
@@ -91,9 +91,9 @@ const ProfessinalDetail = () => {
   const [date, setDate] = useState();
   const deferedPanNumber = useDebounce(pan_number, 3000);
 
-  const onChange = (e) => {
+  const onProfessionChange = (e) => {
     setCurrent(e.currentTarget.value);
-    setselectedProfession(e.target.value);
+    setSelectedProfession(e.target.value);
   };
 
   useEffect(() => {
@@ -205,10 +205,6 @@ const ProfessinalDetail = () => {
         onBlur={handleBlur}
         onChange={handleChange}
       />
-      {/* <div>
-        <span className='text-sm text-primary-red'>{validPan === 'In-Valid' && 'Invalid pan'}</span>
-        <span className='text-sm text-green-500'>{validPan === 'Valid' && 'Valid pan'}</span>
-      </div> */}
 
       <DatePicker
         startDate={date}
@@ -231,9 +227,9 @@ const ProfessinalDetail = () => {
           {loanTypeData.map((data, index) => (
             <CardRadio
               key={index}
-              name='profDetails'
+              name='profession'
               label={data.label}
-              onChange={onChange}
+              onChange={onProfessionChange}
               current={current}
               value={data.value}
             >
@@ -278,3 +274,5 @@ const ProfessinalDetail = () => {
 };
 
 export default ProfessinalDetail;
+
+// TODO: Sending a different SMS on continue journey

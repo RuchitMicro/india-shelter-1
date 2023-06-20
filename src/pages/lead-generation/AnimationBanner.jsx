@@ -47,14 +47,14 @@ const AnimationBanner = () => {
       <div className='relative md:hidden'>
         <Header />
       </div>
-      <div className='flex w-full items-center justify-between md:items-start p-4 md:px-16 md:pt-14 gap-1 z-50'>
+      <div className='flex w-full items-center justify-between md:items-start p-4 md:pl-12 md:pr-24 md:pt-[52px] gap-1 z-50'>
         <button
           title='Go back'
           onClick={goToPreviousStep}
           type='button'
           className={`${
             activeStepIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          } w-8 h-8 md:w-11 md:h-11 md:mt-4 cursor-pointer`}
+          } w-8 h-8 md:w-11 md:h-11 md:mt-2 cursor-pointer`}
         >
           <img className='w-full h-full pointer-events-none' src={iconBack} alt='Back' />
         </button>
