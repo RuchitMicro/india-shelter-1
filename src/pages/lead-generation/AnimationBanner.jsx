@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
 const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
-const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
+import LoanAgainstPropertyAnimation from './LoanAgainstPropertyAnimation';
 
 const frames = [
   [0, 3],
@@ -22,7 +22,7 @@ const AnimationBanner = () => {
   const lottiePlayerRef = useRef(null);
 
   useEffect(() => {
-    if (lottiePlayerRef.current && selectedLoanType !== 'loan-against-property')
+    if (lottiePlayerRef.current && selectedLoanType !== 'LAP')
       create({
         player: lottiePlayerRef.current,
         mode: 'chain',
@@ -64,7 +64,7 @@ const AnimationBanner = () => {
             style={{ color: '#04584C' }}
             className='text-center text-base md:text-xl font-medium pr-4'
           >
-            {selectedLoanType === 'loan-against-property'
+            {selectedLoanType === 'LAP'
               ? 'Get the right value for your property'
               : 'Find your shelter with us'}
           </h4>
@@ -72,7 +72,7 @@ const AnimationBanner = () => {
       </div>
 
       <AnimatePresence>
-        {selectedLoanType !== 'loan-against-property' && (
+        {selectedLoanType !== 'LAP' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transitionDuration: 2 }}
@@ -93,7 +93,7 @@ const AnimationBanner = () => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {selectedLoanType === 'loan-against-property' && (
+        {selectedLoanType === 'LAP' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transitionDuration: 2 }}
