@@ -20,7 +20,8 @@ const OtpInput = ({
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(true);
   const [timer, setTimer] = useState(false);
-  const [resendTime, setResendTime] = useState(defaultResendTime || 30);
+  const [resendTime, setResendTime] = useState(defaultResendTime || 10);
+  const [sentOnce, setSentOnce] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -55,7 +56,7 @@ const OtpInput = ({
     let interval = null;
     if (timer) {
       setOTPVerified(null);
-      let time = 30;
+      let time = defaultResendTime || 10;
       interval = setInterval(() => {
         time -= 1;
         setResendTime(time);
@@ -74,7 +75,7 @@ const OtpInput = ({
     return () => {
       clearInterval(interval);
     };
-  }, [verified, timer, setOTPVerified]);
+  }, [verified, timer, setOTPVerified, defaultResendTime]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -128,28 +129,33 @@ const OtpInput = ({
             </span>
           )}
         </div>
-        {disableSendOTP ? (
+        {!sentOnce && disableSendOTP && !timer ? (
           <button
             type='button'
             className='text-primary-red cursor-pointer font-semibold'
-            onClick={handleOnOTPSend}
+            onClick={() => {
+              setSentOnce(true);
+              handleOnOTPSend();
+            }}
           >
-            {verified === null && <span>Send OTP</span>}
+            <span>Send OTP</span>
           </button>
         ) : (
           ''
         )}
-        {!timer && verified === false && (
+        {sentOnce && disableSendOTP && !timer && verified !== true ? (
           <button
             type='button'
-            className='text-sm text-primary-red cursor-pointer font-semibold'
+            className='text-primary-red cursor-pointer font-semibold'
             onClick={() => {
               setOtp(new Array(5).fill(''));
               handleOnOTPSend();
             }}
           >
-            Resend OTP
+            <span>Resend OTP</span>
           </button>
+        ) : (
+          ''
         )}
       </div>
     </div>
