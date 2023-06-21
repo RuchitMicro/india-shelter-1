@@ -82,7 +82,7 @@ body {
   }
 
   input {
-    @apply placeholder:text-light-grey text-base text-black focus:outline-none;
+    @apply placeholder:text-light-grey text-base text-black focus:outline-none disabled:bg-transparent;
   }
 
   input[type='range'] {

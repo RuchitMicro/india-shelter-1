@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
 const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
-const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
+import LoanAgainstPropertyAnimation from './LoanAgainstPropertyAnimation';
 
 const frames = [
   [0, 3],
@@ -22,7 +22,7 @@ const AnimationBanner = () => {
   const lottiePlayerRef = useRef(null);
 
   useEffect(() => {
-    if (lottiePlayerRef.current && selectedLoanType !== 'loan-against-property')
+    if (lottiePlayerRef.current && selectedLoanType !== 'LAP')
       create({
         player: lottiePlayerRef.current,
         mode: 'chain',
@@ -47,14 +47,14 @@ const AnimationBanner = () => {
       <div className='relative md:hidden'>
         <Header />
       </div>
-      <div className='flex w-full items-center justify-between md:items-start p-4 md:px-16 md:pt-14 gap-1 z-50'>
+      <div className='flex w-full items-center justify-between md:items-start p-4 md:pl-12 md:pr-24 md:pt-[52px] gap-1 z-50'>
         <button
           title='Go back'
           onClick={goToPreviousStep}
           type='button'
           className={`${
             activeStepIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          } w-8 h-8 md:w-11 md:h-11 md:mt-4 cursor-pointer`}
+          } w-8 h-8 md:w-11 md:h-11 md:mt-2 cursor-pointer`}
         >
           <img className='w-full h-full pointer-events-none' src={iconBack} alt='Back' />
         </button>
@@ -64,7 +64,7 @@ const AnimationBanner = () => {
             style={{ color: '#04584C' }}
             className='text-center text-base md:text-xl font-medium pr-4'
           >
-            {selectedLoanType === 'loan-against-property'
+            {selectedLoanType === 'LAP'
               ? 'Get the right value for your property'
               : 'Find your shelter with us'}
           </h4>
@@ -72,7 +72,7 @@ const AnimationBanner = () => {
       </div>
 
       <AnimatePresence>
-        {selectedLoanType !== 'loan-against-property' && (
+        {selectedLoanType !== 'LAP' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transitionDuration: 2 }}
@@ -93,7 +93,7 @@ const AnimationBanner = () => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {selectedLoanType === 'loan-against-property' && (
+        {selectedLoanType === 'LAP' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transitionDuration: 2 }}

@@ -76,7 +76,7 @@ const DropDown = ({
                   : 'text-primary-black hover:bg-grey-white'
               } 
               ${
-                index ? 'border-t' : 'border-none'
+                index ? 'border-t border-stroke' : 'border-none'
               } border-light-grey py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
             >
               {option.label}

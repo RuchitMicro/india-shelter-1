@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import TextInput from '../../components/TextInput';
 import CardRadio from '../../components/CardRadio';
 import DropDown from '../../components/DropDown';
@@ -7,52 +7,59 @@ import IconSelfEmployed from '../../assets/icons/self-employed';
 import { AuthContext } from '../../context/AuthContext';
 import DatePicker from '../../components/DatePicker';
 import { CurrencyInput } from '../../components';
-import { checkBre99, checkCibil, checkDedupe, editLeadById, verifyPan } from '../../global';
-import { useDebounce } from '../../hooks';
+import {
+  checkBre99,
+  checkCibil,
+  checkDedupe,
+  editLeadById,
+  updateLeadDataOnBlur,
+  verifyPan,
+} from '../../global';
+import { currencyToFloat } from '../../components/CurrencyInput';
 
 const loanTypeData = [
   {
     label: 'Salaried',
-    value: 'salaried',
+    value: 'Cash Salaried',
     icon: <IconSalaried />,
     options: [
       {
         label: 'Bank Transfer',
-        value: 'bank-transfer',
+        value: 'Bank Transfer Salaried',
       },
       {
         label: 'Cash',
-        value: 'cash',
+        value: 'Cash Salaried',
       },
     ],
   },
   {
     label: 'Self employed',
-    value: 'self-employed',
+    value: 'Self Employed',
     icon: <IconSelfEmployed />,
     options: [
       {
         label: 'Trading',
-        value: 'trading',
+        value: 'Trading',
       },
       {
         label: 'Manufacturing',
-        value: 'manufacturing',
+        value: 'Manufacturing',
       },
       {
         label: 'Services',
-        value: 'services',
+        value: 'Services',
       },
       {
         label: 'Occupation 4',
-        value: 'occupation-4',
+        value: 'Occupation-4',
       },
     ],
   },
 ];
 
 const professionData = {
-  salaried: (selectDropDownOption) => (
+  'Cash Salaried': (selectDropDownOption) => (
     <DropDown
       label='Mode of Salary'
       required
@@ -61,7 +68,7 @@ const professionData = {
       onChange={selectDropDownOption}
     />
   ),
-  'self-employed': (selectDropDownOption) => (
+  'Self Employed': (selectDropDownOption) => (
     <DropDown
       label='Occupation'
       required
@@ -74,7 +81,7 @@ const professionData = {
 
 const ProfessinalDetail = () => {
   const [current, setCurrent] = useState(null);
-  const [selectedProfession, setselectedProfession] = useState(null);
+  const [selectedProfession, setSelectedProfession] = useState(null);
   const {
     values,
     errors,
@@ -87,13 +94,15 @@ const ProfessinalDetail = () => {
     setDisableNextStep,
     currentLeadId,
   } = useContext(AuthContext);
-  const { pan_number, date_of_birth, monthly_family_income, ongoing_emi } = values;
+  const { date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
-  const deferedPanNumber = useDebounce(pan_number, 3000);
 
-  const onChange = (e) => {
-    setCurrent(e.currentTarget.value);
-    setselectedProfession(e.target.value);
+  const onProfessionChange = (e) => {
+    const value = e.currentTarget.value;
+    setCurrent(value);
+    setSelectedProfession(value);
+    setFieldValue('profession', value);
+    updateLeadDataOnBlur(currentLeadId, 'profession', value).then((data) => console.log(data));
   };
 
   useEffect(() => {
@@ -101,6 +110,7 @@ const ProfessinalDetail = () => {
       if (
         !errors.pan_number &&
         !errors.date_of_birth &&
+        date_of_birth &&
         monthly_family_income > 0 &&
         ongoing_emi > 0
       )
@@ -109,8 +119,6 @@ const ProfessinalDetail = () => {
     };
     moveToNextStep();
   }, [
-    activeStepIndex,
-    pan_number,
     date_of_birth,
     monthly_family_income,
     ongoing_emi,
@@ -121,76 +129,61 @@ const ProfessinalDetail = () => {
 
   useEffect(() => {
     if (date) setFieldValue('date_of_birth', date);
-  }, [date, setFieldValue]);
-
-  useEffect(() => {
-    if (selectedProfession) setFieldValue('profession', selectedProfession);
-  }, [selectedProfession, setFieldValue]);
+    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', date);
+  }, [currentLeadId, date, setFieldValue]);
 
   const handleData = (value) => {
-    if (selectedProfession === 'salaried') {
+    if (selectedProfession === 'Cash Salaried') {
       setFieldValue('mode_of_salary', value);
       setFieldValue('occupation', '');
-    } else {
-      setFieldValue('occupation', value);
+      updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', value);
+      updateLeadDataOnBlur(currentLeadId, 'occupation', null);
+    } else if (selectedProfession === 'Self Employed') {
+      setFieldValue('Occupation', value);
       setFieldValue('mode_of_salary', '');
+      updateLeadDataOnBlur(currentLeadId, 'occupation', value);
+      updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', null);
     }
   };
 
-  useEffect(() => {
-    if (!deferedPanNumber) return;
+  const handleOnPanBlur = useCallback(
+    async (e) => {
+      if (errors.pan_number) return;
 
-    const editLead = async () => {
-      //call editlead
-      const editRes = await editLeadById(currentLeadId, { pan_number: values.pan_number });
-      console.log(editRes);
+      const updatedPanCard = await editLeadById(currentLeadId, {
+        pan_number: e.currentTarget.value.toUpperCase(),
+      });
 
-      if (editRes) {
-        //call dedupe
-        await checkDedupe(currentLeadId).then((res) => console.log(res));
-        console.log('called dedupe');
+      if (updatedPanCard.status !== 200) return;
 
-        //call bre99
-        const callBre99 = async () => {
-          const res = await checkBre99(currentLeadId);
-          console.log('called bre99');
+      //call dedupe
+      await checkDedupe(currentLeadId);
+      console.log('called dedupe');
+      //call bre99
+      const bre99Res = await checkBre99(currentLeadId);
+      console.log('called bre99');
 
-          if (res.status === 200) {
-            const responseArr = res.data.bre_99_response.body;
+      if (bre99Res.status !== 200) return;
 
-            responseArr.map((data) => {
-              if (data.Rule_Name === 'PAN') {
-                if (data.Rule_Value === 'YES') {
-                  const callPan = async () => {
-                    const res = await verifyPan(currentLeadId);
-                    console.log(res.data.body.status);
-                    if (res.data.body.status === 'In-Valid')
-                      setFieldError('pan_number', 'Please enter your valid PAN number');
-                    console.log('called pan');
-                  };
-                  callPan();
-                }
-              }
-              if (data.Rule_Name === 'Bureau') {
-                if (data.Rule_Value === 'YES') {
-                  const callCibil = async () => {
-                    //call cibil
-                    await checkCibil(currentLeadId).then((res) => console.log(res));
-                    console.log('called cibil');
-                  };
-                  callCibil();
-                }
-              }
-            });
-          }
-        };
-        callBre99();
+      const bre99Data = bre99Res.data.bre_99_response.body;
+      const allowCallPanRule = bre99Data.find((rule) => rule.Rule_Name === 'PAN');
+      const allowCallCibilRule = bre99Data.find((rule) => rule.Rule_Name === 'Bureau');
+
+      if (allowCallPanRule.Rule_Value === 'YES') {
+        const res = await verifyPan(currentLeadId);
+        if (!res.body) return;
+        if (res.body.status === 'In-Valid') {
+          setFieldError('pan_number', 'Please enter your valid PAN number');
+        }
+        console.log('called pan');
       }
-    };
-    editLead();
-  }, [currentLeadId, deferedPanNumber, setFieldError, values.pan_number]);
-
-  // console.log(validPan);
+      if (allowCallCibilRule.Rule_Value === 'YES') {
+        await checkCibil(currentLeadId);
+        console.log('called cibil');
+      }
+    },
+    [currentLeadId, errors.pan_number, setFieldError],
+  );
 
   return (
     <div className='flex flex-col gap-2'>
@@ -199,16 +192,15 @@ const ProfessinalDetail = () => {
         required
         name='pan_number'
         placeholder='ABCDE1234A'
-        value={values.pan_number}
+        value={values.pan_number.toUpperCase()}
         error={errors.pan_number}
         touched={touched.pan_number}
-        onBlur={handleBlur}
+        onBlur={(e) => {
+          handleBlur(e);
+          handleOnPanBlur(e);
+        }}
         onChange={handleChange}
       />
-      {/* <div>
-        <span className='text-sm text-primary-red'>{validPan === 'In-Valid' && 'Invalid pan'}</span>
-        <span className='text-sm text-green-500'>{validPan === 'Valid' && 'Valid pan'}</span>
-      </div> */}
 
       <DatePicker
         startDate={date}
@@ -217,6 +209,7 @@ const ProfessinalDetail = () => {
         name='date_of_birth'
         label='Date of Birth'
       />
+
       <span className='text-sm text-primary-red'>
         {errors.date_of_birth && touched.date_of_birth
           ? errors.date_of_birth
@@ -231,9 +224,9 @@ const ProfessinalDetail = () => {
           {loanTypeData.map((data, index) => (
             <CardRadio
               key={index}
-              name='profDetails'
+              name='profession'
               label={data.label}
-              onChange={onChange}
+              onChange={onProfessionChange}
               current={current}
               value={data.value}
             >
@@ -248,14 +241,22 @@ const ProfessinalDetail = () => {
 
       <CurrencyInput
         label='Monthly Family Income'
-        hint='Total monthly earnings of all family members. This helps to improve your loan eligibility'
+        hint='Total monthly earnings of all family members. <br /> This helps to improve your loan eligibility'
         required
         name='monthly_family_income'
         placeholder='Ex: 1,00,000'
         value={values.monthly_family_income}
         error={errors.monthly_family_income}
         touched={touched.monthly_family_income}
-        onBlur={handleBlur}
+        onBlur={(e) => {
+          const target = e.currentTarget;
+          handleBlur(e);
+          updateLeadDataOnBlur(
+            currentLeadId,
+            target.getAttribute('name'),
+            currencyToFloat(target.value).toString(),
+          );
+        }}
         onChange={handleChange}
         inputClasses='font-semibold'
       />
@@ -269,7 +270,15 @@ const ProfessinalDetail = () => {
         value={values.ongoing_emi}
         error={errors.ongoing_emi}
         touched={touched.ongoing_emi}
-        onBlur={handleBlur}
+        onBlur={(e) => {
+          const target = e.currentTarget;
+          handleBlur(e);
+          updateLeadDataOnBlur(
+            currentLeadId,
+            target.getAttribute('name'),
+            currencyToFloat(target.value),
+          );
+        }}
         onChange={handleChange}
         inputClasses='font-semibold'
       />
