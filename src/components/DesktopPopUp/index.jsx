@@ -12,7 +12,7 @@ const DesktopPopUp = ({ showpopup, setShowPopUp, children,popupTitle }) => {
         style={{
           zIndex: 9999999,
         }}
-        className='fixed inset-0 w-full bg-black bg-opacity-40'
+        className='fixed inset-0 w-full bg-black bg-opacity-50'
       >
         <div
           style={{
@@ -20,7 +20,7 @@ const DesktopPopUp = ({ showpopup, setShowPopUp, children,popupTitle }) => {
           }}
           className='hidden md:flex absolute top-2/4 -translate-y-2/4 left-2/4 -translate-x-2/4 rounded-lg shadow-lg flex-col w-full bg-white outline-none focus:outline-none'
         >
-          <div className='flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t'>
+          <div className='flex items-start justify-between py-6 pl-6 pr-4 border-b border-solid border-slate-200 rounded-t'>
             <h3 className='text-xl text-primary-black font-semibold'>{popupTitle}</h3>
             <button className='p-1 ml-auto' onClick={() => setShowPopUp(false)}>
               <IconClose />
@@ -29,7 +29,7 @@ const DesktopPopUp = ({ showpopup, setShowPopUp, children,popupTitle }) => {
           <div className='py-4 pl-6 pr-8'>
             <div style={{ height: 438 }} className='relative pr-4 flex-auto overflow-y-auto'>
               <p
-                className='text-base font-normal leading-relaxed'
+                className='text-base text-dark-grey font-normal leading-relaxed'
                 dangerouslySetInnerHTML={{
                   __html: children,
                 }}

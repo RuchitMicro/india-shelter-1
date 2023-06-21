@@ -16,7 +16,7 @@ const TermsAndConditions = ({ show, setShow, children, popupTitle }) => {
       className='md:hidden'
     >
       <Sheet.Container>
-        <Sheet.Header className='flex flex-col gap-2 py-2 px-4'>
+        <Sheet.Header className='flex flex-col gap-2 py-2 px-4 border-b-[1px] border-stroke'>
           <BottomSheetHandle />
           <div className='flex gap-4 justify-between'>
             <span className='font-semibold text-xl text-primary-black'>{popupTitle}</span>
@@ -27,7 +27,7 @@ const TermsAndConditions = ({ show, setShow, children, popupTitle }) => {
         </Sheet.Header>
         <Sheet.Content
           disableDrag={true}
-          className='px-4 text-dark-grey leading-6 my-4'
+          className='px-4 text-dark-grey leading-6 my-4 mr-2'
           dangerouslySetInnerHTML={{
             __html: children,
           }}

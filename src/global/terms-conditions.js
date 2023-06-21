@@ -1,4 +1,4 @@
-const termsAndConditions = `<ul>
+const termsAndConditions = `<ul class="pl-[18px]">
     <li>The use of the website is governed by the terms contained herein and as indicated elsewhere on the website in addition to any terms and conditions specific to certain sections.</li>
     <li>The use of the website shall be governed by the applicable laws.&nbsp;</li>
     <li>All information material, news items, data, analysis, and other content on the website is subject to change at the sole discretion of India Shelter Finance Corporation Ltd without Prior notification.</li>
