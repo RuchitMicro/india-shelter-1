@@ -49,9 +49,12 @@ async function getPincode(pincode) {
   return res.data;
 }
 
-async function sendMobileOTP(phoneNumber) {
-  const res = await axios.get(`${API_URL}/lead-mobile-otp/${phoneNumber}`, {}, requestOptions);
-  return res.data;
+async function sendMobileOTP(phoneNumber, continueJourney = false) {
+  const otpLink = continueJourney
+    ? `${API_URL}/lead-mobile-otp/journey-continue/${phoneNumber}`
+    : `${API_URL}/lead-mobile-otp/${phoneNumber}`;
+  const res = await axios.get(otpLink, {}, requestOptions);
+  return res;
 }
 
 async function verifyMobileOtp(phoneNumber, leadOtp) {
@@ -65,7 +68,7 @@ async function verifyMobileOtp(phoneNumber, leadOtp) {
 
 async function getEmailOtp(email) {
   const res = await axios.get(`${API_URL}/lead-email-otp/${email}`, {}, requestOptions);
-  return res.data;
+  return res;
 }
 
 async function verifyEmailOtp(email, leadOtp) {
@@ -102,7 +105,7 @@ async function updateLeadDataOnBlur(leadId, fieldName, value) {
   const inputName = fieldName;
   const updatedFieldValue = {};
   updatedFieldValue[inputName] = value;
-  editLeadById(leadId, updatedFieldValue);
+  return editLeadById(leadId, updatedFieldValue);
 }
 
 async function checkBre99(id) {
@@ -121,7 +124,7 @@ async function checkCibil(id) {
 }
 
 async function checkDedupe(id) {
-  const res = await axios.post(`${API_URL}/dedpue/${id}`, {}, requestOptions);
+  const res = await axios.post(`${API_URL}/dedupe/${id}`, {}, requestOptions);
   return res;
 }
 

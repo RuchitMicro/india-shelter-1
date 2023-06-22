@@ -2,7 +2,7 @@ import { useCallback, useState, useContext, createContext, useEffect } from 'rea
 import { DropDown, TextInput, OtpInput } from '../../../components';
 import { AuthContext } from '../../../context/AuthContext';
 import { propertyIdentificationOptions, propertyDetailsMap } from '../utils';
-import { editLeadById, getEmailOtp, verifyEmailOtp } from '../../../global';
+import { editLeadById, getEmailOtp, updateLeadDataOnBlur, verifyEmailOtp } from '../../../global';
 
 export const PropertyDetailContext = createContext(null);
 
@@ -23,21 +23,25 @@ const PropertyDetail = () => {
     selectedLoanType,
     setFieldError,
     hidePromoCode,
+    currentLeadId,
+    setDisableNextStep,
   } = useContext(AuthContext);
 
   const handleLoanPursposeChange = useCallback(
     (value) => {
       setLoanPurpose(value);
       setFieldValue('purpose_of_loan', value);
+      updateLeadDataOnBlur(currentLeadId, 'purpose_of_loan', value);
     },
-    [setFieldValue],
+    [currentLeadId, setFieldValue],
   );
 
   const handlePropertyType = useCallback(
     (value) => {
       setFieldValue('property_type', value);
+      updateLeadDataOnBlur(currentLeadId, 'property_type', value);
     },
-    [setFieldValue],
+    [currentLeadId, setFieldValue],
   );
 
   const value = {
@@ -50,20 +54,24 @@ const PropertyDetail = () => {
   const { email } = values;
 
   useEffect(() => {
-    if (selectedLoanType !== 'loan-against-property') setFieldValue('purpose_type', '');
+    if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
+  }, [emailOTPVerified, setDisableNextStep, showOTPInput]);
+
+  useEffect(() => {
+    if (selectedLoanType !== 'LAP') setFieldValue('purpose_type', '');
   }, [selectedLoanType, setFieldValue]);
 
-  const handleOnEmailBlur = useCallback(async (email) => {
-    const res = await editLeadById(45, { email });
-    if (res.status === 200) {
-      setShowOTPInput(true);
-    }
-  }, []);
+  const handleOnEmailBlur = useCallback(
+    async (email) => {
+      await editLeadById(currentLeadId, { email });
+    },
+    [currentLeadId],
+  );
 
   const sendEmailOTP = useCallback(async () => {
-    const data = await getEmailOtp(email);
-    if (data.status === 500) {
-      setFieldError('otp', data.message);
+    const res = await getEmailOtp(email);
+    if (res.status !== 200) {
+      setFieldError('otp', res.data.message);
     }
   }, [email, setFieldError]);
 
@@ -72,7 +80,6 @@ const PropertyDetail = () => {
       try {
         const res = await verifyEmailOtp(email, { otp });
         if (res.status !== 200) {
-          console.log('OTP verification failed');
           setEmailOTPVerified(false);
           return;
         }
@@ -123,10 +130,9 @@ const PropertyDetail = () => {
             error={errors.promo_code}
             touched={touched.promo_code}
             onBlur={(e) => {
+              const target = e.currentTarget;
               handleBlur(e);
-              // validatedPromoCode(e.currentTarget.value).then(res => {
-              // res.status
-              // });
+              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
             }}
             onChange={handleChange}
           />
@@ -138,9 +144,20 @@ const PropertyDetail = () => {
           value={email}
           placeholder='Please enter your Email ID'
           name='email'
+          autoComplete='off'
           onBlur={(e) => {
-            handleOnEmailBlur(e.currentTarget.value);
+            const target = e.currentTarget;
+            handleOnEmailBlur(target.value);
             handleBlur(e);
+            updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+          }}
+          onInput={(e) => {
+            if (e.currentTarget.value && !errors.email) {
+              setDisableNextStep(true);
+              setShowOTPInput(true);
+            } else {
+              setShowOTPInput(false);
+            }
           }}
           onChange={handleChange}
         />

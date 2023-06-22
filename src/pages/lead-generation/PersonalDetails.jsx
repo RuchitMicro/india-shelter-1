@@ -12,16 +12,20 @@ import {
 } from '../../components';
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
-import privacypolicy from '../../global/privacy-policy';
+import privacyPolicy from '../../global/privacy-policy';
 import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
+import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
 
 const PersonalDetail = () => {
+  const [searchParams] = useSearchParams();
+
   const [showTerms, setShowTerms] = useState(false);
-  const [showPolicy, setShowPolicy] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [otpVerified, setOTPVerified] = useState(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [canCreateLead, setCanCreateLead] = useState(false);
 
   const {
     values,
@@ -37,6 +41,8 @@ const PersonalDetail = () => {
     isLeadGenerated,
     setIsLeadGenearted,
     setCurrentLeadId,
+    inputDisabled,
+    setInputDisabled,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -58,13 +64,14 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
-    sendMobileOTP(phone_number).then((data) => {
-      if (data.status === 500) {
-        setFieldError('otp', data.message);
+    const continueJourney = searchParams.has('li');
+    sendMobileOTP(phone_number, continueJourney).then((res) => {
+      if (res.status === 500) {
+        setFieldError('otp', res.data.message);
+        return;
       }
-      // FIXME: Need to check this in https instance as this does not work on http
       if ('OTPCredential' in window) {
-        window.addEventListener('DOMContentLoaded', (e) => {
+        window.addEventListener('DOMContentLoaded', (_) => {
           const ac = new AbortController();
           navigator.credentials
             .get({
@@ -82,7 +89,7 @@ const PersonalDetail = () => {
         alert('WebOTP not supported!.');
       }
     });
-  }, [phone_number, setFieldError]);
+  }, [phone_number, searchParams, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
@@ -106,36 +113,38 @@ const PersonalDetail = () => {
           return;
         }
         setOTPVerified(true);
+        setInputDisabled(false);
       } catch {
         setOTPVerified(false);
       }
     },
-    [phone_number],
+    [phone_number, setInputDisabled],
   );
+
+  const handleOnPincodeChange = useCallback(async () => {
+    if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
+
+    const data = await getPincode(pincode);
+    if (!data) {
+      setCanCreateLead(false);
+      return;
+    }
+    if (data.ogl) {
+      setFieldError('pincode', 'Out of Geographic limit');
+      return;
+    }
+    setCanCreateLead(!data.ogl);
+    setFieldValue('Out_Of_Geographic_Limit', data.ogl);
+  }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
   useEffect(() => {
     if (isLeadGenerated) return;
-
-    let canCreateLead = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
+    const enableSubmit = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
     }, true);
-
-    if (!canCreateLead) return;
-
-    if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
-
-    getPincode(pincode).then((data) => {
-      if (!data) {
-        canCreateLead = false;
-        return;
-      }
-      canCreateLead = !data.ogl;
-      if (!canCreateLead) {
-        setFieldError('pincode', 'Out of Geographic limit');
-        return;
-      }
+    if (enableSubmit && canCreateLead) {
       createLead({
         first_name,
         pincode,
@@ -149,17 +158,17 @@ const PersonalDetail = () => {
         setCurrentLeadId(res.data.id);
         setFieldError('pincode', '');
       });
-    });
+    }
   }, [
+    canCreateLead,
     errors,
     first_name,
-    pincode,
-    phone_number,
     isLeadGenerated,
-    setFieldError,
-    values.purpose_of_loan,
-    setIsLeadGenearted,
+    phone_number,
+    pincode,
     setCurrentLeadId,
+    setFieldError,
+    setIsLeadGenearted,
   ]);
 
   return (
@@ -168,7 +177,13 @@ const PersonalDetail = () => {
         <label htmlFor='loan-purpose' className='flex gap-0.5 font-medium text-black'>
           The loan I want is <span className='text-primary-red text-xs'>*</span>
         </label>
-        <div className='flex gap-4 w-full'>
+        <div
+          role='presentation'
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className='flex gap-4 w-full'
+        >
           {loanTypeOptions.map((option) => {
             return (
               <CardRadio
@@ -196,6 +211,7 @@ const PersonalDetail = () => {
         onBlur={handleBlur}
         onChange={handleLoanAmountChange}
         displayError={false}
+        disabled={inputDisabled}
         inputClasses='font-semibold'
       />
 
@@ -206,6 +222,7 @@ const PersonalDetail = () => {
         initialValue={loan_request_amount}
         min={100000}
         max={5000000}
+        disabled={inputDisabled}
         step={50000}
       />
 
@@ -224,6 +241,7 @@ const PersonalDetail = () => {
         error={errors.first_name}
         touched={touched.first_name}
         onBlur={handleBlur}
+        disabled={inputDisabled}
         onChange={(e) => {
           const value = e.currentTarget.value;
           const pattern = /[A-za-z]+/g;
@@ -240,6 +258,7 @@ const PersonalDetail = () => {
             label='Middle Name'
             placeholder='Ex: Ramji, Sreenath'
             name='middle_name'
+            disabled={inputDisabled}
             onBlur={handleBlur}
             onChange={(e) => {
               const value = e.currentTarget.value;
@@ -256,6 +275,7 @@ const PersonalDetail = () => {
             onBlur={handleBlur}
             label='Last Name'
             placeholder='Ex: Swami, Singh'
+            disabled={inputDisabled}
             name='last_name'
             onChange={(e) => {
               const value = e.currentTarget.value;
@@ -276,7 +296,11 @@ const PersonalDetail = () => {
         value={values.pincode}
         error={errors.pincode}
         touched={touched.pincode}
-        onBlur={handleBlur}
+        disabled={inputDisabled}
+        onBlur={(e) => {
+          handleBlur(e);
+          handleOnPincodeChange();
+        }}
         onChange={handleChange}
         inputClasses='hidearrow'
       />
@@ -292,6 +316,7 @@ const PersonalDetail = () => {
         touched={touched.phone_number}
         onBlur={handleBlur}
         onChange={handleChange}
+        disabled={inputDisabled}
         inputClasses='hidearrow'
       />
 
@@ -301,6 +326,7 @@ const PersonalDetail = () => {
         verified={otpVerified}
         setOTPVerified={setOTPVerified}
         onSendOTPClick={onOTPSendClick}
+        defaultResendTime={30}
         disableSendOTP={isLeadGenerated}
         verifyOTPCB={verifyLeadOTP}
       />
@@ -322,12 +348,12 @@ const PersonalDetail = () => {
             className='text-xs font-medium underline text-primary-black ml-1'
           >
             T&C
-          </span>{' '}
-          and{' '}
+          </span>
+          and
           <span
             tabIndex={-1}
-            onClick={() => setShowPolicy(true)}
-            onKeyDown={() => setShowPolicy(true)}
+            onClick={() => setShowPrivacyPolicy(true)}
+            onKeyDown={() => setShowPrivacyPolicy(true)}
             role='button'
             className='text-xs font-medium underline text-primary-black ml-1'
           >
@@ -337,21 +363,26 @@ const PersonalDetail = () => {
           me with reference to my loan enquiry.
         </div>
       </div>
-      {/* Terms & conditions Modal */}
-      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms} popupTitle="Terms and Conditions">
-        {termsAndConditions} 
+      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms} title='Terms and Conditions'>
+        {termsAndConditions}
       </DesktopPopUp>
-      {/* Proivacy Policy Modal */}
-      <DesktopPopUp showpopup={showPolicy} setShowPopUp={setShowPolicy} popupTitle="Privacy Policy">
-        {privacypolicy}
+      <DesktopPopUp
+        showpopup={showPrivacyPolicy}
+        setShowPopUp={setShowPrivacyPolicy}
+        title='Privacy Policy'
+      >
+        {privacyPolicy}
       </DesktopPopUp>
-      {/* Terms and conditions Sheet */}
-      <TermsAndConditions setShow={setShowTerms} show={showTerms} popupTitle="Terms and Conditions">
+
+      <TermsAndConditions setShow={setShowTerms} show={showTerms} title='Terms and Conditions'>
         {termsAndConditions}
       </TermsAndConditions>
-      {/* Privacy Policy Sheet */}
-      <TermsAndConditions setShow={setShowPolicy} show={showPolicy} popupTitle="Privacy Policy">
-        {privacypolicy}
+      <TermsAndConditions
+        show={showPrivacyPolicy}
+        setShow={setShowPrivacyPolicy}
+        title='Privacy Policy'
+      >
+        {privacyPolicy}
       </TermsAndConditions>
     </div>
   );

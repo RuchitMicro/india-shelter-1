@@ -3,7 +3,7 @@ import { IconRupee } from '../../assets/icons';
 import PropTypes from 'prop-types';
 
 export const currencyFormatter = new Intl.NumberFormat('en-In', { maximumFractionDigits: 0 });
-const currencyToFloat = (amount) =>
+export const currencyToFloat = (amount) =>
   parseFloat(amount.replace('.', '').replace(',', '').replace(/\D/g, ''));
 
 const CurrencyInput = ({ ...props }) => {

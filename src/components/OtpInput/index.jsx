@@ -20,7 +20,8 @@ const OtpInput = ({
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(true);
   const [timer, setTimer] = useState(false);
-  const [resendTime, setResendTime] = useState(defaultResendTime || 30);
+  const [resendTime, setResendTime] = useState(defaultResendTime || 10);
+  const [sentOnce, setSentOnce] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -55,7 +56,7 @@ const OtpInput = ({
     let interval = null;
     if (timer) {
       setOTPVerified(null);
-      let time = 30;
+      let time = defaultResendTime || 10;
       interval = setInterval(() => {
         time -= 1;
         setResendTime(time);
@@ -74,7 +75,7 @@ const OtpInput = ({
     return () => {
       clearInterval(interval);
     };
-  }, [verified, timer, setOTPVerified]);
+  }, [verified, timer, setOTPVerified, defaultResendTime]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -102,11 +103,18 @@ const OtpInput = ({
             className={`${
               (error && 'border-primary-red shadow-primary shadow-primary-red') ||
               (verified && 'border-dark-grey shadow-primary shadow-dark-grey') ||
-              (activeOtpIndex !== null && 'border-secondary-blue shadow-secondary-blue shadow-primary') || 'border-stroke'
+              (activeOtpIndex !== null
+                ? 'border-secondary-blue shadow-secondary-blue shadow-primary'
+                : 'border-stroke')
             } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow`}
             onChange={handleOnChange}
             onKeyDown={(e) => handleKeyDown(e, index)}
             value={otp[index]}
+            onPaste={(e) => {
+              e.preventDefault();
+              const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+              setOtp(Array.from(text.split('')));
+            }}
           />
         ))}
       </div>
@@ -128,28 +136,33 @@ const OtpInput = ({
             </span>
           )}
         </div>
-        {disableSendOTP ? (
+        {!sentOnce && disableSendOTP && !timer ? (
           <button
             type='button'
             className='text-primary-red cursor-pointer font-semibold'
-            onClick={handleOnOTPSend}
+            onClick={() => {
+              setSentOnce(true);
+              handleOnOTPSend();
+            }}
           >
-            {verified === null && <span>Send OTP</span>}
+            <span>Send OTP</span>
           </button>
         ) : (
           ''
         )}
-        {!timer && verified === false && (
+        {sentOnce && disableSendOTP && !timer && verified !== true ? (
           <button
             type='button'
-            className='text-sm text-primary-red cursor-pointer font-semibold'
+            className='text-primary-red cursor-pointer font-semibold'
             onClick={() => {
               setOtp(new Array(5).fill(''));
               handleOnOTPSend();
             }}
           >
-            Resend OTP
+            <span>Resend OTP</span>
           </button>
+        ) : (
+          ''
         )}
       </div>
     </div>

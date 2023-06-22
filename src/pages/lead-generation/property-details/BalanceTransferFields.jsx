@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
 import { loanTenureOptions } from '../utils';
+import { updateLeadDataOnBlur } from '../../../global';
 
 const fieldsRequiredForSubmitting = [
   'banker_name',
@@ -13,7 +14,7 @@ const fieldsRequiredForSubmitting = [
 ];
 
 const BalanceTransferFields = () => {
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep } =
+  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
     useContext(AuthContext);
 
   useEffect(() => {
@@ -35,7 +36,11 @@ const BalanceTransferFields = () => {
         value={values.banker_name}
         error={errors.banker_name}
         touched={touched.banker_name}
-        onBlur={handleBlur}
+        onBlur={(e) => {
+          const target = e.currentTarget;
+          handleBlur(e);
+          updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+        }}
         onChange={(e) => {
           const value = e.currentTarget.value;
           const pattern = /^[A-Za-z ]+$/;
@@ -55,8 +60,14 @@ const BalanceTransferFields = () => {
             value={values.loan_tenure}
             error={errors.loan_tenure}
             touched={touched.loan_tenure}
-            onBlur={handleBlur}
+            onBlur={(e) => {
+              const target = e.currentTarget;
+              handleBlur(e);
+              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+            }}
             onChange={handleChange}
+            type='number'
+            inputClasses='hidearrow'
             type='number'
             inputClasses='hidearrow'
           />
@@ -75,9 +86,13 @@ const BalanceTransferFields = () => {
         value={values.loan_amount}
         error={errors.loan_amount}
         touched={touched.loan_amount}
-        onBlur={handleBlur}
+        onBlur={(e) => {
+          const target = e.currentTarget;
+          handleBlur(e);
+          updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+        }}
         onChange={handleChange}
-        className="font-semibold"
+        inputClasses='font-semibold'
       />
     </div>
   );

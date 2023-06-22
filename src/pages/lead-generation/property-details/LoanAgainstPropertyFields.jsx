@@ -3,6 +3,7 @@ import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
+import { updateLeadDataOnBlur } from '../../../global';
 
 const disableSubmitMap = {
   done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
@@ -12,23 +13,35 @@ const disableSubmitMap = {
 const LoanAgainstPropertyFields = () => {
   const { setPropertyIdentified, propertyIdentified, propertyCategory, setPropertyCategory } =
     useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setFieldValue, setDisableNextStep } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    setFieldValue,
+    setDisableNextStep,
+    currentLeadId,
+  } = useContext(AuthContext);
 
   const handleOnPropertyCategoryChange = useCallback(
     (e) => {
-      setPropertyCategory(e.currentTarget.value);
-      setFieldValue('purpose_type', e.currentTarget.value);
+      const value = e.currentTarget.value;
+      setPropertyCategory(value);
+      setFieldValue('purpose_type', value);
+      updateLeadDataOnBlur(currentLeadId, 'purpose_type', value);
     },
-    [setFieldValue, setPropertyCategory],
+    [currentLeadId, setFieldValue, setPropertyCategory],
   );
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
+      const value = e.currentTarget.value;
       setPropertyIdentified(e.currentTarget.value);
       setFieldValue('property_identification', e.currentTarget.value);
+      updateLeadDataOnBlur(currentLeadId, 'property_identification', value);
     },
-    [setFieldValue, setPropertyIdentified],
+    [currentLeadId, setFieldValue, setPropertyIdentified],
   );
 
   useEffect(() => {
@@ -99,7 +112,12 @@ const LoanAgainstPropertyFields = () => {
             value={values.property_estimation}
             error={errors.property_estimation}
             touched={touched.property_estimation}
-            onBlur={handleBlur}
+            onBlur={(e) => {
+              const target = e.currentTarget;
+              handleBlur(e);
+              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+              updateLeadDataOnBlur(currentLeadId, 'Total_Property_Estimation', target.value);
+            }}
             onChange={handleChange}
             inputClasses='font-semibold'
           />

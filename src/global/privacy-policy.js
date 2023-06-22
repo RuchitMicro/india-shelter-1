@@ -1,4 +1,4 @@
-const PrivacyPolicy = `<ul class="pl-[18px]">
+const privacyPolicy = `<ul class="pl-[18px]">
 <li>This Privacy Policy (<strong>“Policy”</strong>) explains our policy regarding the collection, use, disclosure and transfer of your information by India Shelter Finance Corporation Limited and/or its subsidiary (ies) and / or its associates and/or its affiliate(s) (collectively referred to as the <strong>“Company”</strong>), which operates the website (<strong>“Website”</strong>),the mobile and web applications and other allied services (<strong>“India Shelter Apps”</strong> or <strong>“Apps”</strong>). It applies regardless of whether you use a computer, mobile phone, tablet, or television or any other media or computer resource to access our platforms. It also applies to those who register on our platforms in connection with the use of our services. It is important that you read the Privacy Policy carefully because whenever you use our platforms, your personal data may be processed (if at all) in accordance with this policy. This Policy forms part and parcel of the ‘Terms of Use’ as relevant for the Apps and Website services (<strong>“Apps and Website Services”</strong>).<br/>
 <p>The Company respects the privacy of the users of the Apps and Website Services and is committed to reasonably protect it in all respects. The information about the user as collected by the Company is:</p><br/>
 <p>a) Information supplied by users on the Apps and / or the Website, as the case may be</p>
@@ -14,7 +14,7 @@ const PrivacyPolicy = `<ul class="pl-[18px]">
 </li>
 <li><h3>Personal Data we Collect from the website:</h3>
 <p>Following data points are collected by our website-</p>
-<ul class="list-none pl-0">
+<ol class="pl-2">
 <li>Name</li>
 <li>Phone/mobile</li>
 <li>Email ID</li>
@@ -22,7 +22,7 @@ const PrivacyPolicy = `<ul class="pl-[18px]">
 <li>PAN Card</li>
 <li>Google Analytics data</li>
 <li>IP Address</li>
-</ul>
+</ol>
 </li>
 <li><h3>Cookies</h3>
 <p>We use data collection devices such as ‘Cookies’ etc. on certain pages of our Apps and Website to help analyze page flow, measure promotional effectiveness, and promote trust and safety in relation to the Apps and Website. ‘Cookies’ are small files placed on your device hard-drive/storage that assist us in providing our App and Website Services. We offer certain features on our Apps and Website that are only available through the use of ‘Cookies’.</p>
@@ -145,7 +145,7 @@ const PrivacyPolicy = `<ul class="pl-[18px]">
 <p>Aadhaar authentication or Aadhaar e-KYC shall be used for the specific purposes declared to UIDAI and permitted by UIDAI. Such specific purposes shall be notified to the residents/ customers/ individuals at the time of authentication through disclosure of information notice.</p>
 </li>
 <li>
-<p>INDIA SHELTER FINANCE CORPORATION LIMITED shall not use the identity information including Aadhaar number or e-KYC for any \other purposes than allowed under Section 11 A of Prevention of Money Laundering Act, 2002 and informed to the residents/ customers/ individuals at the time of Authentication.</p>
+<p>INDIA SHELTER FINANCE CORPORATION LIMITED shall not use the identity information including Aadhaar number or e-KYC for any other purposes than allowed under Section 11 A of Prevention of Money Laundering Act, 2002 and informed to the residents/ customers/ individuals at the time of Authentication.</p>
 </li>
 <li>
 <p>For the purpose of e-KYC, the demographic details of the individual received from UIDAI as a response shall be used for identification of the individual for the specific purposes of providing the specific services for the duration of the services.</p>
@@ -364,4 +364,4 @@ const PrivacyPolicy = `<ul class="pl-[18px]">
 <p>g) Any other Regulations or notices or Circulars issued by UIDAI from time to time</p></li>
 </ul>`;
 
-export default PrivacyPolicy;
+export default privacyPolicy;

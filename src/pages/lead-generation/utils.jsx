@@ -16,17 +16,17 @@ import { lazy } from 'react';
 export const loanTypeOptions = [
   {
     label: 'Home Loan',
-    value: 'home-loan',
+    value: 'Home Loan',
     icon: <IconHomeLoan />,
   },
   {
     label: 'Loan against Property',
-    value: 'loan-against-property',
+    value: 'LAP',
     icon: <IconLoanAgainstProperty />,
   },
   {
     label: 'Balance Transfer',
-    value: 'balance-transfer',
+    value: 'Balance Transfer',
     icon: <IconBalanceTransfer />,
   },
 ];
@@ -58,66 +58,66 @@ export const propertyCategoryOptions = [
 ];
 
 export const propertyDetailsMap = {
-  'home-loan': {
+  'Home Loan': {
     fields: <HomeLoanFields />,
     loanPurposeOptions: [
-      { label: 'Purchase', value: 'purchase' },
-      { label: 'Construction', value: 'construction' },
-      { label: 'Renovation/Extension', value: 'renovation-extension' },
+      { label: 'Purchase', value: 'Home Purchase' },
+      { label: 'Construction', value: 'Home Construction' },
+      { label: 'Renovation/Extension', value: 'Home Renovation / Extension' },
     ],
     propertyTypeOptions: {
-      purchase: [
-        { label: 'Residential House', value: 'residential-house' },
-        { label: 'Plot + Construction', value: 'plot-construction' },
-        { label: 'Ready Built Flat', value: 'ready-build-flat' },
+      'Home Purchase': [
+        { label: 'Residential House', value: 'Residential House' },
+        { label: 'Plot + Construction', value: 'Plot + Construction' },
+        { label: 'Ready Built Flat', value: 'Ready Built Flat' },
       ],
-      construction: [
-        { label: 'Owned Plot', value: 'owned-plot' },
-        { label: 'Under Construction Property', value: 'under-construction-property' },
+      'Home Construction': [
+        { label: 'Owned Plot', value: 'Owned Plot' },
+        { label: 'Under Construction Property', value: 'Under Construction Property' },
       ],
-      'renovation-extension': [{ label: 'Residential House', value: 'residential-house' }],
+      'Home Renovation / Extension': [{ label: 'Residential House', value: 'Residential House' }],
     },
   },
-  'loan-against-property': {
+  LAP: {
     fields: <LoanAgainstPropertyFields />,
     loanPurposeOptions: [
-      { label: 'Business', value: 'business' },
-      { label: 'Personal Usage', value: 'personal-usage' },
+      { label: 'Business', value: 'Business' },
+      { label: 'Personal Usage', value: 'Personal Usage' },
     ],
     propertyTypeOptions: {
-      business: [
-        { label: 'Residential House', value: 'residential-house' },
-        { label: 'Ready Built Flat', value: 'ready-built-flat' },
-        { label: 'Commercial Shop/Unit', value: 'commercial-shop-unit' },
-        { label: 'Commercial Building', value: 'commercial-building' },
+      Business: [
+        { label: 'Residential House', value: 'Residential House' },
+        { label: 'Ready Built Flat', value: 'Ready Built Flat' },
+        { label: 'Commercial Shop/Unit', value: 'Commercial Shop Unit' },
+        { label: 'Commercial Building', value: 'Commercial Building' },
       ],
-      'personal-usage': [
-        { label: 'Residential House', value: 'residential-house' },
-        { label: 'Ready Built Flat', value: 'ready-built-flat' },
-        { label: 'Commercial Shop/Unit', value: 'commercial-shop-unit' },
-        { label: 'Commercial Building', value: 'commercial-building' },
+      'Personal Usage': [
+        { label: 'Residential House', value: 'Residential House' },
+        { label: 'Ready Built Flat', value: 'Ready Built Flat' },
+        { label: 'Commercial Shop/Unit', value: 'Commercial Shop Unit' },
+        { label: 'Commercial Building', value: 'Commercial Building' },
       ],
     },
   },
-  'balance-transfer': {
+  'Balance Transfer': {
     fields: <BalanceTransferFields />,
     loanPurposeOptions: [
-      { label: 'Home Loan', value: 'home-loan' },
-      { label: 'LAP', value: 'lap' },
+      { label: 'Home Loan', value: 'Home Loan' },
+      { label: 'LAP', value: 'LAP' },
     ],
     propertyTypeOptions: {
-      'home-loan': [
-        { label: 'Residential House', value: 'residential-house' },
-        { label: 'Plot + Construction', value: 'plot-construction' },
-        { label: 'Ready Built Flat', value: 'ready-built-flat' },
-        { label: 'Owned Plot', value: 'owned-plot' },
-        { label: 'Under Construction Property', value: 'under-construction-property' },
+      'Home Loan': [
+        { label: 'Residential House', value: 'Residential House' },
+        { label: 'Plot + Construction', value: 'Plot + Construction' },
+        { label: 'Ready Built Flat', value: 'Ready Built Flat' },
+        { label: 'Owned Plot', value: 'Owned Plot' },
+        { label: 'Under Construction Property', value: 'Under Construction Property' },
       ],
-      lap: [
-        { label: 'Residential House', value: 'residential-house' },
-        { label: 'Ready Built Flat', value: 'ready-built-flat' },
-        { label: 'Commercial Shop/Unit', value: 'commercial-shop-unit' },
-        { label: 'Commercial Building', value: 'commercial-building' },
+      LAP: [
+        { label: 'Residential House', value: 'Residential House' },
+        { label: 'Ready Built Flat', value: 'Ready Built Flat' },
+        { label: 'Commercial Shop/Unit', value: 'Commercial Shop/Unit' },
+        { label: 'Commercial Building', value: 'Commercial Building' },
       ],
     },
   },
