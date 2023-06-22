@@ -3,6 +3,8 @@ import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
+import { updateLeadDataOnBlur } from '../../../global';
+import { currencyToFloat } from '../../../components/CurrencyInput';
 
 const disableSubmitMap = {
   done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
@@ -11,14 +13,16 @@ const disableSubmitMap = {
 
 const HomeLoanFields = () => {
   const { setPropertyIdentified, propertyIdentified } = useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep } =
+  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
     useContext(AuthContext);
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
-      setPropertyIdentified(e.currentTarget.value);
+      const value = e.currentTarget.value;
+      setPropertyIdentified(value);
+      updateLeadDataOnBlur(currentLeadId, 'property_identification', value);
     },
-    [setPropertyIdentified],
+    [currentLeadId, setPropertyIdentified],
   );
 
   useEffect(() => {
@@ -66,7 +70,20 @@ const HomeLoanFields = () => {
             value={values.property_estimation}
             error={errors.property_estimation}
             touched={touched.property_estimation}
-            onBlur={handleBlur}
+            onBlur={(e) => {
+              const target = e.currentTarget;
+              handleBlur(e);
+              updateLeadDataOnBlur(
+                currentLeadId,
+                target.getAttribute('name'),
+                currencyToFloat(target.value),
+              );
+              updateLeadDataOnBlur(
+                currentLeadId,
+                'Total_Property_Value',
+                currencyToFloat(target.value),
+              );
+            }}
             onChange={handleChange}
             inputClasses='font-semibold'
           />
@@ -78,8 +95,27 @@ const HomeLoanFields = () => {
             value={values.property_pincode}
             error={errors.property_pincode}
             touched={touched.property_pincode}
-            onBlur={handleBlur}
-            onChange={handleChange}
+            type='number'
+            inputClasses='hidearrow'
+            onBlur={(e) => {
+              handleBlur(e);
+              updateLeadDataOnBlur(
+                currentLeadId,
+                'property_pincode',
+                parseInt(e.currentTarget.value),
+              );
+            }}
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              if (!value) {
+                handleChange(e);
+                return;
+              }
+              const pattern = /[0-9]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
           />
         </div>
       ) : null}

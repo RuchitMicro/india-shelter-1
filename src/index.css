@@ -82,7 +82,7 @@ body {
   }
 
   input {
-    @apply placeholder:text-light-grey text-base text-black focus:outline-none;
+    @apply placeholder:text-light-grey text-base text-black focus:outline-none disabled:bg-transparent;
   }
 
   input[type='range'] {
@@ -100,7 +100,7 @@ body {
   ul {
     list-style: initial;
     margin: initial;
-    padding: 0 0 0 40px;
+    padding: 0 0 0 20px;
   }
   li {
     display: list-item;

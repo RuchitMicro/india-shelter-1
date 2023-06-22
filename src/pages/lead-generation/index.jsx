@@ -3,7 +3,7 @@ import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { getLeadById } from '../../global';
+import { editLeadById } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -17,12 +17,9 @@ const LeadGeneration = () => {
     formContainerRef.current?.scrollTo(0, 0);
   }, []);
 
-  // TODO: Replace placeholder onSubmit function
-  const onSubmit = useCallback(async (leadId) => {
-    const data = await getLeadById(leadId);
-    if (data) {
-      setProcessingBRE(true);
-    }
+  const onSubmit = useCallback(async (leadId, values) => {
+    console.log(values);
+    editLeadById(leadId, values).then(() => setProcessingBRE(true));
   }, []);
 
   return (

@@ -20,7 +20,14 @@ const TextInput = forwardRef(function TextInput(
         {label}
         {props.required && <span className='text-primary-red text-sm'>*</span>}
       </label>
-      {hint && <span className='mb-1.5 text-light-grey text-sm'>{hint}</span>}
+      {hint && (
+        <span
+          className='mb-1.5 text-light-grey text-sm font-normal'
+          dangerouslySetInnerHTML={{
+            __html: hint,
+          }}
+        />
+      )}
       <div
         role='button'
         tabIndex={-1}
@@ -35,7 +42,9 @@ const TextInput = forwardRef(function TextInput(
             ? 'border-primary-red shadow-primary shadow-primary-red'
             : 'border-light-grey'
         }
-        ${props.value ? 'border-light-grey' : 'border-stroke'}`}
+        ${props.value ? 'border-light-grey' : 'border-stroke'}
+        ${props.disabled ? 'bg-[#fafafa] pointer-events-none cursor-not-allowed' : ''}
+        `}
       >
         {Icon && <Icon />}
         <input
@@ -70,4 +79,5 @@ TextInput.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inputClasses: PropTypes.string,
   displayError: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

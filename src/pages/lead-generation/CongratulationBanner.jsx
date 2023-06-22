@@ -15,9 +15,10 @@ const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAni
 
 const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
   const { values, currentLeadId } = useContext(AuthContext);
+  const [allowedLoanAmount, setAllowedLoanAmount] = useState(0);
   const [loading, setLoading] = useState(isLoading);
   const [progress, setProgress] = useState(10);
-  const [isQualified, setIsQualified] = useState(false);
+  const [isQualified, setIsQualified] = useState(true);
 
   useEffect(() => {
     const paths = document.querySelectorAll('.foreground path');
@@ -51,11 +52,16 @@ const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
           return prev + 20;
         });
       });
-      if (res.data.statusCode === 200) {
+      const breResponse = res.data.bre_100_response;
+      if (breResponse.statusCode === 200) {
+        setLoading(false);
         setIsQualified(true);
-        return;
+        const offeredAmount = breResponse.body.find((rule) => rule.Rule_Name === 'Amount_Offered');
+        setAllowedLoanAmount(offeredAmount.Rule_Value);
+      } else {
+        setIsQualified(false);
+        setLoading(false);
       }
-      setIsQualified(false);
       setLoading(false);
     });
   }, [currentLeadId]);
@@ -76,7 +82,7 @@ const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
             className='text-center text-base md:text-xl font-medium flex items-center w-full mx-4 gap-1 md:hidden'
           >
             <span className='flex-1'>
-              {values.loan_type === 'loan-against-property'
+              {values.loan_type === 'LAP'
                 ? 'Get the right value for your property'
                 : 'Find your shelter with us'}
             </span>
@@ -92,7 +98,7 @@ const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
       </div>
 
       <AnimatePresence>
-        {values.loan_type !== 'loan-against-property' && (
+        {values.loan_type !== 'LAP' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transitionDuration: 2 }}
@@ -118,7 +124,7 @@ const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {values.loan_type === 'loan-against-property' && (
+        {values.loan_type === 'LAP' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transitionDuration: 2 }}
@@ -174,7 +180,7 @@ const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
               }}
               className='text-[32px] font-semibold mt-3 md:mt-4'
             >
-              ₹ {currencyFormatter.format(values.loan_request_amount)}/-
+              ₹ {currencyFormatter.format(allowedLoanAmount)}/-
             </div>
             <div className='text-dark-grey md:text-base mt-1 md:mt-4 font-semibold'>
               Terms and Condition applied!
