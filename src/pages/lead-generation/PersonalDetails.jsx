@@ -347,9 +347,9 @@ const PersonalDetail = () => {
             role='button'
             className='text-xs font-medium underline text-primary-black ml-1'
           >
-            T&C
+            T&C{" "}
           </span>
-          and
+          and {" "}
           <span
             tabIndex={-1}
             onClick={() => setShowPrivacyPolicy(true)}

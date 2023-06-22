@@ -30,9 +30,11 @@ export const signUpSchema = Yup.object({
   pan_number: Yup.string()
     .required('Please enter your valid PAN number')
     .matches(
-      /^[A-Z]{5}\d{4}[A-Z]{1}$/,
+      /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
       'Pan Number must be in the following format ex. ABCDE1234F',
-    ),
+    )
+    .min(10, 'Pan Number must be in the following format ex. ABCDE1234F')
+    .max(10, 'Pan Number must be in the following format ex. ABCDE1234F'),
   date_of_birth: Yup.date()
     .transform(parseDateString)
     .required('Please enter your birth date')
@@ -50,11 +52,9 @@ export const signUpSchema = Yup.object({
   ),
   purpose_of_loan: Yup.string().required('Please select the purpose of the loan.'),
   property_type: Yup.string().required('Please select the property type.'),
-  loan_tenure: Yup.string().required('Please enter the Loan tenure period within 12 months'),
+  loan_tenure: Yup.string().required('Please enter the Loan tenure period within 12 months')
+  .matches(/^(1[012]|[1-9])$/, 'Please enter the Loan tenure period within 12 months'),
   purpose_type: Yup.string().required('Property category not selected.'),
-
-  email: Yup.string()
-    .email()
-    .required('Please enter your email')
+  email: Yup.string().required('Please enter your email')
     .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, 'Enter a Valid Email'),
 });
