@@ -95,6 +95,8 @@ const HomeLoanFields = () => {
             value={values.property_pincode}
             error={errors.property_pincode}
             touched={touched.property_pincode}
+            type='number'
+            inputClasses='hidearrow'
             onBlur={(e) => {
               handleBlur(e);
               updateLeadDataOnBlur(
@@ -103,7 +105,17 @@ const HomeLoanFields = () => {
                 parseInt(e.currentTarget.value),
               );
             }}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              if (!value) {
+                handleChange(e);
+                return;
+              }
+              const pattern = /[0-9]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
           />
         </div>
       ) : null}

@@ -41,7 +41,13 @@ const BalanceTransferFields = () => {
           handleBlur(e);
           updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
         }}
-        onChange={handleChange}
+        onChange={(e) => {
+          const value = e.currentTarget.value;
+          const pattern = /^[A-Za-z ]+$/;
+          if (pattern.exec(value[value.length - 1])) {
+            handleChange(e);
+          }
+        }}
       />
 
       <div className='flex gap-2 items-center'>
