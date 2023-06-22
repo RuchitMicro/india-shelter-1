@@ -62,7 +62,7 @@ const DropDown = ({
       {showDropDown && (
         <div
           style={{
-            maxHeight: optionsMaxHeight ?? 250,
+            maxHeight: optionsMaxHeight ?? 160,
           }}
           className='rounded-lg bg-white shadow-secondary p-2 mt-2 absolute top-100 w-full overflow-y-auto z-20 border border-stroke'
         >
@@ -77,7 +77,7 @@ const DropDown = ({
               } 
               ${
                 index ? 'border-t border-stroke' : 'border-none'
-              } border-light-grey py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
+              } border-b border-stroke py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
             >
               {option.label}
               {selectedOption?.value === option.value ? <IconTick /> : <div></div>}

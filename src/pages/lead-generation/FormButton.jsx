@@ -31,8 +31,8 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 45.31%)',
       }}
       className={`${
-        activeStepIndex > 0 ? 'justify-between' : 'justify-end'
-      } btn-bg absolute h-[128px] md:h-[166px] flex bottom-0 w-full md:pr-[175px] md:pl-1  md:w-[732px] items-end pb-6 px-4 md:px-0`}
+        activeStepIndex > 0 ? 'justify-center' : 'justify-end'
+      } btn-bg absolute h-[128px] md:h-[166px] flex gap-4 md:gap-6 bottom-0 w-full md:pr-[175px] md:pl-1  md:w-[732px] items-end pb-6 px-4 md:px-0`}
     >
       {activeStepIndex > 0 && (
         <Button type='button' onClick={onPreviousButtonClick}>

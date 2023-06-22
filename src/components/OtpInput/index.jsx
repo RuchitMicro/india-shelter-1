@@ -103,11 +103,18 @@ const OtpInput = ({
             className={`${
               (error && 'border-primary-red shadow-primary shadow-primary-red') ||
               (verified && 'border-dark-grey shadow-primary shadow-dark-grey') ||
-              (activeOtpIndex === null ? 'border-stroke' : 'border-secondary-blue shadow-primary')
+              (activeOtpIndex !== null
+                ? 'border-secondary-blue shadow-secondary-blue shadow-primary'
+                : 'border-stroke')
             } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow`}
             onChange={handleOnChange}
             onKeyDown={(e) => handleKeyDown(e, index)}
             value={otp[index]}
+            onPaste={(e) => {
+              e.preventDefault();
+              const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+              setOtp(Array.from(text.split('')));
+            }}
           />
         ))}
       </div>

@@ -12,6 +12,7 @@ import {
 } from '../../components';
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
+import privacyPolicy from '../../global/privacy-policy';
 import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
 import { useSearchParams } from 'react-router-dom';
 
@@ -21,6 +22,7 @@ const PersonalDetail = () => {
   const [searchParams] = useSearchParams();
 
   const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [otpVerified, setOTPVerified] = useState(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [canCreateLead, setCanCreateLead] = useState(false);
@@ -66,6 +68,7 @@ const PersonalDetail = () => {
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
         setFieldError('otp', res.data.message);
+        return;
       }
       if ('OTPCredential' in window) {
         window.addEventListener('DOMContentLoaded', (_) => {
@@ -110,7 +113,7 @@ const PersonalDetail = () => {
           return;
         }
         setOTPVerified(true);
-        setInputDisabled(true);
+        setInputDisabled(false);
       } catch {
         setOTPVerified(false);
       }
@@ -255,20 +258,32 @@ const PersonalDetail = () => {
             label='Middle Name'
             placeholder='Ex: Ramji, Sreenath'
             name='middle_name'
-            onChange={handleChange}
             disabled={inputDisabled}
             onBlur={handleBlur}
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              const pattern = /[A-za-z]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
           />
         </div>
         <div className='w-full'>
           <TextInput
             value={values.last_name}
-            onChange={handleChange}
             onBlur={handleBlur}
             label='Last Name'
             placeholder='Ex: Swami, Singh'
             disabled={inputDisabled}
             name='last_name'
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              const pattern = /[A-za-z]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
           />
         </div>
       </div>
@@ -332,17 +347,42 @@ const PersonalDetail = () => {
             role='button'
             className='text-xs font-medium underline text-primary-black ml-1'
           >
-            T&C and Privacy Policy
+            T&C
+          </span>
+          and
+          <span
+            tabIndex={-1}
+            onClick={() => setShowPrivacyPolicy(true)}
+            onKeyDown={() => setShowPrivacyPolicy(true)}
+            role='button'
+            className='text-xs font-medium underline text-primary-black ml-1'
+          >
+            Privacy Policy
           </span>
           . I authorize India Shelter Finance or its representative to Call, WhatsApp, Email or SMS
           me with reference to my loan enquiry.
         </div>
       </div>
-      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms}>
+      <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms} title='Terms and Conditions'>
         {termsAndConditions}
       </DesktopPopUp>
-      <TermsAndConditions setShow={setShowTerms} show={showTerms}>
+      <DesktopPopUp
+        showpopup={showPrivacyPolicy}
+        setShowPopUp={setShowPrivacyPolicy}
+        title='Privacy Policy'
+      >
+        {privacyPolicy}
+      </DesktopPopUp>
+
+      <TermsAndConditions setShow={setShowTerms} show={showTerms} title='Terms and Conditions'>
         {termsAndConditions}
+      </TermsAndConditions>
+      <TermsAndConditions
+        show={showPrivacyPolicy}
+        setShow={setShowPrivacyPolicy}
+        title='Privacy Policy'
+      >
+        {privacyPolicy}
       </TermsAndConditions>
     </div>
   );
