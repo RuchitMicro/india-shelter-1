@@ -78,7 +78,7 @@ const DropDown = ({
               } 
               ${
                 index ? 'border-t border-stroke' : 'border-none'
-              } border-b border-stroke py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
+              }  border-stroke py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
             >
               {option.label}
               {selectedOption?.value === option.value ? <IconTick /> : <div></div>}

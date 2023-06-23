@@ -30,7 +30,7 @@ export const signUpSchema = Yup.object({
   pan_number: Yup.string()
     .required('Please enter your valid PAN number')
     .matches(
-      /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+      /^[A-Z]{5}\d{4}[A-Z]{1}$/,
       'Pan Number must be in the following format ex. ABCDE1234F',
     )
     .min(10, 'Pan Number must be in the following format ex. ABCDE1234F')

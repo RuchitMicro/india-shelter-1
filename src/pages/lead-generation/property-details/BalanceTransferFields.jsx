@@ -68,8 +68,6 @@ const BalanceTransferFields = () => {
             onChange={handleChange}
             type='number'
             inputClasses='hidearrow'
-            type='number'
-            inputClasses='hidearrow'
           />
         </div>
         <div className='mt-1 grow'>
