@@ -14,9 +14,14 @@ const CurrencyInput = ({ ...props }) => {
       {...props}
       type='tel'
       Icon={IconRupee}
-      value={currencyFormatter.format(isNaN(amount) ? 0 : amount)}
+      value={amount ? currencyFormatter.format(amount) : ''}
       onChange={(event) => {
-        let amount = currencyToFloat(event.currentTarget.value);
+        const value = event.currentTarget.value;
+        let amount = value;
+        if (value) {
+          amount = currencyToFloat(event.currentTarget.value);
+        }
+
         const modifiedEvent = Object.assign({}, event);
         modifiedEvent.target.value = amount;
 

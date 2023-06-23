@@ -3,16 +3,26 @@ import PropTypes from 'prop-types';
 import { IconArrowDown, IconTick } from '../../assets/icons';
 
 const DropDown = ({
+  defaultSelected,
   placeholder,
   label,
   required,
   options,
   onChange,
   optionsMaxHeight,
+  disabled,
+  showIcon = true,
   showError = true,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(() =>
+    options?.find((option) => defaultSelected === option.value),
+  );
+
+  useEffect(() => {
+    const option = options.find((option) => option.value === defaultSelected);
+    setSelectedOption(option);
+  }, [defaultSelected, options]);
 
   const containerRef = useRef(null);
 
@@ -24,10 +34,6 @@ const DropDown = ({
     },
     [onChange],
   );
-
-  useEffect(() => {
-    setSelectedOption(null);
-  }, [options]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -48,6 +54,7 @@ const DropDown = ({
         {required && <span className='text-primary-red text-sm'>*</span>}
       </h3>
       <button
+        disabled={disabled}
         title='Show options'
         type='button'
         onClick={() => {
@@ -77,10 +84,10 @@ const DropDown = ({
               } 
               ${
                 index ? 'border-t border-stroke' : 'border-none'
-              } border-b border-stroke py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
+              } py-3 gap-2 px-4 flex justify-between w-full overflow-y-auto transition-colors duration-300 ease-out`}
             >
               {option.label}
-              {selectedOption?.value === option.value ? <IconTick /> : <div></div>}
+              {showIcon && selectedOption?.value === option.value ? <IconTick /> : <div></div>}
             </button>
           ))}
         </div>
@@ -97,11 +104,14 @@ const DropDown = ({
 export default DropDown;
 
 DropDown.propTypes = {
+  defaultSelected: PropTypes.string,
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })),
   onChange: PropTypes.func,
   optionsMaxHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  showIcon: PropTypes.bool,
   showError: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

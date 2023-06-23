@@ -18,7 +18,7 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
       renderCustomHeader={(props) => <DatePickerHeader {...props} />}
       showYearDropdown
       showMonthDropdown
-      calendarClassName='bg-white border border-light-grey border-opacity-20 px-5 shadow-calendar rounded-lg'
+      calendarClassName='bg-white w-[328px] border border-light-grey border-opacity-20 px-5 shadow-calendar rounded-lg'
       dayClassName={(date) => {
         const defaultDateStyles =
           'font-normal h-8 w-8 rounded-full hover:rounded-full text-base inline-flex items-center justify-center ';
@@ -48,6 +48,7 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
       <div className='w-full h-fit flex justify-end'>
         <button
           onClick={() => {
+            setStartDate(datePickerRef.current.state.preSelection);
             datePickerRef.current.setOpen(false);
           }}
           className='px-4 py-2 bg-primary-red text-white font-semibold rounded-lg ml-auto'

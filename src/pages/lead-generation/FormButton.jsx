@@ -3,6 +3,7 @@ import { Button } from '../../components';
 import { AuthContext, defaultValues } from '../../context/AuthContext';
 import { steps } from './utils';
 import PropTypes from 'prop-types';
+import { NaNorNull, editLeadById } from '../../global';
 
 const FormButton = ({ onButtonClickCB, onSubmit }) => {
   const {
@@ -15,9 +16,23 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
   } = useContext(AuthContext);
 
   const onNextButtonClick = useCallback(() => {
+    const filteredValue = {
+      loan_type: values.loan_type.toString(),
+      loan_request_amount: parseFloat(values.loan_request_amount),
+    };
+    if (activeStepIndex === 0) {
+      editLeadById(currentLeadId, filteredValue).then((res) => console.log(res));
+    }
     goToNextStep();
     onButtonClickCB && onButtonClickCB();
-  }, [onButtonClickCB, goToNextStep]);
+  }, [
+    values.loan_type,
+    values.loan_request_amount,
+    activeStepIndex,
+    goToNextStep,
+    onButtonClickCB,
+    currentLeadId,
+  ]);
 
   const onPreviousButtonClick = useCallback(() => {
     goToPreviousStep();
@@ -54,21 +69,25 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
                     if (values[key]) obj[key] = values[key];
                     return obj;
                   }, {});
-                filteredValue['pincode'] = parseInt(filteredValue['pincode']);
-                filteredValue['property_pincode'] = parseInt(filteredValue['property_pincode']);
-                filteredValue['loan_request_amount'] = parseInt(
-                  filteredValue['loan_request_amount'],
+                filteredValue['pincode'] = NaNorNull(parseInt(filteredValue['pincode']));
+                filteredValue['property_pincode'] = NaNorNull(
+                  parseInt(filteredValue['property_pincode']),
+                );
+                filteredValue['loan_request_amount'] = NaNorNull(
+                  parseInt(filteredValue['loan_request_amount']),
                 );
                 filteredValue['phone_number'] = filteredValue['phone_number']?.toString();
-                filteredValue['ongoing_emi'] = parseFloat(filteredValue['ongoing_emi']);
+                filteredValue['ongoing_emi'] = NaNorNull(parseFloat(filteredValue['ongoing_emi']));
                 filteredValue['Out_Of_Geographic_Limit'] = false;
-                filteredValue['Total_Property_Value'] = parseInt(
-                  filteredValue['property_estimation'],
+                filteredValue['Total_Property_Value'] = NaNorNull(
+                  parseInt(filteredValue['property_estimation']),
                 );
-                filteredValue['property_estimation'] = parseInt(
-                  filteredValue['property_estimation'],
+                filteredValue['property_estimation'] = NaNorNull(
+                  parseInt(filteredValue['property_estimation']),
                 );
                 filteredValue['extra_params'] = '';
+                filteredValue['loan_amount'] = filteredValue['loan_amount']?.toString();
+                filteredValue['loan_tenure'] = filteredValue['loan_tenure']?.toString();
                 onSubmit(currentLeadId, filteredValue);
               }
             : onNextButtonClick

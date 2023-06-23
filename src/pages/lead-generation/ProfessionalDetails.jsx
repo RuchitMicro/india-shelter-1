@@ -59,29 +59,29 @@ const loanTypeData = [
 ];
 
 const professionData = {
-  'Cash Salaried': (selectDropDownOption) => (
+  'Cash Salaried': (defaultValue, selectDropDownOption) => (
     <DropDown
       label='Mode of Salary'
       required
       options={loanTypeData[0].options}
       placeholder='Ex: Bank Transfer'
       onChange={selectDropDownOption}
+      defaultSelected={defaultValue}
     />
   ),
-  'Self Employed': (selectDropDownOption) => (
+  'Self Employed': (defaultValue, selectDropDownOption) => (
     <DropDown
       label='Occupation'
       required
       options={loanTypeData[1].options}
       placeholder='Ex: Purchase'
       onChange={selectDropDownOption}
+      defaultSelected={defaultValue}
     />
   ),
 };
 
 const ProfessinalDetail = () => {
-  const [current, setCurrent] = useState(null);
-  const [selectedProfession, setSelectedProfession] = useState(null);
   const {
     values,
     errors,
@@ -96,13 +96,23 @@ const ProfessinalDetail = () => {
   } = useContext(AuthContext);
   const { date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
+  const [selectedProfession, setSelectedProfession] = useState(null);
+
+  useEffect(() => {
+    setSelectedProfession(values.profession);
+  }, [values.profession]);
+
+  useEffect(() => {
+    if (!values.date_of_birth) return;
+    if (date) return;
+    setDate(new Date(values.date_of_birth));
+  }, [values.date_of_birth, date]);
 
   const onProfessionChange = (e) => {
     const value = e.currentTarget.value;
-    setCurrent(value);
     setSelectedProfession(value);
     setFieldValue('profession', value);
-    updateLeadDataOnBlur(currentLeadId, 'profession', value).then((data) => console.log(data));
+    updateLeadDataOnBlur(currentLeadId, 'profession', value);
   };
 
   useEffect(() => {
@@ -128,9 +138,14 @@ const ProfessinalDetail = () => {
   ]);
 
   useEffect(() => {
-    if (date) setFieldValue('date_of_birth', date);
+    if (!date) return;
+    if (new Date().getFullYear() - date.getFullYear() < 18) {
+      setFieldError('date_of_birth', 'To apply for loan the minimum age must be 18 or 18+');
+      return;
+    }
+    setFieldValue('date_of_birth', date);
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', date);
-  }, [currentLeadId, date, setFieldValue]);
+  }, [currentLeadId, date, setFieldValue, setFieldError]);
 
   const handleData = (value) => {
     if (selectedProfession === 'Cash Salaried') {
@@ -171,11 +186,10 @@ const ProfessinalDetail = () => {
 
       if (allowCallPanRule.Rule_Value === 'YES') {
         const res = await verifyPan(currentLeadId);
-        if (!res.body) return;
-        if (res.body.status === 'In-Valid') {
-          setFieldError('pan_number', 'Please enter your valid PAN number');
-        }
         console.log('called pan');
+        if (!res.body) return;
+        if (res.body.status === 'Valid') return;
+        setFieldError('pan_number', 'Please enter your valid PAN number');
       }
       if (allowCallCibilRule.Rule_Value === 'YES') {
         await checkCibil(currentLeadId);
@@ -208,10 +222,11 @@ const ProfessinalDetail = () => {
         required
         name='date_of_birth'
         label='Date of Birth'
+        errors={errors.date_of_birth}
+        touched={touched.date_of_birth}
       />
-
       <span className='text-sm text-primary-red'>
-        {errors.date_of_birth && touched.date_of_birth
+        {errors.date_of_birth || touched.date_of_birth
           ? errors.date_of_birth
           : String.fromCharCode(160)}
       </span>
@@ -221,23 +236,26 @@ const ProfessinalDetail = () => {
           Profession <span className='text-primary-red text-xs'>*</span>
         </label>
         <div className='flex justify-between gap-4 mt-2'>
-          {loanTypeData.map((data, index) => (
-            <CardRadio
-              key={index}
-              name='profession'
-              label={data.label}
-              onChange={onProfessionChange}
-              current={current}
-              value={data.value}
-            >
-              {data.icon}
-            </CardRadio>
-          ))}
+          {loanTypeData.map((data, index) => {
+            return (
+              <CardRadio
+                key={index}
+                name='profession'
+                label={data.label}
+                onChange={onProfessionChange}
+                current={selectedProfession}
+                value={data.value}
+              >
+                {data.icon}
+              </CardRadio>
+            );
+          })}
         </div>
         <span className='text-sm text-primary-red mt-1'>{false || String.fromCharCode(160)}</span>
       </div>
 
-      {selectedProfession && professionData[selectedProfession](handleData)}
+      {selectedProfession &&
+        professionData[selectedProfession](values.mode_of_salary || values.occupation, handleData)}
 
       <CurrencyInput
         label='Monthly Family Income'

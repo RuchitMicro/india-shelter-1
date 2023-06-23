@@ -110,12 +110,14 @@ const PersonalDetail = () => {
         if (res.status !== 200) {
           console.log('OTP verification failed');
           setOTPVerified(false);
-          return;
+          return false;
         }
         setOTPVerified(true);
         setInputDisabled(false);
+        return true;
       } catch {
         setOTPVerified(false);
+        return false;
       }
     },
     [phone_number, setInputDisabled],
@@ -127,6 +129,7 @@ const PersonalDetail = () => {
     const data = await getPincode(pincode);
     if (!data) {
       setCanCreateLead(false);
+      setFieldError('pincode', 'Invalid Pincode');
       return;
     }
     if (data.ogl) {
@@ -348,8 +351,8 @@ const PersonalDetail = () => {
             className='text-xs font-medium underline text-primary-black ml-1'
           >
             T&C
-          </span>
-          and
+          </span>{' '}
+          and{' '}
           <span
             tabIndex={-1}
             onClick={() => setShowPrivacyPolicy(true)}
