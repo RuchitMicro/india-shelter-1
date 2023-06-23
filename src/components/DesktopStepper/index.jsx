@@ -22,7 +22,7 @@ const DesktopStepper = ({ steps, activeStep }) => {
             </h2>
             <p
               className={`${index <= activeStep ? 'text-primary-black' : 'text-stroke'} ${
-                index > activeStep ? 'font-normal' : 'font-semibold'
+                index < activeStep ? 'font-normal' : 'font-semibold'
               } text-xs leading-[18px] mt-1`}
             >
               {step.label}
