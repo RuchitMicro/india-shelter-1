@@ -42,7 +42,7 @@ const TextInput = forwardRef(function TextInput(
             ? 'border-primary-red shadow-primary shadow-primary-red'
             : 'border-light-grey'
         }
-        ${props.value ? 'border-light-grey' : 'border-stroke'}
+        ${!props.value && !error && !touched && 'border-stroke'}
         ${props.disabled ? 'bg-[#fafafa] pointer-events-none cursor-not-allowed' : ''}
         `}
       >

@@ -18,7 +18,6 @@ const LeadGeneration = () => {
   }, []);
 
   const onSubmit = useCallback(async (leadId, values) => {
-    console.log(values);
     editLeadById(leadId, values).then(() => setProcessingBRE(true));
   }, []);
 

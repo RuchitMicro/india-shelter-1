@@ -63,7 +63,14 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
         mountPoint={document.getElementById('#lead-form-container')}
       >
         <Sheet.Container>
-          <Sheet.Header className='py-2 px-4 h-4 flex justify-center'>
+          <Sheet.Header
+            className='py-2 px-4 h-4 flex justify-center'
+            onPanEnd={(e) => {
+              if (window.innerHeight * 0.8 < e.y) {
+                modalRef.current?.snapTo(1);
+              }
+            }}
+          >
             <BottomSheetHandle />
           </Sheet.Header>
           <Sheet.Content className='px-3 text-dark-grey leading-6 mb-4'>{Form}</Sheet.Content>

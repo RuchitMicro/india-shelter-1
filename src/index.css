@@ -4,6 +4,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  overflow-behaviour: none;
   @apply text-natural-black;
 }
 
@@ -105,6 +106,10 @@ body {
   li {
     display: list-item;
   }
+  .input-container:has(input:autofill),
+  .input-container:has(input:-webkit-autofill) {
+    background-color: #e8f0fe !important;
+  }
 }
 
 .react-modal-sheet-container {
@@ -157,6 +162,13 @@ body {
   left: auto;
   right: 16px;
 }
+.react-datepicker__month-container {
+  width: 100%;
+}
+.react-datepicker__week {
+  display: flex;
+  justify-content: space-around;
+}
 
 .hidearrow::-webkit-outer-spin-button,
 .hidearrow::-webkit-inner-spin-button {
@@ -182,4 +194,10 @@ body {
   .btn-bg {
     z-index: 10;
   }
+}
+
+.react-datepicker__tab-loop,
+.react-datepicker__tab-loop__start {
+  margin: 0;
+  padding: 0;
 }
