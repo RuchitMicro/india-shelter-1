@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import otpVerified from '../../assets/icons/otp-verified.svg';
 import otpNotVerified from '../../assets/icons/otp-not-verified.svg';
@@ -16,7 +16,6 @@ const OtpInput = ({
   defaultResendTime,
 }) => {
   const [otp, setOtp] = useState(new Array(5).fill(''));
-  const [error, setError] = useState(false);
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(true);
   const [timer, setTimer] = useState(false);
@@ -38,7 +37,11 @@ const OtpInput = ({
       const otpAsString = newOTP.join('');
       if (otpAsString.length >= 5) {
         setInputDisabled(true);
-        verifyOTPCB(otpAsString);
+        setActiveOtpIndex(null);
+        verifyOTPCB(otpAsString).then((isVerifed) => {
+          console.log(isVerifed);
+          setInputDisabled(isVerifed);
+        });
         setTimer(false);
       }
     },
@@ -63,7 +66,7 @@ const OtpInput = ({
 
         if (time <= 0) {
           clearInterval(interval);
-          if (!verified) setError(true);
+          if (!verified) setOTPVerified(true);
           setTimer(false);
         }
       }, 1000);
@@ -87,6 +90,14 @@ const OtpInput = ({
     if (e.key === 'Enter') setActiveOtpIndex(currentOtpIndex + 1);
   }, []);
 
+  const inputClasses = useMemo(() => {
+    if (!sentOnce) return 'border-stroke';
+    if (sentOnce && verified === null)
+      return 'border-secondary-blue shadow-secondary-blue shadow-primary';
+    if (!verified) return 'border-primary-red shadow-primary shadow-primary-red';
+    if (verified) return 'border-dark-grey';
+  }, [verified, sentOnce]);
+
   return (
     <div className='otp-container'>
       <h3 className='flex gap-0.5 text-primary-black'>
@@ -100,20 +111,22 @@ const OtpInput = ({
             ref={index === activeOtpIndex ? inputRef : null}
             key={index}
             type='number'
-            className={`${
-              (error && 'border-primary-red shadow-primary shadow-primary-red') ||
-              (verified && 'border-dark-grey shadow-primary shadow-dark-grey') ||
-              (activeOtpIndex !== null
-                ? 'border-secondary-blue shadow-secondary-blue shadow-primary'
-                : 'border-stroke')
-            } w-full h-12 border-y border-x bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow`}
+            className={`
+              w-full h-12 border bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow
+              ${inputClasses}
+            `}
             onChange={handleOnChange}
             onKeyDown={(e) => handleKeyDown(e, index)}
             value={otp[index]}
             onPaste={(e) => {
               e.preventDefault();
-              const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-              setOtp(Array.from(text.split('')));
+              const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
+              const copiedOTP = new Array(5).fill('').map((_, i) => text[i] || '');
+              setOtp(copiedOTP);
+              if (text.length === otp.length) {
+                setActiveOtpIndex(null);
+                verifyOTPCB(text.join(''));
+              }
             }}
           />
         ))}
@@ -131,7 +144,7 @@ const OtpInput = ({
           )}
           {verified === false && (
             <span className='flex text-primary-black text-xs leading-[18px]'>
-              OTP not Verified
+              OTP not verified
               <img src={otpNotVerified} alt='Otp Verified' role='presentation' />
             </span>
           )}
