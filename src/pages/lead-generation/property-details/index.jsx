@@ -93,11 +93,13 @@ const PropertyDetail = () => {
         const res = await verifyEmailOtp(email, { otp });
         if (res.status !== 200) {
           setEmailOTPVerified(false);
-          return;
+          return false;
         }
         setEmailOTPVerified(true);
+        return true;
       } catch {
         setEmailOTPVerified(false);
+        return false;
       }
     },
     [email],
