@@ -20,7 +20,7 @@ export const signUpSchema = Yup.object({
   last_name: Yup.string().min(2).max(10),
   pincode: Yup.string()
     .required('Please enter valid Pincode for your region')
-    .matches(/^[0-9]+$/, 'Must be only digits')
+    .matches(/^(0|[1-9]\d*)$/, 'Must be only digits')
     .min(6, 'Must be exactly 6 digits')
     .max(6, 'Must be exactly 6 digits'),
   phone_number: Yup.string()
@@ -33,10 +33,7 @@ export const signUpSchema = Yup.object({
       /^[A-Z]{5}\d{4}[A-Z]{1}$/,
       'Pan Number must be in the following format ex. ABCDE1234F',
     ),
-  date_of_birth: Yup.date()
-    .transform(parseDateString)
-    .required('Please enter your birth date')
-    .max(new Date()),
+  date_of_birth: Yup.date().transform(parseDateString).required('Please enter your birth date'),
   monthly_family_income: Yup.string().required('Please enter your monthly family income'),
   ongoing_emi: Yup.string().required('Please enter your ongoing emi amount'),
   property_estimation: Yup.string().required('Please enter your ongoing emi amount'),
@@ -50,7 +47,9 @@ export const signUpSchema = Yup.object({
   ),
   purpose_of_loan: Yup.string().required('Please select the purpose of the loan.'),
   property_type: Yup.string().required('Please select the property type.'),
-  loan_tenure: Yup.string().required('Please enter the Loan tenure period within 12 months'),
+  loan_tenure: Yup.string()
+    .required('Please enter the Loan tenure period within 12 months')
+    .matches(/^(1[012]|[1-9])$/, 'Please enter the Loan tenure period within 12 months'),
   purpose_type: Yup.string().required('Property category not selected.'),
 
   email: Yup.string()
