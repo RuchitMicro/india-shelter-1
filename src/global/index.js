@@ -35,6 +35,7 @@ async function getLeadById(id) {
 }
 
 async function editLeadById(id, leadData) {
+  if (!id) return;
   const res = await axios.patch(`${API_LEAD_URL}/edit/${id}`, leadData, requestOptions);
   return res;
 }
@@ -102,6 +103,7 @@ async function getDropDownOptions(dropDownTitle) {
 }
 
 async function updateLeadDataOnBlur(leadId, fieldName, value) {
+  if (!leadId) return;
   const inputName = fieldName;
   const updatedFieldValue = {};
   updatedFieldValue[inputName] = value;
@@ -128,6 +130,10 @@ async function checkDedupe(id) {
   return res;
 }
 
+function NaNorNull(value, toReturn = null) {
+  return isNaN(value) ? toReturn : value;
+}
+
 export {
   API_URL,
   pingAPI,
@@ -152,4 +158,5 @@ export {
   checkBre100,
   checkCibil,
   checkDedupe,
+  NaNorNull,
 };
