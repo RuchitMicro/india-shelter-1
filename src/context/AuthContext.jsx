@@ -79,12 +79,10 @@ const AuthContextProvider = ({ children }) => {
   const [hidePromoCode, setHidePromoCode] = useState(false);
   const [selectedLoanType, setSelectedLoanType] = useState(formik.values.loan_type);
   const [disableNextStep, setDisableNextStep] = useState(true);
-  
 
   useEffect(() => {
     setSelectedLoanType(formik.values.loan_type);
   }, [formik.values.loan_type]);
-
 
   useEffect(() => {
     const promoCode = searchParams.get('promo_code');
