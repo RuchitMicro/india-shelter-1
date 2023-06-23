@@ -62,7 +62,7 @@ const AnimationBanner = () => {
           <img className='hidden md:inline' src={logo} alt='India Shelter' />
           <h4
             style={{ color: '#04584C' }}
-            className='text-center text-base md:text-xl font-medium pr-4'
+            className='text-center text-base md:text-xl font-medium pr-4 md:pr-0'
           >
             {selectedLoanType === 'LAP'
               ? 'Get the right value for your property'
