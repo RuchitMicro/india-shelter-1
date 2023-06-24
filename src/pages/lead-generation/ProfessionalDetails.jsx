@@ -145,7 +145,7 @@ const ProfessinalDetail = () => {
     }
     setFieldValue('date_of_birth', date);
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', date);
-  }, [currentLeadId, date, setFieldValue, setFieldError]);
+  }, [currentLeadId, date, setFieldError, setFieldValue]);
 
   const handleData = (value) => {
     if (selectedProfession === 'Cash Salaried') {
@@ -222,10 +222,8 @@ const ProfessinalDetail = () => {
         required
         name='date_of_birth'
         label='Date of Birth'
-        errors={errors.date_of_birth}
-        touched={touched.date_of_birth}
       />
-      <span className='text-sm text-primary-red'>
+      <span className='text-xs text-primary-red'>
         {errors.date_of_birth || touched.date_of_birth
           ? errors.date_of_birth
           : String.fromCharCode(160)}

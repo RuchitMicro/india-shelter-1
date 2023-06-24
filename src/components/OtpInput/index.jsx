@@ -39,7 +39,6 @@ const OtpInput = ({
         setInputDisabled(true);
         setActiveOtpIndex(null);
         verifyOTPCB(otpAsString).then((isVerifed) => {
-          console.log(isVerifed);
           setInputDisabled(isVerifed);
         });
         setTimer(false);

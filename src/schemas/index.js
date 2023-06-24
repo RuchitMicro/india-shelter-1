@@ -32,7 +32,7 @@ export const signUpSchema = Yup.object({
     .matches(/^[A-Z]{5}\d{4}[A-Z]{1}$/, 'Pan Number must be in the following format ex. ABCDE1234F')
     .min(10, 'Pan Number must be in the following format ex. ABCDE1234F')
     .max(10, 'Pan Number must be in the following format ex. ABCDE1234F'),
-  date_of_birth: Yup.date().transform(parseDateString).required('Please enter your birth date'),
+  date_of_birth: Yup.date().transform(parseDateString).required(''),
   monthly_family_income: Yup.string().required('Please enter your monthly family income'),
   ongoing_emi: Yup.string().required('Please enter your ongoing emi amount'),
   property_estimation: Yup.string().required('Please enter your ongoing emi amount'),

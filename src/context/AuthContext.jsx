@@ -43,6 +43,7 @@ const AuthContextProvider = ({ children }) => {
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(false);
+  const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -125,6 +126,8 @@ const AuthContextProvider = ({ children }) => {
         setCurrentLeadId,
         inputDisabled,
         setInputDisabled,
+        phoneNumberVerified,
+        setPhoneNumberVerified,
       }}
     >
       {children}

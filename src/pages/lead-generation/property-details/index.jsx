@@ -91,12 +91,12 @@ const PropertyDetail = () => {
     async (otp) => {
       try {
         const res = await verifyEmailOtp(email, { otp });
-        if (res.status !== 200) {
-          setEmailOTPVerified(false);
-          return false;
+        if (res.status === 200) {
+          setEmailOTPVerified(true);
+          return true;
         }
-        setEmailOTPVerified(true);
-        return true;
+        setEmailOTPVerified(false);
+        return false;
       } catch {
         setEmailOTPVerified(false);
         return false;
@@ -194,6 +194,7 @@ const PropertyDetail = () => {
             label='Enter OTP'
             required
             verified={emailOTPVerified}
+            defaultResendTime={30}
             setOTPVerified={setEmailOTPVerified}
             disableSendOTP={true}
             onSendOTPClick={sendEmailOTP}

@@ -23,7 +23,6 @@ const PersonalDetail = () => {
 
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const [otpVerified, setOTPVerified] = useState(null);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [canCreateLead, setCanCreateLead] = useState(false);
 
@@ -43,12 +42,14 @@ const PersonalDetail = () => {
     setCurrentLeadId,
     inputDisabled,
     setInputDisabled,
+    phoneNumberVerified,
+    setPhoneNumberVerified,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (loan_request_amount && first_name && pincode && phone_number && otpVerified) {
+      if (loan_request_amount && first_name && pincode && phone_number && phoneNumberVerified) {
         if (isTermsAccepted) setDisableNextStep(false);
       }
     };
@@ -60,7 +61,7 @@ const PersonalDetail = () => {
     phone_number,
     isTermsAccepted,
     setDisableNextStep,
-    otpVerified,
+    phoneNumberVerified,
   ]);
 
   const onOTPSendClick = useCallback(() => {
@@ -107,20 +108,19 @@ const PersonalDetail = () => {
     async (otp) => {
       try {
         const res = await verifyMobileOtp(phone_number, { otp });
-        if (res.status !== 200) {
-          console.log('OTP verification failed');
-          setOTPVerified(false);
-          return false;
+        if (res.status === 200) {
+          setPhoneNumberVerified(true);
+          setInputDisabled(false);
+          return true;
         }
-        setOTPVerified(true);
-        setInputDisabled(false);
-        return true;
+        setPhoneNumberVerified(false);
+        return false;
       } catch {
-        setOTPVerified(false);
+        setPhoneNumberVerified(false);
         return false;
       }
     },
-    [phone_number, setInputDisabled],
+    [phone_number, setInputDisabled, setPhoneNumberVerified],
   );
 
   const handleOnPincodeChange = useCallback(async () => {
@@ -185,7 +185,9 @@ const PersonalDetail = () => {
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className='flex gap-4 w-full'
+          className={`flex gap-4 w-full ${
+            inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
+          }`}
         >
           {loanTypeOptions.map((option) => {
             return (
@@ -249,7 +251,7 @@ const PersonalDetail = () => {
           const value = e.currentTarget.value;
           const pattern = /[A-za-z]+/g;
           if (pattern.exec(value[value.length - 1])) {
-            handleChange(e);
+            setFieldValue('first_name', value.charAt(0).toUpperCase() + value.slice(1));
           }
         }}
         inputClasses='capitalize'
@@ -267,9 +269,10 @@ const PersonalDetail = () => {
               const value = e.currentTarget.value;
               const pattern = /[A-za-z]+/g;
               if (pattern.exec(value[value.length - 1])) {
-                handleChange(e);
+                setFieldValue('middle_name', value.charAt(0).toUpperCase() + value.slice(1));
               }
             }}
+            inputClasses='capitalize'
           />
         </div>
         <div className='w-full'>
@@ -284,9 +287,10 @@ const PersonalDetail = () => {
               const value = e.currentTarget.value;
               const pattern = /[A-za-z]+/g;
               if (pattern.exec(value[value.length - 1])) {
-                handleChange(e);
+                setFieldValue('last_name', value.charAt(0).toUpperCase() + value.slice(1));
               }
             }}
+            inputClasses='capitalize'
           />
         </div>
       </div>
@@ -326,8 +330,8 @@ const PersonalDetail = () => {
       <OtpInput
         label='Enter OTP'
         required
-        verified={otpVerified}
-        setOTPVerified={setOTPVerified}
+        verified={phoneNumberVerified}
+        setOTPVerified={setPhoneNumberVerified}
         onSendOTPClick={onOTPSendClick}
         defaultResendTime={30}
         disableSendOTP={isLeadGenerated}
