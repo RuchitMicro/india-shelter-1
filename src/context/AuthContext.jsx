@@ -49,7 +49,6 @@ const AuthContextProvider = ({ children }) => {
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
     validationSchema: signUpSchema,
     onSubmit: (values, action) => {
-      console.log(values);
       action.resetForm(defaultValues);
     },
   });
