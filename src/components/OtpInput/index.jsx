@@ -65,7 +65,6 @@ const OtpInput = ({
 
         if (time <= 0) {
           clearInterval(interval);
-          if (!verified) setOTPVerified(true);
           setTimer(false);
         }
       }, 1000);
@@ -135,7 +134,7 @@ const OtpInput = ({
           {verified === null && timer && (
             <span className='text-primary-red text-xs leading-[18px]'>0:{resendTime}s</span>
           )}
-          {verified === true && (
+          {verified === true && !timer && (
             <span className='flex text-primary-black text-xs leading-[18px]'>
               OTP Verified
               <img src={otpVerified} alt='Otp Verified' role='presentation' />
