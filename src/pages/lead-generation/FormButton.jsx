@@ -19,15 +19,19 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
     const filteredValue = {
       loan_type: values.loan_type.toString(),
       loan_request_amount: parseFloat(values.loan_request_amount),
+      middle_name: values.middle_name,
+      last_name: values.last_name,
     };
     if (activeStepIndex === 0) {
-      editLeadById(currentLeadId, filteredValue).then((res) => console.log(res));
+      editLeadById(currentLeadId, filteredValue);
     }
     goToNextStep();
     onButtonClickCB && onButtonClickCB();
   }, [
     values.loan_type,
     values.loan_request_amount,
+    values.middle_name,
+    values.last_name,
     activeStepIndex,
     goToNextStep,
     onButtonClickCB,

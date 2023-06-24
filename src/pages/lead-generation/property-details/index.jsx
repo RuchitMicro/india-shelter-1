@@ -194,7 +194,7 @@ const PropertyDetail = () => {
             label='Enter OTP'
             required
             verified={emailOTPVerified}
-            defaultResendTime={30}
+            defaultResendTime={60}
             setOTPVerified={setEmailOTPVerified}
             disableSendOTP={true}
             onSendOTPClick={sendEmailOTP}

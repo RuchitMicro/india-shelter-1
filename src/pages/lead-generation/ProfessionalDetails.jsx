@@ -173,10 +173,9 @@ const ProfessinalDetail = () => {
 
       //call dedupe
       await checkDedupe(currentLeadId);
-      console.log('called dedupe');
+
       //call bre99
       const bre99Res = await checkBre99(currentLeadId);
-      console.log('called bre99');
 
       if (bre99Res.status !== 200) return;
 
@@ -186,14 +185,12 @@ const ProfessinalDetail = () => {
 
       if (allowCallPanRule.Rule_Value === 'YES') {
         const res = await verifyPan(currentLeadId);
-        console.log('called pan');
-        if (!res.body) return;
-        if (res.body.status === 'Valid') return;
+
+        if (res.status === 'Valid') return;
         setFieldError('pan_number', 'Please enter your valid PAN number');
       }
       if (allowCallCibilRule.Rule_Value === 'YES') {
         await checkCibil(currentLeadId);
-        console.log('called cibil');
       }
     },
     [currentLeadId, errors.pan_number, setFieldError],

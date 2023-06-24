@@ -333,7 +333,7 @@ const PersonalDetail = () => {
         verified={phoneNumberVerified}
         setOTPVerified={setPhoneNumberVerified}
         onSendOTPClick={onOTPSendClick}
-        defaultResendTime={30}
+        defaultResendTime={60}
         disableSendOTP={isLeadGenerated && !phoneNumberVerified}
         verifyOTPCB={verifyLeadOTP}
       />

@@ -30,6 +30,10 @@ const LoanAgainstPropertyFields = () => {
     currentLeadId,
   } = useContext(AuthContext);
 
+  useEffect(() => {
+    setPropertyCategory(values.purpose_type);
+  }, [values.purpose_type]);
+
   const handleOnPropertyCategoryChange = useCallback(
     (e) => {
       const value = e.currentTarget.value;
