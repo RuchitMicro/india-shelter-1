@@ -49,7 +49,7 @@ const PersonalDetail = () => {
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
-  const [showOTPInput, setShowOTPInput] = useState(!phoneNumberVerified);
+  const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
 
   useEffect(() => {
     const moveToNextStep = () => {
