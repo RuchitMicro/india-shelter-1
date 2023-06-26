@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
  * @param Icon React JSX Element
  */
 const TextInput = forwardRef(function TextInput(
-  { label, name, hint, error, touched, Icon, inputClasses, displayError = true, ...props },
+  { label, name, hint, error, touched, Icon, inputClasses, displayError = true, message, ...props },
   ref,
 ) {
   const inputRef = useRef();
@@ -55,10 +55,23 @@ const TextInput = forwardRef(function TextInput(
           {...props}
         />
       </div>
-      {displayError ? (
-        <span className='text-xs text-primary-red'>
-          {error && touched ? error : String.fromCharCode(160)}
-        </span>
+      {displayError && !message ? (
+        <span
+          className='text-xs text-primary-red'
+          dangerouslySetInnerHTML={{
+            __html: error && touched ? error : String.fromCharCode(160),
+          }}
+        />
+      ) : (
+        ''
+      )}
+      {message ? (
+        <span
+          className='flex text-primary-black text-xs leading-[18px]'
+          dangerouslySetInnerHTML={{
+            __html: message,
+          }}
+        />
       ) : (
         ''
       )}
@@ -80,4 +93,5 @@ TextInput.propTypes = {
   inputClasses: PropTypes.string,
   displayError: PropTypes.bool,
   disabled: PropTypes.bool,
+  message: PropTypes.string,
 };
