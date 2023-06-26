@@ -26,7 +26,6 @@ const PersonalDetail = () => {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [canCreateLead, setCanCreateLead] = useState(false);
-  const [showOTPInput, setShowOTPInput] = useState(false);
 
   const {
     values,
@@ -50,6 +49,11 @@ const PersonalDetail = () => {
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
+  const [showOTPInput, setShowOTPInput] = useState(isLeadGenerated);
+
+  useEffect(() => {
+    setShowOTPInput(isLeadGenerated);
+  }, [isLeadGenerated]);
 
   useEffect(() => {
     const moveToNextStep = () => {
