@@ -33,7 +33,6 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
     () => (
       <Suspense fallback={<h1>Loading next step...</h1>}>
         <div className='relative h-full overflow-y-hidden'>
-          <Stepper steps={steps} activeStep={activeStepIndex} />
           <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 
           <div
@@ -64,7 +63,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
       >
         <Sheet.Container>
           <Sheet.Header
-            className='py-2 px-4 h-4 flex justify-center'
+            className='py-2 px-4 flex justify-center flex-col'
             onPanEnd={(e) => {
               if (window.innerHeight * 0.8 < e.y) {
                 modalRef.current?.snapTo(1);
@@ -72,6 +71,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
             }}
           >
             <BottomSheetHandle />
+            <Stepper steps={steps} activeStep={activeStepIndex} />
           </Sheet.Header>
           <Sheet.Content className='px-3 text-dark-grey leading-6 mb-4'>{Form}</Sheet.Content>
         </Sheet.Container>
