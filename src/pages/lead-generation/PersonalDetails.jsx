@@ -152,15 +152,24 @@ const PersonalDetail = () => {
         first_name,
         pincode,
         phone_number: phone_number.toString(),
-      }).then((res) => {
-        if (res.status !== 200) {
-          setIsLeadGenearted(false);
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            setIsLeadGenearted(true);
+            setCurrentLeadId(res.data.id);
+            setFieldError('phone_number', '');
+            return;
+          }
+        })
+        .catch((res) => {
+          setFieldError(
+            'phone_number',
+            res.response.data?.message || 'An error occured, please try again.',
+          );
           return;
-        }
-        setIsLeadGenearted(true);
-        setCurrentLeadId(res.data.id);
-        setFieldError('pincode', '');
-      });
+        });
+
+      setFieldError('pincode', '');
     }
   }, [
     canCreateLead,
