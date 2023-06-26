@@ -29,7 +29,6 @@ export const signUpSchema = Yup.object({
     .required('Please enter your valid 10 digit mobile number'),
   pan_number: Yup.string()
     .required('Please enter your valid PAN number')
-    .matches(/^[A-Z]{5}\d{4}[A-Z]{1}$/, 'Pan Number must be in the following format ex. ABCDE1234F')
     .min(10, 'Pan Number must be in the following format ex. ABCDE1234F')
     .max(10, 'Pan Number must be in the following format ex. ABCDE1234F'),
   date_of_birth: Yup.date().transform(parseDateString).required(''),
