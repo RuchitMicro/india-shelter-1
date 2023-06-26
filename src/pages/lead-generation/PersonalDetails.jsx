@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useCallback } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
+import otpVerified from '../../assets/icons/otp-verified.svg';
 import { AuthContext } from '../../context/AuthContext';
 import {
   CheckBox,
@@ -25,6 +26,7 @@ const PersonalDetail = () => {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [canCreateLead, setCanCreateLead] = useState(false);
+  const [showOTPInput, setShowOTPInput] = useState(false);
 
   const {
     values,
@@ -47,6 +49,8 @@ const PersonalDetail = () => {
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
+  const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
+
   useEffect(() => {
     const moveToNextStep = () => {
       if (loan_request_amount && first_name && pincode && phone_number && phoneNumberVerified) {
@@ -65,6 +69,7 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
+    setDisablePhoneNumber(true);
     const continueJourney = searchParams.has('li');
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
@@ -111,6 +116,8 @@ const PersonalDetail = () => {
         if (res.status === 200) {
           setPhoneNumberVerified(true);
           setInputDisabled(false);
+          setFieldError('phone_number', '');
+          setShowOTPInput(false);
           return true;
         }
         setPhoneNumberVerified(false);
@@ -120,7 +127,7 @@ const PersonalDetail = () => {
         return false;
       }
     },
-    [phone_number, setInputDisabled, setPhoneNumberVerified],
+    [phone_number, setFieldError, setInputDisabled, setPhoneNumberVerified],
   );
 
   const handleOnPincodeChange = useCallback(async () => {
@@ -133,7 +140,7 @@ const PersonalDetail = () => {
       return;
     }
     if (data.ogl) {
-      setFieldError('pincode', 'Out of Geographic limit');
+      setFieldError('pincode', 'Invalid Pincode');
       return;
     }
     setCanCreateLead(!data.ogl);
@@ -156,6 +163,7 @@ const PersonalDetail = () => {
         .then((res) => {
           if (res.status === 200) {
             setIsLeadGenearted(true);
+            setShowOTPInput(true);
             setCurrentLeadId(res.data.id);
             setFieldError('phone_number', '');
             return;
@@ -190,10 +198,6 @@ const PersonalDetail = () => {
           The loan I want is <span className='text-primary-red text-xs'>*</span>
         </label>
         <div
-          role='presentation'
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
           className={`flex gap-4 w-full ${
             inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
           }`}
@@ -332,20 +336,29 @@ const PersonalDetail = () => {
         touched={touched.phone_number}
         onBlur={handleBlur}
         onChange={handleChange}
-        disabled={inputDisabled}
+        disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'
+        message={
+          phoneNumberVerified
+            ? `OTP Verfied
+          <img src="${otpVerified}" alt='Otp Verified' role='presentation' />
+          `
+            : null
+        }
       />
 
-      <OtpInput
-        label='Enter OTP'
-        required
-        verified={phoneNumberVerified}
-        setOTPVerified={setPhoneNumberVerified}
-        onSendOTPClick={onOTPSendClick}
-        defaultResendTime={60}
-        disableSendOTP={isLeadGenerated && !phoneNumberVerified}
-        verifyOTPCB={verifyLeadOTP}
-      />
+      {showOTPInput && (
+        <OtpInput
+          label='Enter OTP'
+          required
+          verified={phoneNumberVerified}
+          setOTPVerified={setPhoneNumberVerified}
+          onSendOTPClick={onOTPSendClick}
+          defaultResendTime={30}
+          disableSendOTP={isLeadGenerated && !phoneNumberVerified}
+          verifyOTPCB={verifyLeadOTP}
+        />
+      )}
 
       <div className='flex gap-2'>
         <CheckBox
