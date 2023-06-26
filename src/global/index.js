@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://13.235.170.145/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://scotttiger.in/api';
 const API_LEAD_URL = `${API_URL}/lead`;
 
 const requestOptions = {};
