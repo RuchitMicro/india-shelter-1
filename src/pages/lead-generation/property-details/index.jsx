@@ -3,12 +3,14 @@ import { DropDown, TextInput, OtpInput } from '../../../components';
 import { AuthContext } from '../../../context/AuthContext';
 import { propertyIdentificationOptions, propertyDetailsMap } from '../utils';
 import { editLeadById, getEmailOtp, updateLeadDataOnBlur, verifyEmailOtp } from '../../../global';
+import otpVerified from '../../../assets/icons/otp-verified.svg';
 
 export const PropertyDetailContext = createContext(null);
 
 const PropertyDetail = () => {
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [emailOTPVerified, setEmailOTPVerified] = useState(null);
+  const [disableEmailInput, setDisableEmailInput] = useState(false);
 
   const {
     values,
@@ -81,6 +83,7 @@ const PropertyDetail = () => {
   );
 
   const sendEmailOTP = useCallback(async () => {
+    setDisableEmailInput(true);
     const res = await getEmailOtp(email);
     if (res.status !== 200) {
       setFieldError('otp', res.data.message);
@@ -93,6 +96,7 @@ const PropertyDetail = () => {
         const res = await verifyEmailOtp(email, { otp });
         if (res.status === 200) {
           setEmailOTPVerified(true);
+          setShowOTPInput(false);
           return true;
         }
         setEmailOTPVerified(false);
@@ -182,11 +186,19 @@ const PropertyDetail = () => {
             checkEmailValid(e);
             updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
           }}
+          disabled={disableEmailInput}
           onInput={checkEmailValid}
           onChange={(e) => {
             checkEmailValid(e);
             handleChange(e);
           }}
+          message={
+            emailOTPVerified
+              ? `OTP Verfied
+          <img src="${otpVerified}" alt='Otp Verified' role='presentation' />
+          `
+              : null
+          }
         />
 
         {showOTPInput ? (
@@ -194,7 +206,7 @@ const PropertyDetail = () => {
             label='Enter OTP'
             required
             verified={emailOTPVerified}
-            defaultResendTime={60}
+            defaultResendTime={30}
             setOTPVerified={setEmailOTPVerified}
             disableSendOTP={true}
             onSendOTPClick={sendEmailOTP}
