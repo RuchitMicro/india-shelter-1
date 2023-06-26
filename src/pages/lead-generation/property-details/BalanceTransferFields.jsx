@@ -4,6 +4,7 @@ import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
 import { loanTenureOptions } from '../utils';
 import { updateLeadDataOnBlur } from '../../../global';
+import { PropertyDetailContext } from '.';
 
 const fieldsRequiredForSubmitting = [
   'banker_name',
@@ -14,17 +15,19 @@ const fieldsRequiredForSubmitting = [
 ];
 
 const BalanceTransferFields = () => {
+  const { showOTPInput, emailOTPVerified } = useContext(PropertyDetailContext);
   const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
     useContext(AuthContext);
 
   useEffect(() => {
-    let disablSubmit = fieldsRequiredForSubmitting.reduce((acc, field) => {
+    if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
+    let disableSubmit = fieldsRequiredForSubmitting.reduce((acc, field) => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
     }, true);
-    setDisableNextStep(!disablSubmit);
-  }, [errors, setDisableNextStep]);
+    setDisableNextStep(!disableSubmit);
+  }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput]);
 
   return (
     <div className='flex flex-col gap-2'>
@@ -50,7 +53,7 @@ const BalanceTransferFields = () => {
         }}
       />
 
-      <div className='flex gap-2 items-center'>
+      <div className='flex gap-2 items-end'>
         <div className='grow'>
           <TextInput
             name='loan_tenure'
@@ -58,8 +61,7 @@ const BalanceTransferFields = () => {
             label='Loan Tenure'
             required
             value={values.loan_tenure}
-            error={errors.loan_tenure}
-            touched={touched.loan_tenure}
+            displayError={false}
             onBlur={(e) => {
               const target = e.currentTarget;
               handleBlur(e);
@@ -71,9 +73,18 @@ const BalanceTransferFields = () => {
           />
         </div>
         <div className='mt-1 grow'>
-          <DropDown options={loanTenureOptions} placeholder='Months' showError={false} />
+          <DropDown
+            options={loanTenureOptions}
+            placeholder='Months'
+            showError={false}
+            showIcon={false}
+          />
         </div>
       </div>
+
+      <span className='text-xs text-primary-red'>
+        {errors.loan_tenure && touched.loan_tenure ? errors.loan_tenure : String.fromCharCode(160)}
+      </span>
 
       <CurrencyInput
         name='loan_amount'

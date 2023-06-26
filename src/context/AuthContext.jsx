@@ -8,7 +8,7 @@ import { getLeadById } from '../global';
 export const defaultValues = {
   phone_number: '',
   loan_type: 'Home Loan',
-  loan_request_amount: '1000000',
+  loan_request_amount: '100000',
   first_name: '',
   middle_name: '',
   last_name: '',
@@ -41,14 +41,14 @@ export const AuthContext = createContext(defaultValues);
 const AuthContextProvider = ({ children }) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
-  const [currentLeadId, setCurrentLeadId] = useState(0);
+  const [currentLeadId, setCurrentLeadId] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(false);
+  const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
     validationSchema: signUpSchema,
     onSubmit: (values, action) => {
-      console.log(values);
       action.resetForm(defaultValues);
     },
   });
@@ -79,6 +79,10 @@ const AuthContextProvider = ({ children }) => {
   const [hidePromoCode, setHidePromoCode] = useState(false);
   const [selectedLoanType, setSelectedLoanType] = useState(formik.values.loan_type);
   const [disableNextStep, setDisableNextStep] = useState(true);
+
+  useEffect(() => {
+    setSelectedLoanType(formik.values.loan_type);
+  }, [formik.values.loan_type]);
 
   useEffect(() => {
     const promoCode = searchParams.get('promo_code');
@@ -121,6 +125,8 @@ const AuthContextProvider = ({ children }) => {
         setCurrentLeadId,
         inputDisabled,
         setInputDisabled,
+        phoneNumberVerified,
+        setPhoneNumberVerified,
       }}
     >
       {children}

@@ -11,8 +11,14 @@ const disableSubmitMap = {
 };
 
 const LoanAgainstPropertyFields = () => {
-  const { setPropertyIdentified, propertyIdentified, propertyCategory, setPropertyCategory } =
-    useContext(PropertyDetailContext);
+  const {
+    setPropertyIdentified,
+    propertyIdentified,
+    propertyCategory,
+    setPropertyCategory,
+    showOTPInput,
+    emailOTPVerified,
+  } = useContext(PropertyDetailContext);
   const {
     values,
     errors,
@@ -23,6 +29,10 @@ const LoanAgainstPropertyFields = () => {
     setDisableNextStep,
     currentLeadId,
   } = useContext(AuthContext);
+
+  useEffect(() => {
+    setPropertyCategory(values.purpose_type);
+  }, [values.purpose_type]);
 
   const handleOnPropertyCategoryChange = useCallback(
     (e) => {
@@ -46,6 +56,7 @@ const LoanAgainstPropertyFields = () => {
 
   useEffect(() => {
     if (!propertyIdentified) return;
+    if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
 
     let disableSubmitting = disableSubmitMap[propertyIdentified].reduce((acc, field) => {
       const keys = Object.keys(errors);
@@ -56,7 +67,7 @@ const LoanAgainstPropertyFields = () => {
     disableSubmitting = disableSubmitting && !errors.purpose_type;
 
     setDisableNextStep(!disableSubmitting);
-  }, [propertyIdentified, errors, setDisableNextStep]);
+  }, [propertyIdentified, errors, setDisableNextStep, showOTPInput, emailOTPVerified]);
 
   return (
     <>

@@ -12,7 +12,8 @@ const disableSubmitMap = {
 };
 
 const HomeLoanFields = () => {
-  const { setPropertyIdentified, propertyIdentified } = useContext(PropertyDetailContext);
+  const { setPropertyIdentified, propertyIdentified, showOTPInput, emailOTPVerified } =
+    useContext(PropertyDetailContext);
   const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
     useContext(AuthContext);
 
@@ -27,6 +28,7 @@ const HomeLoanFields = () => {
 
   useEffect(() => {
     if (!propertyIdentified) return;
+    if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
 
     let disableSubmitting = disableSubmitMap[propertyIdentified].reduce((acc, field) => {
       const keys = Object.keys(errors);
@@ -35,7 +37,7 @@ const HomeLoanFields = () => {
     }, true);
 
     setDisableNextStep(!disableSubmitting);
-  }, [propertyIdentified, errors, setDisableNextStep]);
+  }, [propertyIdentified, errors, setDisableNextStep, showOTPInput, emailOTPVerified]);
 
   return (
     <>
