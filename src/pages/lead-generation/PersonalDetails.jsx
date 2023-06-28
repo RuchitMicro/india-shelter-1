@@ -45,6 +45,7 @@ const PersonalDetail = () => {
     setInputDisabled,
     phoneNumberVerified,
     setPhoneNumberVerified,
+    setProcessingBRE,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number, loan_type } = values;
 
@@ -53,7 +54,14 @@ const PersonalDetail = () => {
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (loan_request_amount && first_name && pincode && phone_number && phoneNumberVerified && loan_type) {
+      if (
+        loan_request_amount &&
+        first_name &&
+        pincode &&
+        phone_number &&
+        phoneNumberVerified &&
+        loan_type
+      ) {
         if (isTermsAccepted) setDisableNextStep(false);
       }
     };
@@ -198,8 +206,9 @@ const PersonalDetail = () => {
           The loan I want is <span className='text-primary-red text-xs'>*</span>
         </label>
         <div
-          className={`flex gap-4 w-full ${inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
-            }`}
+          className={`flex gap-4 w-full ${
+            inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
+          }`}
         >
           {loanTypeOptions.map((option) => {
             return (
@@ -266,7 +275,6 @@ const PersonalDetail = () => {
             setFieldValue('first_name', value.charAt(0).toUpperCase() + value.slice(1));
           }
         }}
-        
         inputClasses='capitalize'
       />
       <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
@@ -322,11 +330,9 @@ const PersonalDetail = () => {
           handleOnPincodeChange();
         }}
         onChange={handleChange}
-        onKeyDown={
-          (e) => {
-            ["e","E","-","+"].includes(e.key) && e.preventDefault()
-          }
-        }
+        onKeyDown={(e) => {
+          ['e', 'E', '-', '+'].includes(e.key) && e.preventDefault();
+        }}
         inputClasses='hidearrow'
       />
 
