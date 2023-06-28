@@ -14,13 +14,14 @@ const disableSubmitMap = {
 const HomeLoanFields = () => {
   const { setPropertyIdentified, propertyIdentified, showOTPInput, emailOTPVerified } =
     useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
+  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId, setFieldValue } =
     useContext(AuthContext);
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
       const value = e.currentTarget.value;
       setPropertyIdentified(value);
+      setFieldValue('property_identification', value);
       updateLeadDataOnBlur(currentLeadId, 'property_identification', value);
     },
     [currentLeadId, setPropertyIdentified],

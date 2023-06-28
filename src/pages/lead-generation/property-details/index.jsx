@@ -124,7 +124,7 @@ const PropertyDetail = () => {
   return (
     <PropertyDetailContext.Provider value={value}>
       <div className='flex flex-col gap-2'>
-        {propertyDetailsMap[selectedLoanType].fields}
+        {propertyDetailsMap[selectedLoanType || 'Home Loan'].fields}
 
         <span className='text-xl font-semibold text-primary-black'>Last thing, promise!</span>
 
@@ -132,7 +132,7 @@ const PropertyDetail = () => {
           label='Purpose of Loan'
           required
           placeholder='Ex: Purchase'
-          options={propertyDetailsMap[selectedLoanType]['loanPurposeOptions']}
+          options={propertyDetailsMap[selectedLoanType || 'Home Loan']['loanPurposeOptions']}
           onChange={handleLoanPursposeChange}
           defaultSelected={loanPurpose}
         />
@@ -143,7 +143,7 @@ const PropertyDetail = () => {
             label='Property Type'
             required
             placeholder='Ex: Residential'
-            options={propertyDetailsMap[selectedLoanType]['propertyTypeOptions'][loanPurpose] || []}
+            options={propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][loanPurpose] || []}
             onChange={handlePropertyType}
             defaultSelected={propertyType}
             disabled={!loanPurpose}

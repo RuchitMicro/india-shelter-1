@@ -23,7 +23,7 @@ const LeadGeneration = () => {
 
   return (
     <Suspense fallback={<h1>Loading...</h1>}>
-      <AuthContextProvider>
+      <AuthContextProvider setProcessingBRE={setProcessingBRE}>
         {processingBRE ? (
           <AnimatePresence>
             <motion.div
