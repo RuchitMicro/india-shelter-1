@@ -134,6 +134,29 @@ function NaNorNull(value, toReturn = null) {
   return isNaN(value) ? toReturn : value;
 }
 
+function getWebOTP() {
+  if ('OTPCredential' in window) {
+    window.addEventListener('DOMContentLoaded', (_) => {
+      const ac = new AbortController();
+      navigator.credentials
+        .get({
+          otp: { transport: ['sms'] },
+          signal: ac.signal,
+        })
+        .then((otp) => {
+          return otp.code;
+        })
+        .catch((err) => {
+          console.error(err);
+          return null;
+        });
+    });
+  } else {
+    console.error('OTPCredential not supported!.');
+    return null;
+  }
+}
+
 export {
   API_URL,
   pingAPI,
@@ -159,4 +182,5 @@ export {
   checkCibil,
   checkDedupe,
   NaNorNull,
+  getWebOTP,
 };

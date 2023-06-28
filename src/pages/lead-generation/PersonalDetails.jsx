@@ -14,7 +14,7 @@ import {
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
 import privacyPolicy from '../../global/privacy-policy';
-import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
+import { createLead, getPincode, getWebOTP, sendMobileOTP, verifyMobileOtp } from '../../global';
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
@@ -85,23 +85,14 @@ const PersonalDetail = () => {
         setFieldError('otp', res.data.message);
         return;
       }
-      if ('OTPCredential' in window) {
-        window.addEventListener('DOMContentLoaded', (_) => {
-          const ac = new AbortController();
-          navigator.credentials
-            .get({
-              otp: { transport: ['sms'] },
-              signal: ac.signal,
-            })
-            .then((otp) => {
-              alert(otp.code);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+      try {
+        navigator.permissions.query({ name: 'sms' }).then((permissionStatus) => {
+          if (permissionStatus.state === 'granted') {
+            console.log(getWebOTP());
+          }
         });
-      } else {
-        alert('WebOTP not supported!.');
+      } catch (err) {
+        console.error(err);
       }
     });
   }, [phone_number, searchParams, setFieldError]);
@@ -143,15 +134,11 @@ const PersonalDetail = () => {
     if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
 
     const data = await getPincode(pincode);
-    if (!data) {
+    if (!data || data.ogl) {
       setCanCreateLead(false);
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    // if (data.ogl) {
-    //   setFieldError('pincode', 'Invalid Pincode');
-    //   return;
-    // }
     setCanCreateLead(!data.ogl);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
@@ -197,6 +184,7 @@ const PersonalDetail = () => {
     setCurrentLeadId,
     setFieldError,
     setIsLeadGenearted,
+    setProcessingBRE,
   ]);
 
   return (
