@@ -10,6 +10,7 @@ import BottomSheetHandle from './BottomSheetHandle';
 import TermsAndConditions from './TermsAndConditions';
 import CurrencyInput from './CurrencyInput';
 import DesktopPopUp from './DesktopPopUp';
+import PanInput from './TextInput/PanInput';
 
 export {
   TextInput,
@@ -24,4 +25,5 @@ export {
   TermsAndConditions,
   CurrencyInput,
   DesktopPopUp,
+  PanInput,
 };
