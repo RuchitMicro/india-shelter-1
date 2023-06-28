@@ -6,7 +6,7 @@ import IconSalaried from '../../assets/icons/salaried';
 import IconSelfEmployed from '../../assets/icons/self-employed';
 import { AuthContext } from '../../context/AuthContext';
 import DatePicker from '../../components/DatePicker';
-import { CurrencyInput } from '../../components';
+import { CurrencyInput, PanInput } from '../../components';
 import {
   checkBre99,
   checkCibil,
@@ -90,7 +90,6 @@ const ProfessinalDetail = () => {
     handleChange,
     setFieldValue,
     setFieldError,
-    activeStepIndex,
     setDisableNextStep,
     currentLeadId,
   } = useContext(AuthContext);
@@ -139,7 +138,7 @@ const ProfessinalDetail = () => {
     errors.date_of_birth,
     values.profession,
     values.mode_of_salary,
-    values.occupation
+    values.occupation,
   ]);
 
   useEffect(() => {
@@ -174,7 +173,7 @@ const ProfessinalDetail = () => {
         pan_number: e.currentTarget.value.toUpperCase(),
       });
 
-      if (updatedPanCard.status !== 200) return;
+      if (updatedPanCard?.status !== 200) return;
 
       //call dedupe
       await checkDedupe(currentLeadId);
@@ -203,7 +202,7 @@ const ProfessinalDetail = () => {
 
   return (
     <div className='flex flex-col gap-2'>
-      <TextInput
+      <PanInput
         label='PAN number'
         required
         name='pan_number'
@@ -215,7 +214,9 @@ const ProfessinalDetail = () => {
           handleBlur(e);
           handleOnPanBlur(e);
         }}
-        onChange={handleChange}
+        onChange={(value) => {
+          setFieldValue('pan_number', value);
+        }}
       />
 
       <DatePicker
