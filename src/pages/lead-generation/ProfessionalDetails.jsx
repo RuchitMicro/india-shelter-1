@@ -118,11 +118,13 @@ const ProfessinalDetail = () => {
   useEffect(() => {
     const moveToNextStep = () => {
       if (
+        values.profession &&
         !errors.pan_number &&
         !errors.date_of_birth &&
         date_of_birth &&
         monthly_family_income > 0 &&
-        ongoing_emi > 0
+        ongoing_emi > 0 &&
+        (values.occupation || values.mode_of_salary)
       )
         setDisableNextStep(false);
       else setDisableNextStep(true);
@@ -135,6 +137,9 @@ const ProfessinalDetail = () => {
     setDisableNextStep,
     errors.pan_number,
     errors.date_of_birth,
+    values.profession,
+    values.mode_of_salary,
+    values.occupation
   ]);
 
   useEffect(() => {
@@ -154,7 +159,7 @@ const ProfessinalDetail = () => {
       updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', value);
       updateLeadDataOnBlur(currentLeadId, 'occupation', null);
     } else if (selectedProfession === 'Self Employed') {
-      setFieldValue('Occupation', value);
+      setFieldValue('occupation', value);
       setFieldValue('mode_of_salary', '');
       updateLeadDataOnBlur(currentLeadId, 'occupation', value);
       updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', null);

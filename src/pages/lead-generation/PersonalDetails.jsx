@@ -46,19 +46,20 @@ const PersonalDetail = () => {
     phoneNumberVerified,
     setPhoneNumberVerified,
   } = useContext(AuthContext);
-  const { loan_request_amount, first_name, pincode, phone_number } = values;
+  const { loan_request_amount, first_name, pincode, phone_number, loan_type } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
   const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
 
   useEffect(() => {
     const moveToNextStep = () => {
-      if (loan_request_amount && first_name && pincode && phone_number && phoneNumberVerified) {
+      if (loan_request_amount && first_name && pincode && phone_number && phoneNumberVerified && loan_type) {
         if (isTermsAccepted) setDisableNextStep(false);
       }
     };
     moveToNextStep();
   }, [
+    loan_type,
     loan_request_amount,
     first_name,
     pincode,
@@ -139,10 +140,10 @@ const PersonalDetail = () => {
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    if (data.ogl) {
-      setFieldError('pincode', 'Invalid Pincode');
-      return;
-    }
+    // if (data.ogl) {
+    //   setFieldError('pincode', 'Invalid Pincode');
+    //   return;
+    // }
     setCanCreateLead(!data.ogl);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
@@ -170,10 +171,9 @@ const PersonalDetail = () => {
           }
         })
         .catch((res) => {
-          setFieldError(
-            'phone_number',
-            res.response.data?.message || 'An error occured, please try again.',
-          );
+          if (res.response.data.status === 500) {
+            setProcessingBRE(true);
+          }
           return;
         });
 
@@ -198,9 +198,8 @@ const PersonalDetail = () => {
           The loan I want is <span className='text-primary-red text-xs'>*</span>
         </label>
         <div
-          className={`flex gap-4 w-full ${
-            inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
-          }`}
+          className={`flex gap-4 w-full ${inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
+            }`}
         >
           {loanTypeOptions.map((option) => {
             return (
@@ -267,6 +266,7 @@ const PersonalDetail = () => {
             setFieldValue('first_name', value.charAt(0).toUpperCase() + value.slice(1));
           }
         }}
+        
         inputClasses='capitalize'
       />
       <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
