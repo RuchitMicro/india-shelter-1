@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import OtpInput from '../../components/OtpInput';
 import RangeSlider from '../../components/RangeSlider';
 import TextInput from '../../components/TextInput';
@@ -26,6 +26,7 @@ const PersonalDetail = () => {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [canCreateLead, setCanCreateLead] = useState(false);
+  const bottomSheet = useRef(null);
 
   const {
     values,
@@ -199,6 +200,11 @@ const PersonalDetail = () => {
     setIsLeadGenearted,
   ]);
 
+  const handleFocus = () => {
+    bottomSheet.current.scrollIntoView({ behavior: 'smooth' });
+    console.log('handlefocus');
+  };
+
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-2'>
@@ -346,6 +352,7 @@ const PersonalDetail = () => {
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
+        onFocus={handleFocus}
         onChange={handleChange}
         disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'
@@ -371,7 +378,7 @@ const PersonalDetail = () => {
         />
       )}
 
-      <div className='flex gap-2'>
+      <div className='flex gap-2' ref={bottomSheet}>
         <CheckBox
           name='terms-agreed'
           onChange={(e) => {
@@ -403,6 +410,7 @@ const PersonalDetail = () => {
           me with reference to my loan enquiry.
         </div>
       </div>
+
       <DesktopPopUp showpopup={showTerms} setShowPopUp={setShowTerms} title='Terms and Conditions'>
         {termsAndConditions}
       </DesktopPopUp>
