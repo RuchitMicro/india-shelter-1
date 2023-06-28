@@ -346,7 +346,27 @@ const PersonalDetail = () => {
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
-        onChange={handleChange}
+        onChange={(e) => {
+          if (values.phone_number.length >= 10) {
+            console.log('greater than 10');
+            return;
+          }
+          const value = e.currentTarget.value;
+          if (value.charAt(0) === '0') {
+            e.preventDefault();
+            return;
+          }
+          setFieldValue('phone_number', value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Backspace') {
+            setFieldValue(
+              'phone_number',
+              values.phone_number.slice(0, values.phone_number.length - 1),
+            );
+            return;
+          }
+        }}
         disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'
         message={
