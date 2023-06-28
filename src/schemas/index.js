@@ -34,7 +34,7 @@ export const signUpSchema = Yup.object({
   date_of_birth: Yup.date().transform(parseDateString).required(''),
   monthly_family_income: Yup.string().required('Please enter your monthly family income'),
   ongoing_emi: Yup.string().required('Please enter your ongoing emi amount'),
-  property_estimation: Yup.string().required('Please enter your ongoing emi amount'),
+  property_estimation: Yup.string().required('Property value is estimated to be'),
   property_pincode: Yup.string()
     .required('Please enter your property pincode')
     .matches(/^[0-9]+$/, 'Must be only digits')
