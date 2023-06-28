@@ -119,6 +119,18 @@ const HomeLoanFields = () => {
                 handleChange(e);
               }
             }}
+            onKeyDown={(e) => {
+              //capturing ctrl V and ctrl C
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
+              ? e.preventDefault()
+              : null;
+            }}
+            onPaste={(e) => {
+              e.preventDefault();
+              const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+              e.target.value = text;
+              handleChange(e);
+            }}
           />
         </div>
       ) : null}
