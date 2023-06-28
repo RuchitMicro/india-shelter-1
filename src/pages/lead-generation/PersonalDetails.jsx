@@ -336,6 +336,12 @@ const PersonalDetail = () => {
           ? e.preventDefault()
           : null;
         }}
+        onPaste={(e) => {
+          e.preventDefault();
+          const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+          e.target.value = text;
+          handleChange(e);
+        }}
         inputClasses='hidearrow'
       />
 
