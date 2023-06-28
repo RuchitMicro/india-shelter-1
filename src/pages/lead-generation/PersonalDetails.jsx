@@ -331,7 +331,10 @@ const PersonalDetail = () => {
         }}
         onChange={handleChange}
         onKeyDown={(e) => {
-          ['e', 'E', '-', '+'].includes(e.key) && e.preventDefault();
+          //capturing ctrl V and ctrl C
+          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
+          ? e.preventDefault()
+          : null;
         }}
         inputClasses='hidearrow'
       />
