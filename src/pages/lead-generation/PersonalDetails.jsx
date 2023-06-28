@@ -262,7 +262,7 @@ const PersonalDetail = () => {
         disabled={inputDisabled}
         onChange={(e) => {
           const value = e.currentTarget.value;
-          const pattern = /[A-za-z]+/g;
+          const pattern = /^[A-Za-z]+$/;
           if (pattern.exec(value[value.length - 1])) {
             setFieldValue('first_name', value.charAt(0).toUpperCase() + value.slice(1));
           }
@@ -280,7 +280,7 @@ const PersonalDetail = () => {
             onBlur={handleBlur}
             onChange={(e) => {
               const value = e.currentTarget.value;
-              const pattern = /[A-za-z]+/g;
+              const pattern = /^[A-Za-z]+$/;
               if (pattern.exec(value[value.length - 1])) {
                 setFieldValue('middle_name', value.charAt(0).toUpperCase() + value.slice(1));
               }
@@ -298,7 +298,7 @@ const PersonalDetail = () => {
             name='last_name'
             onChange={(e) => {
               const value = e.currentTarget.value;
-              const pattern = /[A-za-z]+/g;
+              const pattern = /^[A-Za-z]+$/;
               if (pattern.exec(value[value.length - 1])) {
                 setFieldValue('last_name', value.charAt(0).toUpperCase() + value.slice(1));
               }
@@ -322,6 +322,11 @@ const PersonalDetail = () => {
           handleOnPincodeChange();
         }}
         onChange={handleChange}
+        onKeyDown={
+          (e) => {
+            ["e","E","-","+"].includes(e.key) && e.preventDefault()
+          }
+        }
         inputClasses='hidearrow'
       />
 
