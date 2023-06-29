@@ -357,7 +357,6 @@ const PersonalDetail = () => {
         onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
         onChange={(e) => {
           if (values.phone_number.length >= 10) {
-            // console.log('greater than 10');
             return;
           }
           const value = e.currentTarget.value;
@@ -379,6 +378,7 @@ const PersonalDetail = () => {
               'phone_number',
               values.phone_number.slice(0, values.phone_number.length - 1),
             );
+            e.preventDefault();
             return;
           }
           if (e.key === '-' || e.key==='+' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
