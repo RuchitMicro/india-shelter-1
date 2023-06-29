@@ -148,11 +148,7 @@ const PersonalDetail = () => {
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    // if (data.ogl) {
-    //   setFieldError('pincode', 'Invalid Pincode');
-    //   return;
-    // }
-    setCanCreateLead(!data.ogl);
+    setCanCreateLead(true);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 

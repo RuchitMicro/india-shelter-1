@@ -134,6 +134,24 @@ function NaNorNull(value, toReturn = null) {
   return isNaN(value) ? toReturn : value;
 }
 
+const MAX_ALLOWED_YEAR = 18;
+
+function isEighteenOrAbove(date) {
+  const today = new Date();
+
+  const differenceInYear = today.getFullYear() - date.getFullYear();
+  const differenceInMonth = today.getMonth() - date.getMonth();
+
+  if (differenceInYear > MAX_ALLOWED_YEAR) {
+    return true;
+  } else if (differenceInYear === MAX_ALLOWED_YEAR) {
+    if (differenceInMonth > 0) return true;
+    else if (differenceInMonth === 0 && today.getDate() >= date.getDate()) return true;
+  }
+
+  return false;
+}
+
 export {
   API_URL,
   pingAPI,
@@ -159,4 +177,5 @@ export {
   checkCibil,
   checkDedupe,
   NaNorNull,
+  isEighteenOrAbove
 };
