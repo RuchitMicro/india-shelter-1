@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
-import TextInput from '../../components/TextInput';
 import CardRadio from '../../components/CardRadio';
 import DropDown from '../../components/DropDown';
 import IconSalaried from '../../assets/icons/salaried';
@@ -82,6 +81,15 @@ const professionData = {
   ),
 };
 
+const disableNextFields = [
+  'pan_number',
+  'date_of_birth',
+  'profession',
+  'mode_of_salary',
+  'monthly_family_income',
+  'ongoing_emi',
+];
+
 const ProfessinalDetail = () => {
   const {
     values,
@@ -94,7 +102,6 @@ const ProfessinalDetail = () => {
     setDisableNextStep,
     currentLeadId,
   } = useContext(AuthContext);
-  const { date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
   const [selectedProfession, setSelectedProfession] = useState(null);
 
@@ -108,39 +115,27 @@ const ProfessinalDetail = () => {
     setDate(new Date(values.date_of_birth));
   }, [values.date_of_birth, date]);
 
-  const onProfessionChange = (e) => {
-    const value = e.currentTarget.value;
-    setSelectedProfession(value);
-    setFieldValue('profession', value);
-    updateLeadDataOnBlur(currentLeadId, 'profession', value);
-  };
+  const onProfessionChange = useCallback(
+    (e) => {
+      const value = e.currentTarget.value;
+      setSelectedProfession(value);
+      setFieldValue('profession', value);
+      setFieldValue('mode_of_salary', null);
+      setFieldValue('occupation', null);
+      updateLeadDataOnBlur(currentLeadId, 'profession', value);
+    },
+    [currentLeadId, setFieldValue],
+  );
 
   useEffect(() => {
-    const moveToNextStep = () => {
-      if (
-        values.profession &&
-        !errors.pan_number &&
-        !errors.date_of_birth &&
-        date_of_birth &&
-        monthly_family_income > 0 &&
-        ongoing_emi > 0 &&
-        (values.occupation || values.mode_of_salary)
-      )
-        setDisableNextStep(false);
-      else setDisableNextStep(true);
-    };
-    moveToNextStep();
-  }, [
-    date_of_birth,
-    monthly_family_income,
-    ongoing_emi,
-    setDisableNextStep,
-    errors.pan_number,
-    errors.date_of_birth,
-    values.profession,
-    values.mode_of_salary,
-    values.occupation,
-  ]);
+    let disableNext = disableNextFields.reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !keys.includes(field);
+    });
+    disableNext = disableNext && (values.mode_of_salary || values.occupation) && !errors.pan_number;
+    setDisableNextStep(!disableNext);
+  }, [errors, setDisableNextStep, values.mode_of_salary, values.occupation]);
 
   useEffect(() => {
     if (!date) return;
@@ -152,19 +147,22 @@ const ProfessinalDetail = () => {
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', date);
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 
-  const handleData = (value) => {
-    if (selectedProfession === 'Cash Salaried') {
-      setFieldValue('mode_of_salary', value);
-      setFieldValue('occupation', '');
-      updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', value);
-      updateLeadDataOnBlur(currentLeadId, 'occupation', null);
-    } else if (selectedProfession === 'Self Employed') {
-      setFieldValue('occupation', value);
-      setFieldValue('mode_of_salary', '');
-      updateLeadDataOnBlur(currentLeadId, 'occupation', value);
-      updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', null);
-    }
-  };
+  const handleOnProfessionChange = useCallback(
+    (value) => {
+      if (selectedProfession === 'Cash Salaried') {
+        setFieldValue('mode_of_salary', value);
+        setFieldValue('occupation', '');
+        updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', value);
+        updateLeadDataOnBlur(currentLeadId, 'occupation', null);
+      } else if (selectedProfession === 'Self Employed') {
+        setFieldValue('occupation', value);
+        setFieldValue('mode_of_salary', '');
+        updateLeadDataOnBlur(currentLeadId, 'occupation', value);
+        updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', null);
+      }
+    },
+    [currentLeadId, selectedProfession, setFieldValue],
+  );
 
   const handleOnPanBlur = useCallback(
     async (e) => {
@@ -257,7 +255,10 @@ const ProfessinalDetail = () => {
       </div>
 
       {selectedProfession &&
-        professionData[selectedProfession](values.mode_of_salary || values.occupation, handleData)}
+        professionData[selectedProfession](
+          values.mode_of_salary || values.occupation,
+          handleOnProfessionChange,
+        )}
 
       <CurrencyInput
         label='Monthly Family Income'
