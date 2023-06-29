@@ -18,6 +18,7 @@ import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../gl
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified'];
 
 const PersonalDetail = () => {
   const [searchParams] = useSearchParams();
@@ -193,6 +194,7 @@ const PersonalDetail = () => {
     setCurrentLeadId,
     setFieldError,
     setIsLeadGenearted,
+    setProcessingBRE,
   ]);
 
   return (
@@ -328,12 +330,23 @@ const PersonalDetail = () => {
         onChange={handleChange}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
-          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key) || e.key === 'ArrowUp' || e.key === 'ArrowDown'
-          ? e.preventDefault()
-          : null;
+          (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||
+          ['e', 'E', '-', '+'].includes(e.key) ||
+          e.key === 'ArrowUp' ||
+          e.key === 'ArrowDown'
+            ? e.preventDefault()
+            : null;
         }}
-        pattern="\d*"
-        onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
+        pattern='\d*'
+        onFocus={(e) =>
+          e.target.addEventListener(
+            'wheel',
+            function (e) {
+              e.preventDefault();
+            },
+            { passive: false },
+          )
+        }
         onPaste={(e) => {
           e.preventDefault();
           const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
@@ -353,8 +366,16 @@ const PersonalDetail = () => {
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
-        pattern="\d*"
-        onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
+        pattern='\d*'
+        onFocus={(e) =>
+          e.target.addEventListener(
+            'wheel',
+            function (e) {
+              e.preventDefault();
+            },
+            { passive: false },
+          )
+        }
         onChange={(e) => {
           if (values.phone_number.length >= 10) {
             return;
@@ -381,10 +402,11 @@ const PersonalDetail = () => {
             e.preventDefault();
             return;
           }
-          if (e.key === '-' || e.key==='+' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          if (DISALLOW_CHAR.includes(e.key)) {
             e.preventDefault();
             return;
           }
+          console.log(e.key);
         }}
         disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'

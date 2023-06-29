@@ -106,6 +106,7 @@ const OtpInput = ({
       <div className='flex gap-2 mt-1'>
         {otp.map((_, index) => (
           <input
+            autoComplete='one-time-code'
             disabled={inputDisabled}
             ref={index === activeOtpIndex ? inputRef : null}
             key={index}

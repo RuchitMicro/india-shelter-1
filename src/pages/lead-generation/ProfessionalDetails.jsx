@@ -144,7 +144,7 @@ const ProfessinalDetail = () => {
 
   useEffect(() => {
     if (!date) return;
-    if (isEighteenOrAbove(date)) {
+    if (!isEighteenOrAbove(date)) {
       setFieldError('date_of_birth', 'To apply for loan the minimum age must be 18 or 18+');
       return;
     }
