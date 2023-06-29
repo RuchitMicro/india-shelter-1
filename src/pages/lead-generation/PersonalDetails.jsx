@@ -149,7 +149,7 @@ const PersonalDetail = () => {
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    setCanCreateLead(!data.ogl);
+    setCanCreateLead(true);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
@@ -329,7 +329,16 @@ const PersonalDetail = () => {
         }}
         onChange={handleChange}
         onKeyDown={(e) => {
-          ['e', 'E', '-', '+'].includes(e.key) && e.preventDefault();
+          //capturing ctrl V and ctrl C
+          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e', 'E', '-', '+'].includes(e.key)
+            ? e.preventDefault()
+            : null;
+        }}
+        onPaste={(e) => {
+          e.preventDefault();
+          const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+          e.target.value = text;
+          handleChange(e);
         }}
         inputClasses='hidearrow'
       />
@@ -344,7 +353,27 @@ const PersonalDetail = () => {
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
-        onChange={handleChange}
+        onChange={(e) => {
+          if (values.phone_number.length >= 10) {
+            console.log('greater than 10');
+            return;
+          }
+          const value = e.currentTarget.value;
+          if (value.charAt(0) === '0') {
+            e.preventDefault();
+            return;
+          }
+          setFieldValue('phone_number', value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Backspace') {
+            setFieldValue(
+              'phone_number',
+              values.phone_number.slice(0, values.phone_number.length - 1),
+            );
+            return;
+          }
+        }}
         disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'
         message={

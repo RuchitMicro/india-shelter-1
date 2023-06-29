@@ -141,7 +141,31 @@ const LoanAgainstPropertyFields = () => {
             error={errors.property_pincode}
             touched={touched.property_pincode}
             onBlur={handleBlur}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.currentTarget.value;
+              if (!value) {
+                handleChange(e);
+                return;
+              }
+              const pattern = /[0-9]+/g;
+              if (pattern.exec(value[value.length - 1])) {
+                handleChange(e);
+              }
+            }}
+            onKeyDown={(e) => {
+              //capturing ctrl V and ctrl C
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
+              ? e.preventDefault()
+              : null;
+            }}
+            onPaste={(e) => {
+              e.preventDefault();
+              const clipboardData = e.clipboardData;
+              const pastedValue = clipboardData.getData('text/plain');
+              const santisedValue = pastedValue.replace(/[^0-9]/g, '');
+              e.target.value = santisedValue;
+              handleChange(e);
+            }}
           />
         </div>
       ) : null}

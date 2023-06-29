@@ -4,6 +4,7 @@ import otpVerified from '../../assets/icons/otp-verified.svg';
 import otpNotVerified from '../../assets/icons/otp-not-verified.svg';
 
 let currentOtpIndex = 0;
+const DISALLOW_CHAR = ['e', 'E', '+', '-'];
 
 const OtpInput = ({
   label,
@@ -114,7 +115,13 @@ const OtpInput = ({
               ${inputClasses}
             `}
             onChange={handleOnChange}
-            onKeyDown={(e) => handleKeyDown(e, index)}
+            onKeyDown={(e) => {
+              if (DISALLOW_CHAR.includes(e.key)) {
+                e.preventDefault();
+                return;
+              }
+              handleKeyDown(e, index);
+            }}
             value={otp[index]}
             onPaste={(e) => {
               e.preventDefault();
