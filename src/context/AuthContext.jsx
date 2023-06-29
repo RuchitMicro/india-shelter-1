@@ -38,7 +38,13 @@ export const defaultValues = {
 
 export const AuthContext = createContext(defaultValues);
 
-const AuthContextProvider = ({ children, setProcessingBRE }) => {
+const AuthContextProvider = ({
+  children,
+  setProcessingBRE,
+  setIsQualified,
+  isQualified,
+  setLoading,
+}) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState(null);
@@ -128,6 +134,9 @@ const AuthContextProvider = ({ children, setProcessingBRE }) => {
         phoneNumberVerified,
         setPhoneNumberVerified,
         setProcessingBRE,
+        isQualified,
+        setIsQualified,
+        setLoading,
       }}
     >
       {children}

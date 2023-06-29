@@ -14,7 +14,13 @@ import {
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
 import privacyPolicy from '../../global/privacy-policy';
-import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
+import {
+  createLead,
+  getLeadByPhoneNumber,
+  getPincode,
+  sendMobileOTP,
+  verifyMobileOtp,
+} from '../../global';
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
@@ -47,6 +53,10 @@ const PersonalDetail = () => {
     phoneNumberVerified,
     setPhoneNumberVerified,
     setProcessingBRE,
+    setLoading,
+    setIsQualified,
+    setActiveStepIndex,
+    setValues,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number, loan_type } = values;
 
@@ -177,7 +187,28 @@ const PersonalDetail = () => {
         })
         .catch((res) => {
           if (res.response.data.status === 500) {
-            setProcessingBRE(true);
+            getLeadByPhoneNumber(phone_number).then((res) => {
+              const data = {};
+              Object.entries(res[0]).forEach(([fieldName, fieldValue]) => {
+                if (typeof fieldValue === 'number') {
+                  data[fieldName] = fieldValue.toString();
+                  return;
+                }
+                data[fieldName] = fieldValue || '';
+              });
+              setValues({ ...values, ...data });
+
+              if (res[0]?.bre_status !== undefined) {
+                setProcessingBRE(true);
+                setLoading(false);
+                setIsQualified(res[0]?.bre_status);
+                return;
+              }
+              const resumeJourneyIndex = res.at(0).extra_params.resume_journey_index;
+              if (resumeJourneyIndex) {
+                setActiveStepIndex(parseInt(resumeJourneyIndex));
+              }
+            });
           }
           return;
         });

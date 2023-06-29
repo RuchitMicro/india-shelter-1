@@ -11,6 +11,8 @@ const LeadGeneration = () => {
   const modalRef = useRef(null);
   const formContainerRef = useRef(null);
   const [processingBRE, setProcessingBRE] = useState(false);
+  const [isQualified, setIsQualified] = useState(true);
+  const [loading, setLoading] = useState(processingBRE);
 
   const onFormButtonClick = useCallback(() => {
     modalRef.current?.snapTo(1);
@@ -23,7 +25,12 @@ const LeadGeneration = () => {
 
   return (
     <Suspense fallback={<h1>Loading...</h1>}>
-      <AuthContextProvider setProcessingBRE={setProcessingBRE}>
+      <AuthContextProvider
+        setProcessingBRE={setProcessingBRE}
+        setIsQualified={setIsQualified}
+        isQualified={isQualified}
+        setLoading={setLoading}
+      >
         {processingBRE ? (
           <AnimatePresence>
             <motion.div
@@ -32,7 +39,13 @@ const LeadGeneration = () => {
               exit={{ opacity: 0 }}
               className='w-full md:w-screen'
             >
-              <CongratulationBanner isLoading={processingBRE} setProcessingBRE={setProcessingBRE} />
+              <CongratulationBanner
+                loading={loading}
+                setLoading={setLoading}
+                setProcessingBRE={setProcessingBRE}
+                isQualified={isQualified}
+                setIsQualified={setIsQualified}
+              />
             </motion.div>
           </AnimatePresence>
         ) : (

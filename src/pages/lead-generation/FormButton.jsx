@@ -21,9 +21,18 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       loan_request_amount: parseFloat(values.loan_request_amount),
       middle_name: values.middle_name,
       last_name: values.last_name,
+      extra_params: {
+        resume_journey_index: activeStepIndex + 1,
+      },
     };
     if (activeStepIndex === 0) {
       editLeadById(currentLeadId, filteredValue);
+    } else {
+      editLeadById(currentLeadId, {
+        extra_params: {
+          resume_journey_index: activeStepIndex + 1,
+        },
+      });
     }
     goToNextStep();
     onButtonClickCB && onButtonClickCB();
