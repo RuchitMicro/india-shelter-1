@@ -99,6 +99,8 @@ const HomeLoanFields = () => {
             error={errors.property_pincode}
             touched={touched.property_pincode}
             type='number'
+            pattern="\d*"
+            onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
             inputClasses='hidearrow'
             onBlur={(e) => {
               handleBlur(e);
@@ -121,7 +123,7 @@ const HomeLoanFields = () => {
             }}
             onKeyDown={(e) => {
               //capturing ctrl V and ctrl C
-              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key) || e.key === 'ArrowUp' || e.key === 'ArrowDown'
               ? e.preventDefault()
               : null;
             }}

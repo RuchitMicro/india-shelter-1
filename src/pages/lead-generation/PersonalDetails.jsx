@@ -328,10 +328,12 @@ const PersonalDetail = () => {
         onChange={handleChange}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
-          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e', 'E', '-', '+'].includes(e.key)
-            ? e.preventDefault()
-            : null;
+          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key) || e.key === 'ArrowUp' || e.key === 'ArrowDown'
+          ? e.preventDefault()
+          : null;
         }}
+        pattern="\d*"
+        onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
         onPaste={(e) => {
           e.preventDefault();
           const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
@@ -351,6 +353,8 @@ const PersonalDetail = () => {
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
+        pattern="\d*"
+        onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
         onChange={(e) => {
           if (values.phone_number.length >= 10) {
             return;
@@ -362,12 +366,22 @@ const PersonalDetail = () => {
           }
           setFieldValue('phone_number', value);
         }}
+        onPaste={(e) => {
+          e.preventDefault();
+          const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+          e.target.value = text;
+          handleChange(e);
+        }}
         onKeyDown={(e) => {
           if (e.key === 'Backspace') {
             setFieldValue(
               'phone_number',
               values.phone_number.slice(0, values.phone_number.length - 1),
             );
+            e.preventDefault();
+            return;
+          }
+          if (e.key === '-' || e.key==='+' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
             e.preventDefault();
             return;
           }
