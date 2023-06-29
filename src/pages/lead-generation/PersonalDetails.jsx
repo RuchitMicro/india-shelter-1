@@ -80,9 +80,19 @@ const PersonalDetail = () => {
   const onOTPSendClick = useCallback(() => {
     setDisablePhoneNumber(true);
     const continueJourney = searchParams.has('li');
+    try {
+      navigator.permissions.query({ name: 'sms' }).then((permissionStatus) => {
+        if (permissionStatus.state === 'granted') {
+          console.log(getWebOTP());
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    return;
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
-        setFieldError('otp', res.data.message);
+        setFieldError('phone_number', res.data.message);
         return;
       }
       try {
