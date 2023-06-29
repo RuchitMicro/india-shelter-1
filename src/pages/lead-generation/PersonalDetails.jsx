@@ -148,11 +148,7 @@ const PersonalDetail = () => {
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    // if (data.ogl) {
-    //   setFieldError('pincode', 'Invalid Pincode');
-    //   return;
-    // }
-    setCanCreateLead(!data.ogl);
+    setCanCreateLead(true);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
@@ -332,9 +328,9 @@ const PersonalDetail = () => {
         onChange={handleChange}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
-          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
-          ? e.preventDefault()
-          : null;
+          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e', 'E', '-', '+'].includes(e.key)
+            ? e.preventDefault()
+            : null;
         }}
         onPaste={(e) => {
           e.preventDefault();
