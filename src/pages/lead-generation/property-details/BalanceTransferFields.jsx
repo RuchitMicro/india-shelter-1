@@ -90,6 +90,7 @@ const BalanceTransferFields = () => {
         name='loan_amount'
         label='Loan Amount'
         required
+        pattern="\d*"
         Icon={IconRupee}
         placeholder='1,00,000'
         value={values.loan_amount}
