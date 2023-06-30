@@ -373,7 +373,7 @@ const PersonalDetail = () => {
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
           (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||
-          ['e', 'E', '-', '+'].includes(e.key) ||
+          DISALLOW_CHAR.includes(e.key) ||
           e.key === 'ArrowUp' ||
           e.key === 'ArrowDown'
             ? e.preventDefault()
@@ -487,6 +487,7 @@ const PersonalDetail = () => {
           defaultResendTime={30}
           disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
+          type='number'
         />
       )}
 

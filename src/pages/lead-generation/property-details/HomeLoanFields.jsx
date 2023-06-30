@@ -11,11 +11,21 @@ const disableSubmitMap = {
   'not-yet': ['purpose_of_loan'],
 };
 
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+
 const HomeLoanFields = () => {
   const { setPropertyIdentified, propertyIdentified, showOTPInput, emailOTPVerified } =
     useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId, setFieldValue } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    setDisableNextStep,
+    currentLeadId,
+    setFieldValue,
+  } = useContext(AuthContext);
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
@@ -99,8 +109,16 @@ const HomeLoanFields = () => {
             error={errors.property_pincode}
             touched={touched.property_pincode}
             type='number'
-            pattern="\d*"
-            onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
+            pattern='\d*'
+            onFocus={(e) =>
+              e.target.addEventListener(
+                'wheel',
+                function (e) {
+                  e.preventDefault();
+                },
+                { passive: false },
+              )
+            }
             inputClasses='hidearrow'
             onBlur={(e) => {
               handleBlur(e);
@@ -123,9 +141,9 @@ const HomeLoanFields = () => {
             }}
             onKeyDown={(e) => {
               //capturing ctrl V and ctrl C
-              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key) || e.key === 'ArrowUp' || e.key === 'ArrowDown'
-              ? e.preventDefault()
-              : null;
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || DISALLOW_CHAR.includes(e.key)
+                ? e.preventDefault()
+                : null;
             }}
             onPaste={(e) => {
               e.preventDefault();

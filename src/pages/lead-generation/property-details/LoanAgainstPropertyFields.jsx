@@ -10,6 +10,8 @@ const disableSubmitMap = {
   'not-yet': ['purpose_of_loan'],
 };
 
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+
 const LoanAgainstPropertyFields = () => {
   const {
     setPropertyIdentified,
@@ -140,7 +142,6 @@ const LoanAgainstPropertyFields = () => {
             value={values.property_pincode}
             error={errors.property_pincode}
             touched={touched.property_pincode}
-            onBlur={handleBlur}
             type='number'
             pattern='\d*'
             onFocus={(e) =>
@@ -152,6 +153,15 @@ const LoanAgainstPropertyFields = () => {
                 { passive: false },
               )
             }
+            inputClasses='hidearrow'
+            onBlur={(e) => {
+              handleBlur(e);
+              updateLeadDataOnBlur(
+                currentLeadId,
+                'property_pincode',
+                parseInt(e.currentTarget.value),
+              );
+            }}
             onChange={(e) => {
               const value = e.currentTarget.value;
               if (!value) {
@@ -165,19 +175,14 @@ const LoanAgainstPropertyFields = () => {
             }}
             onKeyDown={(e) => {
               //capturing ctrl V and ctrl C
-              (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||
-              ['e', 'E', '-', '+'].includes(e.key) ||
-              e.key === 'ArrowUp' ||
-              e.key === 'ArrowDown'
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || DISALLOW_CHAR.includes(e.key)
                 ? e.preventDefault()
                 : null;
             }}
             onPaste={(e) => {
               e.preventDefault();
-              const clipboardData = e.clipboardData;
-              const pastedValue = clipboardData.getData('text/plain');
-              const santisedValue = pastedValue.replace(/[^0-9]/g, '');
-              e.target.value = santisedValue;
+              const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+              e.target.value = text;
               handleChange(e);
             }}
           />
