@@ -110,7 +110,6 @@ const OtpInput = ({
             disabled={inputDisabled}
             ref={index === activeOtpIndex ? inputRef : null}
             key={index}
-            type='number'
             className={`
               w-full h-12 border bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow
               ${inputClasses}
@@ -124,6 +123,7 @@ const OtpInput = ({
               handleKeyDown(e, index);
             }}
             value={otp[index]}
+            pattern='\d*'
             onPaste={(e) => {
               e.preventDefault();
               const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
@@ -134,6 +134,7 @@ const OtpInput = ({
                 verifyOTPCB(text.join(''));
               }
             }}
+            type='number'
           />
         ))}
       </div>

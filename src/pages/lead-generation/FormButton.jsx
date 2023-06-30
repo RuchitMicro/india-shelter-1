@@ -91,7 +91,8 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
                 );
                 filteredValue['phone_number'] = filteredValue['phone_number']?.toString();
                 filteredValue['ongoing_emi'] = NaNorNull(parseFloat(filteredValue['ongoing_emi']));
-                filteredValue['Out_Of_Geographic_Limit'] = false;
+                filteredValue['Out_Of_Geographic_Limit'] =
+                  filteredValue['Out_Of_Geographic_Limit'] || false;
                 filteredValue['Total_Property_Value'] = NaNorNull(
                   parseInt(filteredValue['property_estimation']),
                 );
@@ -101,6 +102,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
                 filteredValue['extra_params'] = '';
                 filteredValue['loan_amount'] = filteredValue['loan_amount']?.toString();
                 filteredValue['loan_tenure'] = filteredValue['loan_tenure']?.toString();
+                filteredValue['is_submitted'] = true;
                 onSubmit(currentLeadId, filteredValue);
               }
             : onNextButtonClick

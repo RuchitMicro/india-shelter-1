@@ -41,9 +41,10 @@ export const AuthContext = createContext(defaultValues);
 const AuthContextProvider = ({
   children,
   setProcessingBRE,
+  loadingBRE_Status,
+  setLoadingBRE_Status,
   setIsQualified,
   isQualified,
-  setLoading,
 }) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
@@ -59,6 +60,21 @@ const AuthContextProvider = ({
       action.resetForm(defaultValues);
     },
   });
+
+  const updateFieldsFromServerData = useCallback(
+    (map) => {
+      const data = {};
+      Object.entries(map).forEach(([fieldName, fieldValue]) => {
+        if (typeof fieldValue === 'number') {
+          data[fieldName] = fieldValue.toString();
+          return;
+        }
+        data[fieldName] = fieldValue || '';
+      });
+      formik.setValues({ ...formik.values, ...data });
+    },
+    [formik],
+  );
 
   useEffect(() => {
     const _leadID = searchParams.get('li');
@@ -137,9 +153,11 @@ const AuthContextProvider = ({
         setProcessingBRE,
         isQualified,
         setIsQualified,
-        setLoading,
+        loadingBRE_Status,
+        setLoadingBRE_Status,
         acceptedTermsAndCondition,
         setAcceptedTermsAndCondition,
+        updateFieldsFromServerData,
       }}
     >
       {children}
@@ -154,5 +172,6 @@ AuthContextProvider.propTypes = {
   setProcessingBRE: PropTypes.func,
   setIsQualified: PropTypes.func,
   isQualified: PropTypes.bool,
-  setLoading: PropTypes.func,
+  loadingBRE_Status: PropTypes.bool,
+  setLoadingBRE_Status: PropTypes.func,
 };

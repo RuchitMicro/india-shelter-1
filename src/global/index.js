@@ -177,5 +177,5 @@ export {
   checkCibil,
   checkDedupe,
   NaNorNull,
-  isEighteenOrAbove
+  isEighteenOrAbove,
 };

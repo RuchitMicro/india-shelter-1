@@ -32,6 +32,7 @@ const PersonalDetail = () => {
 
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [leadExists, setLeadExists] = useState(false);
 
   const {
     values,
@@ -58,6 +59,7 @@ const PersonalDetail = () => {
     setValues,
     acceptedTermsAndCondition,
     setAcceptedTermsAndCondition,
+    updateFieldsFromServerData,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -83,7 +85,7 @@ const PersonalDetail = () => {
 
   const onOTPSendClick = useCallback(() => {
     setDisablePhoneNumber(true);
-    const continueJourney = searchParams.has('li');
+    const continueJourney = searchParams.has('li') || leadExists;
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
         setFieldError('otp', res.data.message);
@@ -108,7 +110,7 @@ const PersonalDetail = () => {
         console.error('WebOTP is not supported in this browser');
       }
     });
-  }, [phone_number, searchParams, setFieldError]);
+  }, [leadExists, phone_number, searchParams, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
@@ -154,8 +156,45 @@ const PersonalDetail = () => {
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
+  const handleOnPhoneNumberChange = useCallback(async (e) => {
+    const phoneNumber = e.currentTarget.value;
+    if (phoneNumber?.length < 10) {
+      setLeadExists(false);
+      setShowOTPInput(false);
+      return;
+    }
+    const data = await getLeadByPhoneNumber(phoneNumber);
+    if (data.length) {
+      setLeadExists(true);
+      setShowOTPInput(true);
+    }
+  }, []);
+
   useEffect(() => {
-    if (isLeadGenerated) return;
+    if (leadExists && phoneNumberVerified) {
+      getLeadByPhoneNumber(values.phone_number).then((data) => {
+        if (!data.length) return;
+        const leadData = data[0];
+        updateFieldsFromServerData(leadData);
+        setCurrentLeadId(leadData.id);
+        if (leadData.is_submitted) {
+          setProcessingBRE(true);
+          setIsQualified(true);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leadExists, phoneNumberVerified]);
+
+  const onResumeJourneyClick = useCallback(() => {
+    const resumeJourneyIndex = values.extra_params.resume_journey_index;
+    if (resumeJourneyIndex) {
+      setActiveStepIndex(parseInt(resumeJourneyIndex));
+    }
+  }, [setActiveStepIndex, values.extra_params.resume_journey_index]);
+
+  useEffect(() => {
+    if (isLeadGenerated || leadExists) return;
     const canCreateLead = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
@@ -186,6 +225,7 @@ const PersonalDetail = () => {
     errors,
     first_name,
     isLeadGenerated,
+    leadExists,
     phone_number,
     pincode,
     setActiveStepIndex,
@@ -333,7 +373,7 @@ const PersonalDetail = () => {
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
           (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||
-          ['e', 'E', '-', '+'].includes(e.key) ||
+          DISALLOW_CHAR.includes(e.key) ||
           e.key === 'ArrowUp' ||
           e.key === 'ArrowDown'
             ? e.preventDefault()
@@ -392,6 +432,7 @@ const PersonalDetail = () => {
             return;
           }
           setFieldValue('phone_number', value);
+          handleOnPhoneNumberChange(e);
         }}
         onPaste={(e) => {
           e.preventDefault();
@@ -424,6 +465,18 @@ const PersonalDetail = () => {
         }
       />
 
+      {!errors.phone_number && leadExists && !phoneNumberVerified && (
+        <span className='text-xs text-primary-red -mt-4'>
+          Lead with that phone number already exists. <br /> Verify OTP to resume journey
+        </span>
+      )}
+
+      {values?.extra_params?.resume_journey_index && leadExists && phoneNumberVerified && (
+        <button onClick={onResumeJourneyClick} className='self-start my-2 text-xs text-primary-red'>
+          Resume journey
+        </button>
+      )}
+
       {showOTPInput && (
         <OtpInput
           label='Enter OTP'
@@ -432,8 +485,9 @@ const PersonalDetail = () => {
           setOTPVerified={setPhoneNumberVerified}
           onSendOTPClick={onOTPSendClick}
           defaultResendTime={30}
-          disableSendOTP={isLeadGenerated && !phoneNumberVerified}
+          disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
+          type='number'
         />
       )}
 
