@@ -50,6 +50,7 @@ const AuthContextProvider = ({
   const [currentLeadId, setCurrentLeadId] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
+  const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -137,6 +138,8 @@ const AuthContextProvider = ({
         isQualified,
         setIsQualified,
         setLoading,
+        acceptedTermsAndCondition,
+        setAcceptedTermsAndCondition,
       }}
     >
       {children}
@@ -148,4 +151,8 @@ export default AuthContextProvider;
 
 AuthContextProvider.propTypes = {
   children: PropTypes.element,
+  setProcessingBRE: PropTypes.func,
+  setIsQualified: PropTypes.func,
+  isQualified: PropTypes.bool,
+  setLoading: PropTypes.func,
 };

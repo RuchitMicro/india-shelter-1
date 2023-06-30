@@ -24,15 +24,14 @@ import {
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
-const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified'];
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+const disableNextFields = ['loan_request_amount', 'first_name', 'pincode', 'phone_number'];
 
 const PersonalDetail = () => {
   const [searchParams] = useSearchParams();
 
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-  const [canCreateLead, setCanCreateLead] = useState(false);
 
   const {
     values,
@@ -57,35 +56,29 @@ const PersonalDetail = () => {
     setIsQualified,
     setActiveStepIndex,
     setValues,
+    acceptedTermsAndCondition,
+    setAcceptedTermsAndCondition,
   } = useContext(AuthContext);
-  const { loan_request_amount, first_name, pincode, phone_number, loan_type } = values;
+  const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
   const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
 
   useEffect(() => {
-    const moveToNextStep = () => {
-      if (
-        loan_request_amount &&
-        first_name &&
-        pincode &&
-        phone_number &&
-        phoneNumberVerified &&
-        loan_type
-      ) {
-        if (isTermsAccepted) setDisableNextStep(false);
-      }
-    };
-    moveToNextStep();
+    let disableNext = disableNextFields.reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !keys.includes(field);
+    }, !errors[disableNextFields[0]]);
+    disableNext =
+      disableNext && acceptedTermsAndCondition && phoneNumberVerified && selectedLoanType;
+    setDisableNextStep(!disableNext);
   }, [
-    loan_type,
-    loan_request_amount,
-    first_name,
-    pincode,
-    phone_number,
-    isTermsAccepted,
-    setDisableNextStep,
+    acceptedTermsAndCondition,
+    errors,
     phoneNumberVerified,
+    selectedLoanType,
+    setDisableNextStep,
   ]);
 
   const onOTPSendClick = useCallback(() => {
@@ -105,14 +98,14 @@ const PersonalDetail = () => {
               signal: ac.signal,
             })
             .then((otp) => {
-              alert(otp.code);
+              console.log(otp.code);
             })
             .catch((err) => {
               console.log(err);
             });
         });
       } else {
-        alert('WebOTP not supported!.');
+        console.error('WebOTP is not supported in this browser');
       }
     });
   }, [phone_number, searchParams, setFieldError]);
@@ -136,7 +129,7 @@ const PersonalDetail = () => {
         if (res.status === 200) {
           setPhoneNumberVerified(true);
           setInputDisabled(false);
-          setFieldError('phone_number', '');
+          setFieldError('phone_number', undefined);
           setShowOTPInput(false);
           return true;
         }
@@ -155,22 +148,20 @@ const PersonalDetail = () => {
 
     const data = await getPincode(pincode);
     if (!data) {
-      setCanCreateLead(false);
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    setCanCreateLead(true);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
   useEffect(() => {
     if (isLeadGenerated) return;
-    const enableSubmit = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
+    const canCreateLead = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
     }, true);
-    if (enableSubmit && canCreateLead) {
+    if (canCreateLead) {
       createLead({
         first_name,
         pincode,
@@ -181,51 +172,31 @@ const PersonalDetail = () => {
             setIsLeadGenearted(true);
             setShowOTPInput(true);
             setCurrentLeadId(res.data.id);
-            setFieldError('phone_number', '');
+            setFieldError('phone_number', undefined);
             return;
           }
         })
         .catch((res) => {
-          if (res.response.data.status === 500) {
-            getLeadByPhoneNumber(phone_number).then((res) => {
-              const data = {};
-              Object.entries(res[0]).forEach(([fieldName, fieldValue]) => {
-                if (typeof fieldValue === 'number') {
-                  data[fieldName] = fieldValue.toString();
-                  return;
-                }
-                data[fieldName] = fieldValue || '';
-              });
-              setValues({ ...values, ...data });
-
-              if (res[0]?.bre_status !== undefined) {
-                setProcessingBRE(true);
-                setLoading(false);
-                setIsQualified(res[0]?.bre_status);
-                return;
-              }
-              const resumeJourneyIndex = res.at(0).extra_params.resume_journey_index;
-              if (resumeJourneyIndex) {
-                setActiveStepIndex(parseInt(resumeJourneyIndex));
-              }
-            });
-          }
-          return;
+          console.error(res);
         });
 
-      setFieldError('pincode', '');
+      setFieldError('pincode', undefined);
     }
   }, [
-    canCreateLead,
     errors,
     first_name,
     isLeadGenerated,
     phone_number,
     pincode,
+    setActiveStepIndex,
     setCurrentLeadId,
     setFieldError,
     setIsLeadGenearted,
+    setIsQualified,
+    setLoading,
     setProcessingBRE,
+    setValues,
+    values,
   ]);
 
   return (
@@ -408,6 +379,10 @@ const PersonalDetail = () => {
           )
         }
         onChange={(e) => {
+          if (e.currentTarget.value < 0) {
+            e.preventDefault();
+            return;
+          }
           if (values.phone_number.length >= 10) {
             return;
           }
@@ -437,7 +412,6 @@ const PersonalDetail = () => {
             e.preventDefault();
             return;
           }
-          console.log(e.key);
         }}
         disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'
@@ -465,9 +439,10 @@ const PersonalDetail = () => {
 
       <div className='flex gap-2'>
         <CheckBox
+          checked={acceptedTermsAndCondition}
           name='terms-agreed'
           onChange={(e) => {
-            setIsTermsAccepted(e.currentTarget.checked);
+            setAcceptedTermsAndCondition(e.currentTarget.checked);
           }}
         />
         <div className='text-xs text-dark-grey'>
