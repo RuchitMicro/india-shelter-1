@@ -132,8 +132,8 @@ const ProfessinalDetail = () => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !keys.includes(field);
-    });
-    disableNext = disableNext && (values.mode_of_salary || values.occupation) && !errors.pan_number;
+    }, !errors[disableNextFields[0]]);
+    disableNext = disableNext && (values.mode_of_salary || values.occupation);
     setDisableNextStep(!disableNext);
   }, [errors, setDisableNextStep, values.mode_of_salary, values.occupation]);
 
