@@ -32,7 +32,7 @@ const LoanAgainstPropertyFields = () => {
 
   useEffect(() => {
     setPropertyCategory(values.purpose_type);
-  }, [values.purpose_type]);
+  }, [setPropertyCategory, values.purpose_type]);
 
   const handleOnPropertyCategoryChange = useCallback(
     (e) => {
@@ -141,8 +141,17 @@ const LoanAgainstPropertyFields = () => {
             error={errors.property_pincode}
             touched={touched.property_pincode}
             onBlur={handleBlur}
-            pattern="\d*"
-            onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
+            type='number'
+            pattern='\d*'
+            onFocus={(e) =>
+              e.target.addEventListener(
+                'wheel',
+                function (e) {
+                  e.preventDefault();
+                },
+                { passive: false },
+              )
+            }
             onChange={(e) => {
               const value = e.currentTarget.value;
               if (!value) {
@@ -156,9 +165,12 @@ const LoanAgainstPropertyFields = () => {
             }}
             onKeyDown={(e) => {
               //capturing ctrl V and ctrl C
-              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key) || e.key === 'ArrowUp' || e.key === 'ArrowDown'
-              ? e.preventDefault()
-              : null;
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||
+              ['e', 'E', '-', '+'].includes(e.key) ||
+              e.key === 'ArrowUp' ||
+              e.key === 'ArrowDown'
+                ? e.preventDefault()
+                : null;
             }}
             onPaste={(e) => {
               e.preventDefault();
