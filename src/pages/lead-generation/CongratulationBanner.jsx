@@ -15,15 +15,17 @@ const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
 const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
 const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
 
-const CongratulationBanner = ({
-  loading,
-  setLoading,
-  setProcessingBRE,
-  isQualified,
-  setIsQualified,
-}) => {
-  const { values, currentLeadId } = useContext(AuthContext);
-  const [allowedLoanAmount, setAllowedLoanAmount] = useState(0);
+const CongratulationBanner = () => {
+  const {
+    values,
+    currentLeadId,
+    setProcessingBRE,
+    setIsQualified,
+    isQualified,
+    setLoadingBRE_Status,
+    loadingBRE_Status,
+  } = useContext(AuthContext);
+  const [allowedLoanAmount, setAllowedLoanAmount] = useState(values.bre_100_amount_offered || 0);
   const [progress, setProgress] = useState(10);
 
   useEffect(() => {
@@ -35,13 +37,13 @@ const CongratulationBanner = ({
     const paths = document.querySelectorAll('.foreground path');
     paths.forEach((path) => {
       path.style.transition = `all ease-out 300ms`;
-      path.style.fill = loading ? '#FFF1CD' : '#EEF0DD';
+      path.style.fill = loadingBRE_Status ? '#FFF1CD' : '#EEF0DD';
     });
-  }, [loading]);
+  }, [loadingBRE_Status]);
 
   useEffect(() => {
-    if (!currentLeadId) return;
-    setLoading(true);
+    if (!currentLeadId || isQualified !== null) return;
+    setLoadingBRE_Status(true);
     let interval = setInterval(() => {
       setProgress((prev) => {
         if (prev > 98) {
@@ -65,21 +67,21 @@ const CongratulationBanner = ({
       });
       const breResponse = res.data.bre_100_response;
       if (breResponse.statusCode === 200) {
-        setLoading(false);
+        setLoadingBRE_Status(false);
         setIsQualified(true);
         const offeredAmount = breResponse.body.find((rule) => rule.Rule_Name === 'Amount_Offered');
         setAllowedLoanAmount(offeredAmount.Rule_Value);
       } else {
         setIsQualified(false);
-        setLoading(false);
+        setLoadingBRE_Status(false);
       }
-      setLoading(false);
+      setLoadingBRE_Status(false);
     });
-  }, [currentLeadId]);
+  }, [currentLeadId, isQualified, setIsQualified, setLoadingBRE_Status]);
 
   return (
     <div
-      style={{ backgroundColor: loading ? '#FFF1CD' : '#EEF0DD' }}
+      style={{ backgroundColor: loadingBRE_Status ? '#FFF1CD' : '#EEF0DD' }}
       className='flex flex-col w-full relative transition-colors ease-out duration-300 min-h-screen overflow-hidden'
     >
       <div className='relative md:hidden'>
@@ -143,6 +145,7 @@ const CongratulationBanner = ({
             exit={{ opacity: 0 }}
           >
             <LoanAgainstPropertyAnimation
+              loop={false}
               play
               className='md:hidden md:absolute bottom-0 left-0 md:left-2/4 md:-translate-x-2/4 w-full md:h-2/4'
             />
@@ -166,17 +169,17 @@ const CongratulationBanner = ({
                 fillRule='evenodd'
                 clipRule='evenodd'
                 d='M404.054 71.2076C349.089 66.4928 347.603 49.6551 304.522 45.6135C232.023 38.8134 225.788 57.7374 163.395 55.717C125.344 54.484 76.7638 26.7981 44.5098 15.637C-33.6401 -11.4083 -87 4.83984 -87 4.83984V226.372H470.058V65.452C470.058 65.452 436.14 73.9605 404.054 71.2076Z'
-                fill={loading ? '#FFF1CD' : '#EEF0DD'}
+                fill={loadingBRE_Status ? '#FFF1CD' : '#EEF0DD'}
                 className='transition-colors ease-out duration-300'
               />
             </svg>
           </div>
           <div
             className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-1/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
-              loading ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
+              loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
             } md:bg-opacity-0`}
           >
-            {loading ? (
+            {loadingBRE_Status ? (
               <>
                 <div
                   style={{
@@ -194,7 +197,7 @@ const CongratulationBanner = ({
               ''
             )}
 
-            {!loading && isQualified ? (
+            {!loadingBRE_Status && isQualified ? (
               <div className='flex items-center flex-col'>
                 <div
                   style={{
@@ -229,7 +232,7 @@ const CongratulationBanner = ({
               ''
             )}
 
-            {!loading && !isQualified ? (
+            {!loadingBRE_Status && !isQualified ? (
               <h3 className='mx-4 text-center text-[22px] md:text-[32px] leading-8 md:leading-[48px]'>
                 Thank you for choosing us.
                 <br />
@@ -244,10 +247,10 @@ const CongratulationBanner = ({
       {values.loan_type !== 'LAP' && (
         <div
           className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-1/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
-            loading ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
+            loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
           } md:bg-opacity-0`}
         >
-          {loading ? (
+          {loadingBRE_Status ? (
             <>
               <div
                 style={{
@@ -265,7 +268,7 @@ const CongratulationBanner = ({
             ''
           )}
 
-          {!loading && isQualified ? (
+          {!loadingBRE_Status && isQualified ? (
             <div className='flex items-center flex-col'>
               <div
                 style={{
@@ -300,7 +303,7 @@ const CongratulationBanner = ({
             ''
           )}
 
-          {!loading && !isQualified ? (
+          {!loadingBRE_Status && !isQualified ? (
             <h3 className='mx-4 text-center text-[22px] md:text-[32px] leading-8 md:leading-[48px]'>
               Thank you for choosing us.
               <br />
@@ -318,6 +321,9 @@ const CongratulationBanner = ({
 export default CongratulationBanner;
 
 CongratulationBanner.propTypes = {
-  isLoading: PropTypes.bool,
   setProcessingBRE: PropTypes.func,
+  loading: PropTypes.bool,
+  setLoading: PropTypes.func,
+  isQualified: PropTypes.bool,
+  setIsQualified: PropTypes.func,
 };
