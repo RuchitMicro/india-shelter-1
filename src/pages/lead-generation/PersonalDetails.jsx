@@ -18,7 +18,7 @@ import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../gl
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
-const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified'];
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
 const disableNextFields = ['loan_request_amount', 'first_name', 'pincode', 'phone_number'];
 
 const PersonalDetail = () => {
@@ -362,6 +362,10 @@ const PersonalDetail = () => {
           )
         }
         onChange={(e) => {
+          if (e.currentTarget.value < 0) {
+            e.preventDefault();
+            return;
+          }
           if (values.phone_number.length >= 10) {
             return;
           }
