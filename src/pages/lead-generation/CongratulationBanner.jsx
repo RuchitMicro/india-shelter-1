@@ -15,12 +15,16 @@ const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
 const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
 const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
 
-const CongratulationBanner = ({ isLoading, setProcessingBRE }) => {
+const CongratulationBanner = ({
+  loading,
+  setLoading,
+  setProcessingBRE,
+  isQualified,
+  setIsQualified,
+}) => {
   const { values, currentLeadId } = useContext(AuthContext);
   const [allowedLoanAmount, setAllowedLoanAmount] = useState(0);
-  const [loading, setLoading] = useState(isLoading);
   const [progress, setProgress] = useState(10);
-  const [isQualified, setIsQualified] = useState(true);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';

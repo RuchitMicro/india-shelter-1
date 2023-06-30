@@ -14,7 +14,13 @@ import {
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
 import privacyPolicy from '../../global/privacy-policy';
-import { createLead, getPincode, sendMobileOTP, verifyMobileOtp } from '../../global';
+import {
+  createLead,
+  getLeadByPhoneNumber,
+  getPincode,
+  sendMobileOTP,
+  verifyMobileOtp,
+} from '../../global';
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
@@ -46,6 +52,10 @@ const PersonalDetail = () => {
     phoneNumberVerified,
     setPhoneNumberVerified,
     setProcessingBRE,
+    setLoading,
+    setIsQualified,
+    setActiveStepIndex,
+    setValues,
     acceptedTermsAndCondition,
     setAcceptedTermsAndCondition,
   } = useContext(AuthContext);
@@ -61,14 +71,14 @@ const PersonalDetail = () => {
       return acc && !keys.includes(field);
     }, !errors[disableNextFields[0]]);
     disableNext =
-      disableNext && values.loan_type && acceptedTermsAndCondition && phoneNumberVerified;
+      disableNext && acceptedTermsAndCondition && phoneNumberVerified && selectedLoanType;
     setDisableNextStep(!disableNext);
   }, [
     acceptedTermsAndCondition,
     errors,
     phoneNumberVerified,
+    selectedLoanType,
     setDisableNextStep,
-    values.loan_type,
   ]);
 
   const onOTPSendClick = useCallback(() => {
@@ -119,7 +129,7 @@ const PersonalDetail = () => {
         if (res.status === 200) {
           setPhoneNumberVerified(true);
           setInputDisabled(false);
-          setFieldError('phone_number', '');
+          setFieldError('phone_number', undefined);
           setShowOTPInput(false);
           return true;
         }
@@ -151,35 +161,42 @@ const PersonalDetail = () => {
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
     }, true);
-    if (!canCreateLead) return;
-    createLead({
-      first_name,
-      pincode,
-      phone_number: phone_number.toString(),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          setIsLeadGenearted(true);
-          setShowOTPInput(true);
-          setCurrentLeadId(res.data.id);
-          setFieldError('phone_number', '');
-          return;
-        }
+    if (canCreateLead) {
+      createLead({
+        first_name,
+        pincode,
+        phone_number: phone_number.toString(),
       })
-      .catch((res) => {
-        console.error(res);
-      });
-    setFieldError('pincode', '');
+        .then((res) => {
+          if (res.status === 200) {
+            setIsLeadGenearted(true);
+            setShowOTPInput(true);
+            setCurrentLeadId(res.data.id);
+            setFieldError('phone_number', undefined);
+            return;
+          }
+        })
+        .catch((res) => {
+          console.error(res);
+        });
+
+      setFieldError('pincode', undefined);
+    }
   }, [
     errors,
     first_name,
     isLeadGenerated,
     phone_number,
     pincode,
+    setActiveStepIndex,
     setCurrentLeadId,
     setFieldError,
     setIsLeadGenearted,
+    setIsQualified,
+    setLoading,
     setProcessingBRE,
+    setValues,
+    values,
   ]);
 
   return (
@@ -395,7 +412,6 @@ const PersonalDetail = () => {
             e.preventDefault();
             return;
           }
-          console.log(e.key);
         }}
         disabled={inputDisabled || disablePhoneNumber}
         inputClasses='hidearrow'
