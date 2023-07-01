@@ -177,7 +177,7 @@ const CongratulationBanner = () => {
           <div
             className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-1/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
               loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
-            } md:bg-opacity-0`}
+            } md:bg-opacity-60 p-2`}
           >
             {loadingBRE_Status ? (
               <>
@@ -198,7 +198,7 @@ const CongratulationBanner = () => {
             )}
 
             {!loadingBRE_Status && isQualified ? (
-              <div className='flex items-center flex-col'>
+              <div className='flex items-center flex-col' style={{padding:'20px'}}>
                 <div
                   style={{
                     color: '#231F20',
@@ -248,7 +248,7 @@ const CongratulationBanner = () => {
         <div
           className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-1/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
             loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
-          } md:bg-opacity-0`}
+          } md:bg-opacity-60 p-2`}
         >
           {loadingBRE_Status ? (
             <>

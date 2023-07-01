@@ -467,13 +467,13 @@ const PersonalDetail = () => {
 
       {!errors.phone_number && leadExists && !phoneNumberVerified && (
         <span className='text-xs text-primary-red -mt-4'>
-          Lead with that phone number already exists. <br /> Verify OTP to resume journey
+          Lead with that phone number already exists. <br /> Verify OTP to resume your loan application.
         </span>
       )}
 
       {values?.extra_params?.resume_journey_index && leadExists && phoneNumberVerified && (
         <button onClick={onResumeJourneyClick} className='self-start my-2 text-xs text-primary-red'>
-          Resume journey
+          Resume Loan Application
         </button>
       )}
 
